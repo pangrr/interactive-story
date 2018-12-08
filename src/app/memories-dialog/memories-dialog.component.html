@@ -1,0 +1,12 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let memory of memories">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{memory.label}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      {{memory.detail}}
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>
