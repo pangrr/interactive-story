@@ -41,6 +41,11 @@ export class GameService {
 
   private validateGame(game: Game): ValidationResult {
     const actions = this.collectActions(game.scenes);
+    // TODO
+    // const duplicateCurrentMemoryTitles = this.getDuplicateStringsInList(game.currentMemoryTitles);
+    // const duplicateMemoryTitles = this.getDuplicateItemInListByTitle(game.memories);
+    // const duplicateSceneTitles = this.getDuplicateItemInListByTitle(game.scenes);
+    // const deplicateActionTitles
     const recallMemoryTitlesMissing = this.getTitlesMissingInList(this.collectRecallMemoryTitlesFromActions(actions), game.memories);
     const nextSceneTitlesMissing = this.getTitlesMissingInList(this.collectNextSceneTitlesFromActions(actions), game.scenes);
     const currentMemoryTitlesMissing = this.getTitlesMissingInList(game.currentMemoryTitles, game.memories);
@@ -119,6 +124,75 @@ interface ValidationResult {
 }
 
 /* tslint:disable */
+const SCENES: Scene[] = [
+  {
+    title: '阿华说要晚些来接我',
+    description: '阿华说要晚些来接我。',
+    actions: [
+      {
+        title: '阿华是谁？',
+        recallMemoryTitles: ['阿华']
+      },
+      {
+        title: '我是谁？',
+        recallMemoryTitles: ['我的婚姻', '我的工作']
+      },
+      {
+        title: '晚就晚点呗',
+        nextSceneTitle: '阿华来了'
+      }
+    ]
+  },
+  {
+    title: '阿华来了',
+    description: '八点，阿华给我发消息，说已在门口等。',
+    actions: [
+      {
+        title: '换了身衣服就出门',
+        nextSceneTitle: '出门'
+      }
+    ]
+  },
+  {
+    title: '出门',
+    description: `梅雨刚过，不再笼着热。
+    他穿着白得发亮的短袖T恤衫、破洞牛仔裤，倚在厂门口的树底下看手机。
+    `,
+    actions: [
+      {
+        title: '走进阿华',
+        nextSceneTitle: '走进阿华'
+      }
+    ]
+  },
+  {
+    title: '走进阿华',
+    description: `我还没走近，他抬头看见我，递来一个黑色塑料袋：“新花式。”
+    `,
+    actions: [
+      {
+        title: '袜子？',
+        recallMemoryTitles: ['阿华的袜子']
+      },
+      {
+        title: '“我那里好多新的都没穿，以后不要再给我拿啦。”',
+        nextSceneTitle: '戴上头盔'
+      }
+    ]
+  },
+  {
+    title: '戴上头盔',
+    description: `他眼睛一闪，有些不好意思：“我也没什么好给你的。”
+    他把头盔给我戴上，说：“今天去吃好一点的馆子。”
+    `,
+    actions: [
+      {
+        title: '坐上了他的车后座',
+      }
+    ]
+  }
+];
+
 const MEMORIES: Memory[] = [
   {
     title: '阿华',
@@ -139,47 +213,9 @@ const MEMORIES: Memory[] = [
     我干满三个月便换工作。我换到另一个厂，因为会点英文，开始做行政。后来又换了一次。换来换去，也没离了这块工业园。
     `
   },
-];
-
-const SCENES: Scene[] = [
   {
-    title: '阿华说要晚些来接我',
-    description: '阿华说要晚些来接我。',
-    actions: [
-      {
-        title: '关于阿华',
-        recallMemoryTitles: ['阿华']
-      },
-      {
-        title: '关于我',
-        recallMemoryTitles: ['我的婚姻', '我的工作']
-      },
-      {
-        title: '没事儿',
-        nextSceneTitle: '阿华来了'
-      }
-    ]
-  },
-  {
-    title: '阿华来了',
-    description: '八点，阿华给我发消息，说已在门口等。',
-    actions: [
-      {
-        title: '换了身衣服就出门',
-        nextSceneTitle: '门外'
-      }
-    ]
-  },
-  {
-    title: '门外',
-    description: `梅雨刚过，不再笼着热。
-    他穿着白得发亮的短袖T恤衫、破洞牛仔裤，倚在厂门口的树底下看手机。
-    `,
-    actions: [
-      {
-        title: '走近阿华',
-        nextSceneTitle: ''
-      }
-    ]
-  },
+    title: '阿华的袜子',
+    description: `阿华的厂是袜厂，他常拣些袜子送我。
+    `
+  }
 ];
