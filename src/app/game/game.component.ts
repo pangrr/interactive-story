@@ -35,6 +35,7 @@ export class GameComponent implements OnInit {
 
   takeAction(action: Action): void {
     if (action.recallMemoryTitles) {
+      this.removeActionFromCurrentScene(action);
       this.recallMemory(action.recallMemoryTitles);
     }
     if (action.nextSceneTitle) {
@@ -60,6 +61,15 @@ export class GameComponent implements OnInit {
         memoryTitles
       }
     });
+  }
+
+  private removeActionFromCurrentScene(action: Action): void {
+    const currentScene = this.getCurrentScene();
+    for (let i = 0; i < currentScene.actions.length; i++) {
+      if (currentScene.actions[i].title === action.title) {
+        currentScene.actions.splice(i, 1);
+      }
+    }
   }
 
   private nextScene(sceneTitle: string): void {
