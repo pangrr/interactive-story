@@ -1,14 +1,16 @@
-<mat-accordion multi>
-  <mat-expansion-panel *ngFor="let memory of data.memories" [expanded]="data.memoryTitles.includes(memory.title)">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{memory.title}}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-      <p *ngFor="let paragraph of memory.description.split('\n')" class="paragraph">
-        {{paragraph}}
-      </p>
-    </ng-template>
-  </mat-expansion-panel>
-</mat-accordion>
+<mat-dialog-content>
+  <mat-accordion multi>
+    <mat-expansion-panel *ngFor="let memory of data.memories" [expanded]="data.memoryTitles.includes(memory.title)">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{memory.title}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <p *ngFor="let paragraph of memory.description.split('\n')" class="paragraph">
+          {{paragraph}}
+        </p>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-dialog-content>
