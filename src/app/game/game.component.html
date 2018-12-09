@@ -1,6 +1,6 @@
 <div class="ui">
   <div class="recall">
-    <button *ngIf="game.currentMemoryTitles.length > 0" mat-icon-button (click)="recallMemory()">
+    <button *ngIf="game.currentMemoryTitles.length > 0" mat-icon-button (click)="recallMemory([])">
       <mat-icon svgIcon="recall" matTooltip="打开我的记忆"></mat-icon>
     </button>
   </div>

@@ -8,5 +8,5 @@ import { Memory } from '../memory';
   styleUrls: ['./memories-dialog.component.css'],
 })
 export class MemoriesDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { memories: Memory[], memoryTitle: string }) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { memories: Memory[], memoryTitles: string[] }) { }
 }

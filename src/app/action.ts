@@ -1,5 +1,5 @@
 export interface Action {
   title: string;
-  recallMemoryTitle?: string;
+  recallMemoryTitles?: string[];
   nextSceneTitle?: string;
 }

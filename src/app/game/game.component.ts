@@ -34,8 +34,8 @@ export class GameComponent implements OnInit {
   }
 
   takeAction(action: Action): void {
-    if (action.recallMemoryTitle) {
-      this.recallMemory(action.recallMemoryTitle);
+    if (action.recallMemoryTitles) {
+      this.recallMemory(action.recallMemoryTitles);
     }
     if (action.nextSceneTitle) {
       this.nextScene(action.nextSceneTitle);
@@ -50,16 +50,14 @@ export class GameComponent implements OnInit {
     }
   }
 
-  recallMemory(memoryTitle?: string): void {
-    if (memoryTitle) {
-      this.addToCurrentMemoryIfNotExist(memoryTitle);
-    }
+  recallMemory(memoryTitles: string[]): void {
+    this.addToCurrentMemoryIfNotExist(memoryTitles);
 
     this.memoriesDialog.open(MemoriesDialogComponent, {
       width: '800px',
       data: {
         memories: this.collectCurrentMemories(),
-        memoryTitle
+        memoryTitles
       }
     });
   }
@@ -72,10 +70,12 @@ export class GameComponent implements OnInit {
     return this.game.currentMemoryTitles.map(title => this.getMemoryByTitle(title));
   }
 
-  private addToCurrentMemoryIfNotExist(memoryTitle: string): void {
-    if (!this.game.currentMemoryTitles.includes(memoryTitle)) {
-      this.game.currentMemoryTitles.push(memoryTitle);
-    }
+  private addToCurrentMemoryIfNotExist(memoryTitles: string[]): void {
+    memoryTitles.forEach(memoryTitle => {
+      if (!this.game.currentMemoryTitles.includes(memoryTitle)) {
+        this.game.currentMemoryTitles.push(memoryTitle);
+      }
+    });
   }
 
   private getMemoryByTitle(title: string): Memory {

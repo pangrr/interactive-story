@@ -1,5 +1,5 @@
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let memory of data.memories" [expanded]="memory.title === data.memoryTitle">
+<mat-accordion multi>
+  <mat-expansion-panel *ngFor="let memory of data.memories" [expanded]="data.memoryTitles.includes(memory.title)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{memory.title}}
