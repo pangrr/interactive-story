@@ -17,7 +17,8 @@
 
 .description {
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  text-align: center;
+  align-self: center;
+  user-select: none;
 }
 
 .ui {
