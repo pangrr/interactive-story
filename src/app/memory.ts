@@ -1,4 +1,4 @@
 export interface Memory {
-  label: string;
-  detail: string;
+  title: string;
+  description: string;
 }
