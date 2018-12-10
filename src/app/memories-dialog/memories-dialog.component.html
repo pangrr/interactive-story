@@ -1,5 +1,5 @@
 <mat-dialog-content>
-  <mat-accordion multi>
+  <mat-accordion multi displayMode="flat">
     <mat-expansion-panel *ngFor="let memory of data.memories" [expanded]="data.memoryTitles.includes(memory.title)">
       <mat-expansion-panel-header>
         <mat-panel-title>
