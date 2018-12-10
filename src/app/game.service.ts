@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Game, Scene, Action, loveStory } from './game';
+import { Script, Event, Action } from './game';
+import { loveStory } from '../assets/love-story/script';
 
 
 @Injectable({
@@ -9,81 +10,59 @@ export class GameService {
 
   constructor() { }
 
-  getGame(): Game {
-    const validationResult = this.validateGame(loveStory);
+  getScript(): Script {
+    const validationResult = this.validateScript(loveStory);
 
     if (validationResult.isValid) {
       return loveStory;
     } else {
-      return {
-        scenes: [
-          {
-            title: 'invalid game',
-            description: validationResult.error,
-            actions: []
-          }
-        ],
-        memories: [],
-        currentMemoryTitles: [],
-        currentSceneTitle: 'invalid game'
-      };
+      return this.invalidScript(validationResult.error);
     }
   }
 
-  private validateGame(game: Game): ValidationResult {
-    const actions = this.collectActions(game.scenes);
-    // TODO
-    // const duplicateCurrentMemoryTitles = this.getDuplicateStringsInList(game.currentMemoryTitles);
-    // const duplicateMemoryTitles = this.getDuplicateItemInListByTitle(game.memories);
-    // const duplicateSceneTitles = this.getDuplicateItemInListByTitle(game.scenes);
-    // const deplicateActionTitles
-    const recallMemoryTitlesMissing = this.getTitlesMissingInList(this.collectRecallMemoryTitlesFromActions(actions), game.memories);
-    const nextSceneTitlesMissing = this.getTitlesMissingInList(this.collectNextSceneTitlesFromActions(actions), game.scenes);
-    const currentMemoryTitlesMissing = this.getTitlesMissingInList(game.currentMemoryTitles, game.memories);
+  private invalidScript(description: string): Script {
+    return {
+      events: [
+        {
+          title: 'invalid script',
+          description,
+          actions: []
+        }
+      ],
+      firstEvent: 'invalid script'
+    };
+  }
 
-    if (recallMemoryTitlesMissing.length === 0 && nextSceneTitlesMissing.length === 0 && currentMemoryTitlesMissing.length === 0) {
+  private validateScript(script: Script): ValidationResult {
+    const actions = this.collectActions(script.events);
+    // TODO
+    // const duplicateEventTitles = this.getDuplicateItemsInListByTitle(game.events);
+    // const deplicateActionTitles
+    const triggeredEventsMissing = this.getItemMissingInListByTitle(this.collectTriggeredEventTitlesFromActions(actions), script.events);
+
+    if (triggeredEventsMissing.length === 0) {
       return { isValid: true };
     } else {
-      let error = '';
-      if (recallMemoryTitlesMissing.length > 0) {
-        error += `missing recall memory titles:\n${recallMemoryTitlesMissing.join('\n')}\n`;
-      }
-      if (nextSceneTitlesMissing.length > 0) {
-        error += `missing next scene titles:\n${nextSceneTitlesMissing.join('\n')}\n`;
-      }
-      if (currentMemoryTitlesMissing.length > 0) {
-        error += `missing current memory titles:\n${currentMemoryTitlesMissing.join('\n')}`;
-      }
-      return { isValid: false, error };
+      return { isValid: false, error: `missing next scene titles:\n${triggeredEventsMissing.join('\n')}\n` };
     }
   }
 
-  private collectRecallMemoryTitlesFromActions(actions: Action[]): string[] {
-    return actions.reduce((recallMemoryTitles, action) => {
-      if (action.recallMemoryTitles) {
-        return [...recallMemoryTitles, ...action.recallMemoryTitles];
-      } else {
-        return recallMemoryTitles;
-      }
-    }, []);
-  }
-
-  private collectNextSceneTitlesFromActions(actions: Action[]): string[] {
+  private collectTriggeredEventTitlesFromActions(actions: Action[]): string[] {
     return actions.reduce((nextSceneTitles, action) => {
-      if (action.nextSceneTitle) {
-        return [...nextSceneTitles, action.nextSceneTitle];
+      if (action.triggerEvent) {
+        return [...nextSceneTitles, action.triggerEvent];
       } else {
         return nextSceneTitles;
       }
     }, []);
   }
 
-  private collectActions(scenes: Scene[]): Action[] {
-    return scenes.reduce((actions, scene) => [...actions, ...scene.actions], []);
+  private collectActions(events: Event[]): Action[] {
+    return events.reduce((actions, event) => [...actions, ...event.actions], []);
   }
 
 
-  private getTitlesMissingInList(titles: string[], list: TitledItem[]): string[] {
+  private getItemMissingInListByTitle(titles: string[], list: TitledItem[]): string[] {
     return titles.reduce((titlesMissing, title) => {
       if (this.doesTitleExistInList(title, list)) {
         return titlesMissing;

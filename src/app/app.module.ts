@@ -16,7 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 // my components
 import { AppComponent } from './app.component';
-import { GameComponent } from './game/game.component';
+import { GamePlayComponent } from './game-play/game-play.component';
 import { MemoriesDialogComponent } from './memories-dialog/memories-dialog.component';
 
 // my services
@@ -26,7 +26,7 @@ import { GameService } from './game.service';
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent,
+    GamePlayComponent,
     MemoriesDialogComponent
   ],
   entryComponents: [

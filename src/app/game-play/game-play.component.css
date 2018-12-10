@@ -1,8 +1,17 @@
-.paragraph {
-  text-indent: 2em;
+.game-play {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: fixed;
+  width: 100%;
 }
 
-.scene {
+.menu {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.event {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -21,15 +30,6 @@
   padding: 30px;
 }
 
-.ui {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  position: fixed;
-  width: 100%;
-}
-
-.recall {
-  display: flex;
-  justify-content: flex-end;
+.paragraph {
+  text-indent: 2em;
 }

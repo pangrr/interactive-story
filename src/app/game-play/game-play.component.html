@@ -1,0 +1,15 @@
+<div class="game-play">
+  <div class="menu">
+    <button mat-icon-button (click)="openMemory()">
+      <mat-icon svgIcon="open-memory" matTooltip="打开我的记忆"></mat-icon>
+    </button>
+  </div>
+  <div class="event">
+    <div class="description">
+      <p *ngFor="let paragraph of game.currentEvent.description.split('\n')" class="paragraph">{{paragraph}}</p>
+    </div>
+    <div class="actions">
+      <button mat-button *ngFor="let action of game.currentEvent.actionsAvailable" (click)="takeAction(action)">{{action.title}}</button>
+    </div>
+  </div>
+</div>
