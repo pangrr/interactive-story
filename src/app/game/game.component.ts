@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MemoriesDialogComponent } from '../memories-dialog/memories-dialog.component';
-import { Memory } from '../memory';
-import { Scene } from '../scene';
 import { GameService } from '../game.service';
-import { Game } from '../game';
-import { Action } from '../action';
+import { Game, Scene, Action, Memory } from '../game';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 
