@@ -35,6 +35,12 @@ export class GameComponent implements OnInit {
       this.removeActionFromCurrentScene(action);
       this.recallMemory(action.recallMemoryTitles);
     }
+
+    if (action.newSceneDescription) {
+      this.removeActionFromCurrentScene(action);
+      this.updateCurrentSceneDescription(action.newSceneDescription);
+    }
+
     if (action.nextSceneTitle) {
       this.nextScene(action.nextSceneTitle);
     }
@@ -58,6 +64,10 @@ export class GameComponent implements OnInit {
         memoryTitles
       }
     });
+  }
+
+  private updateCurrentSceneDescription(description: string): void {
+    this.getCurrentScene().description = description;
   }
 
   private removeActionFromCurrentScene(action: Action): void {
