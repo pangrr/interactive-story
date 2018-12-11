@@ -1,13 +1,13 @@
 <mat-dialog-content>
   <mat-accordion multi displayMode="flat">
-    <mat-expansion-panel *ngFor="let memory of memories" [expanded]="data.recentMemories.includes(memory)">
+    <mat-expansion-panel *ngFor="let note of notes" [expanded]="data.newNotes.includes(note)">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{memory.title}}
+          {{note.title}}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <p *ngFor="let paragraph of memory.description.split('\n')" class="paragraph">
+        <p *ngFor="let paragraph of note.description.split('\n')" class="paragraph">
           {{paragraph}}
         </p>
       </ng-template>

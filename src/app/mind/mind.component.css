@@ -1,14 +1,8 @@
-.game-play {
+.mind {
   display: flex;
   flex-direction: column;
   height: 100%;
-  position: fixed;
   width: 100%;
-}
-
-.menu {
-  display: flex;
-  justify-content: flex-end;
 }
 
 .event {
@@ -34,10 +28,6 @@
   text-indent: 2em;
 }
 
-.memory-updated {
-  color: black;
-}
-
-.memory-antiquated {
-  color: grey;
+.mat-dialog-content {
+  padding: 0;
 }

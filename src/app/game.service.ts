@@ -29,7 +29,7 @@ export class GameService {
           actions: []
         }
       ],
-      firstEvent: 'invalid script'
+      firstEventTitle: 'invalid script'
     };
   }
 
@@ -49,8 +49,8 @@ export class GameService {
 
   private collectTriggeredEventTitlesFromActions(actions: Action[]): string[] {
     return actions.reduce((nextSceneTitles, action) => {
-      if (action.triggerEvent) {
-        return [...nextSceneTitles, action.triggerEvent];
+      if (action.triggerEventTitle) {
+        return [...nextSceneTitles, action.triggerEventTitle];
       } else {
         return nextSceneTitles;
       }
@@ -58,7 +58,7 @@ export class GameService {
   }
 
   private collectActions(events: Event[]): Action[] {
-    return events.reduce((actions, event) => [...actions, ...event.actions], []);
+    return events.reduce((actions, event) => [...actions, ...(event.actions || [])], []);
   }
 
 

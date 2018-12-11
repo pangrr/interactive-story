@@ -1,7 +1,7 @@
-import { Memory } from '../../app/game';
+import { Note } from '../../app/game';
 
 /* tslint:disable */
-const memories: Memory[] = [
+const notes: Note[] = [
   {
     title: '阿华是谁',
     description: `阿华是我第一份工的同事，听说了聚餐的事情，主动来找我讲话，一来二去也就熟了。`

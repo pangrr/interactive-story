@@ -2,24 +2,19 @@ import { Script } from '../../app/game';
 
 /* tslint:disable */
 export const loveStory: Script = {
-  firstEvent: '阿华说要晚些来接我',
+  firstEventTitle: '妈的电话5',
   events: [
     {
-      title: '阿华说要晚些来接我',
+      title: '1',
       description: '阿华说要晚些来接我。',
-      actions: [
+      nextEventTitle: '阿华来了',
+      updateNotes: [
         {
-          title: '他其实很少迟到，不过我不介意。',
-          triggerEvent: '阿华来了'
-        }
-      ],
-      updateMemories: [
-        {
-          title: '阿华是谁',
+          title: '阿华',
           description: `阿华是我第一份工的同事，听说了聚餐的事情，主动来找我讲话，一来二去也就熟了。`
         },
         {
-          title: '我结过婚',
+          title: '我的婚姻',
           description: `我是有丈夫的，结婚六年，他叫简宁。阿华不知道我结过婚。`
         }
       ]
@@ -30,7 +25,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '换了身衣服就出门',
-          triggerEvent: '出门'
+          triggerEventTitle: '出门'
         }
       ]
     },
@@ -42,7 +37,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '朝他那边走过去',
-          triggerEvent: '袜子1'
+          triggerEventTitle: '袜子1'
         }
       ]
     },
@@ -53,14 +48,14 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“我那里好多新的都没穿，以后不要再给我拿啦。”',
-          triggerEvent: '袜子2'
+          triggerEventTitle: '袜子2'
         },
         {
           title: '收下袜子',
-          triggerEvent: '上车'
+          triggerEventTitle: '上车'
         }
       ],
-      updateMemories: [
+      updateNotes: [
         {
           title: '阿华的袜子',
           description: `阿华的厂是袜厂，他常拣些袜子送我。`
@@ -73,7 +68,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '收下袜子',
-          triggerEvent: '上车'
+          triggerEventTitle: '上车'
         }
       ]
     },
@@ -83,7 +78,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '坐上了他的车后座',
-          triggerEvent: '路上'
+          triggerEventTitle: '路上'
         }
       ]
     },
@@ -93,52 +88,48 @@ export const loveStory: Script = {
       `,
       actions: [
         {
-          title: '想起阿华给我讲的他小时候的事',
-          triggerEvent: '想起阿华小时候的事'
-        },
-        {
-          title: '这边好一点的馆子，除了江鲜馆，多是川湘菜。挑了一家装潢比普通好些的馆子进去。',
-          triggerEvent: '吃辣'
-        }
-      ]
-    },
-    {
-      title: '想起阿华小时候的事',
-      description: `阿华比我小两岁，来自浙江小城，家里有哥哥姐姐。他有时给我讲童年趣事，如何被姐姐扮成《白蛇传》里的青儿，一家人一团和气。
-      我是独生女，感受不到这些，只是联想到父母老了，膝下再无别人，我舍了他们出来，将来怎么样，我是管不了的。
-      `,
-      actions: [
-        {
-          title: '这边好一点的馆子，除了江鲜馆，多是川湘菜。挑了一家装潢比普通好些的馆子进去。',
-          triggerEvent: '吃辣'
+          title: '想起阿华给我讲他小时候的事儿',
+          openMind: [
+            {
+              title: '阿华的故事',
+              description: `阿华比我小两岁，来自浙江小城，家里有哥哥姐姐。他有时给我讲童年趣事，如何被姐姐扮成《白蛇传》里的青儿，一家人一团和气。
+              我是独生女，感受不到这些，只是联想到父母老了，膝下再无别人，我舍了他们出来，将来怎么样，我是管不了的。`,
+            }
+          ],
+          triggerEventTitle: '下馆子'
         }
       ],
-      updateMemories: [
-        {
-          title: '阿华和他家人',
-          description: `阿华比我小两岁，来自浙江小城，家里有哥哥姐姐。他有时给我讲童年趣事，如何被姐姐扮成《白蛇传》里的青儿，一家人一团和气。我是独生女，感受不到这些，只是联想到父母老了，膝下再无别人，我舍了他们出来，将来怎么样，我是管不了的。`
-        }
-      ]
+      nextEventTitle: '下馆子',
     },
     {
-      title: '吃辣',
+      title: '下馆子',
+      description: `这边好一点的馆子，除了江鲜馆，多是川湘菜。挑了一家装潢比普通好些的馆子进去。`,
+      nextEventTitle: '吃辣1'
+    },
+    {
+      title: '吃辣1',
       description: `阿华点常规的泡椒牛蛙、水煮肉片、炝炒空心菜和番茄蛋汤。大粒的汗水从他额头上往下淌。
       `,
       actions: [
         {
           title: '“涮白开水吧”',
-          triggerEvent: '五百天'
+          triggerEventTitle: '吃辣2'
         }
       ]
     },
     {
-      title: '五百天',
+      title: '吃辣2',
       description: `他不肯。他根本吃不了辣，辣味实际上是一种痛觉，他这样努力去克服，是要我知道他的心意。
-      他停下来喝水，拿出手机给我看一个记日子的app，在一起五百天了。`,
+      `,
+      nextEventTitle: '五百天'
+    },
+    {
+      title: '五百天',
+      description: `他停下来喝水，拿出手机给我看一个记日子的app，在一起五百天了。`,
       actions: [
         {
           title: '我笑说：“这么久了。”',
-          triggerEvent: '庆祝'
+          triggerEventTitle: '庆祝'
         }
       ]
     },
@@ -149,7 +140,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '打开看',
-          triggerEvent: '项链'
+          triggerEventTitle: '项链'
         }
       ]
     },
@@ -160,10 +151,10 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“你忘了我戴着一个，这个先收起来吧。谢谢你。”',
-          triggerEvent: '回家'
+          triggerEventTitle: '回家'
         }
       ],
-      updateMemories: [
+      updateNotes: [
         {
           title: '我脖子上的白玉',
           description: '简宁在外躲的那一年七夕，有个小孩来敲门，交给我一个小红布袋子，说有人给了五块钱让他送。我下楼去，没找见他。那布包里有一块圆圆的温润白玉，中间一个小孔穿着红线，我现在还挂在颈子上。'
@@ -178,11 +169,11 @@ export const loveStory: Script = {
       actions: [
         {
           title: '低头吃菜，“不要这么快吧。”',
-          triggerEvent: '哪里快'
+          triggerEventTitle: '哪里快'
         },
         {
           title: '看着桌子，“现在还早吧。”',
-          triggerEvent: '去上海1'
+          triggerEventTitle: '去上海'
         }
       ]
     },
@@ -193,39 +184,24 @@ export const loveStory: Script = {
       actions: [
         {
           title: '看着桌子，“现在还早吧。”',
-          triggerEvent: '去上海1'
+          triggerEventTitle: '去上海'
         }
       ]
     },
     {
-      title: '去上海1',
+      title: '去上海',
       description: `阿华说：“我讲我要努力工作的呀，我家里么还能给我些钱，你要愿意的话，我们去苏州、杭州、去上海，我去做销售。”
       `,
       actions: [
         {
-          title: '阿华没去上海是为了我',
-          triggerEvent: '去上海2'
-        },
-        {
           title: '拿筷子在碗里捣，“跟钱没关系，说了多少遍了。”',
-          triggerEvent: '我们会结婚的'
-        }
-      ]
-    },
-    {
-      title: '去上海2',
-      description: `早几年阿华的哥哥一直让他去上海卖二手房，不要在工厂里待着，他没去，后来遇到我，更不愿走。
-      `,
-      actions: [
-        {
-          title: '拿筷子在碗里捣，“跟钱没关系，说了多少遍了。”',
-          triggerEvent: '我们会结婚的'
-        }
-      ],
-      updateMemories: [
-        {
-          title: '阿华没去上海工作',
-          description: `早几年阿华的哥哥一直让他去上海卖二手房，不要在工厂里待着，他没去，后来遇到我，更不愿走。`
+          openMind: [
+            {
+              title: '阿华没去上海',
+              description: `早几年阿华的哥哥一直让他去上海卖二手房，不要在工厂里待着，他没去，后来遇到我，更不愿走。`,
+            }
+          ],
+          triggerEventTitle: '我们会结婚的'
         }
       ]
     },
@@ -236,7 +212,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '我忽然觉得他像条狗，说：“你有出息吗，才多大这么着急结婚？”',
-          triggerEvent: '心虚'
+          triggerEventTitle: '心虚'
         },
       ],
     },
@@ -248,7 +224,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“你还小，现在这样想，以后想法会变的。”',
-          triggerEvent: '闷着'
+          triggerEventTitle: '闷着'
         },
       ],
     },
@@ -259,7 +235,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '继续沉默',
-          triggerEvent: '一起住1'
+          triggerEventTitle: '一起住1'
         },
       ],
     },
@@ -269,41 +245,26 @@ export const loveStory: Script = {
       `,
       actions: [
         {
-          title: '阿华一直要我搬去和他同住',
-          triggerEvent: '一起住2'
-        },
-        {
           title: '不吭声',
-          triggerEvent: '不说家里事1'
-        },
+          openMind: [
+            {
+              title: '',
+              description: `阿华的住处我常去。他与人合租，客厅隔出来一间带落地窗阳台的，显得明亮宽敞。阿华单独住这一间。另外两间各住了两三个人，都在园区上班。他以前也同几个人合租一个房间，我们在一起后，房租到期他就换了这一间独住。我和简宁结婚时没有自己的房子，他出走后，我还住父母家。到这为了节省，与人合租一间。所以我有时去阿华那过夜，似享用豪宅，想天下之大我竟也能做了一间屋子的女主人。
+              阿华一直要我搬去和他同住，一方面不要我与别人合住一屋，另外也是要替我省钱。但我有秘密，我自己的床铺好比我保守秘密的洞穴，使我随时有退路。`
+            }
+          ],
+          triggerEventTitle: '一起住2'
+        }
       ],
     },
     {
       title: '一起住2',
-      description: `阿华的住处我常去。他与人合租，客厅隔出来一间带落地窗阳台的，显得明亮宽敞。阿华单独住这一间。另外两间各住了两三个人，都在园区上班。他以前也同几个人合租一个房间，我们在一起后，房租到期他就换了这一间独住。我和简宁结婚时没有自己的房子，他出走后，我还住父母家。到这为了节省，与人合租一间。所以我有时去阿华那过夜，似享用豪宅，想天下之大我竟也能做了一间屋子的女主人。
-      阿华一直要我搬去和他同住，一方面不要我与别人合住一屋，另外也是要替我省钱。但我有秘密，我自己的床铺好比我保守秘密的洞穴，使我随时有退路。`,
-      actions: [
-        {
-          title: '不吭声',
-          triggerEvent: '不说家里事1'
-        },
-      ],
-      updateMemories: [
-        {
-          title: '阿华的住处',
-          description: `阿华的住处我常去。他与人合租，客厅隔出来一间带落地窗阳台的，显得明亮宽敞。阿华单独住这一间。另外两间各住了两三个人，都在园区上班。他以前也同几个人合租一个房间，我们在一起后，房租到期他就换了这一间独住。我和简宁结婚时没有自己的房子，他出走后，我还住父母家。到这为了节省，与人合租一间。所以我有时去阿华那过夜，似享用豪宅，想天下之大我竟也能做了一间屋子的女主人。
-          阿华一直要我搬去和他同住，一方面不要我与别人合住一屋，另外也是要替我省钱。但我有秘密，我自己的床铺好比我保守秘密的洞穴，使我随时有退路。`
-        },
-      ]
-    },
-    {
-      title: '不说家里事1',
       description: `阿华说：“你为什么跑这么远来这地方上班？为什么从来不和我说家里的事？”
       `,
       actions: [
         {
           title: '“跟你讲过的，我毕业后开花店，生意做不下去就出来了。”',
-          triggerEvent: '不说家里事2'
+          triggerEventTitle: '不说家里事2'
         },
       ],
     },
@@ -314,7 +275,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“你想知道什么？我父母？你又不认识他们。”',
-          triggerEvent: '空心人'
+          triggerEventTitle: '空心人'
         },
       ],
     },
@@ -325,7 +286,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '我把筷子往桌上一放：“不吃了，去你那里。”',
-          triggerEvent: '洗澡'
+          triggerEventTitle: '洗澡'
         },
       ],
     },
@@ -336,7 +297,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '拿过手机',
-          triggerEvent: '妈的电话1'
+          triggerEventTitle: '妈的电话1'
         },
       ],
     },
@@ -347,7 +308,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“他来干啥？”',
-          triggerEvent: '妈的电话2'
+          triggerEventTitle: '妈的电话2'
         },
       ],
     },
@@ -358,7 +319,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“亏他说得出恁种话。你们啷个说？”',
-          triggerEvent: '妈的电话3'
+          triggerEventTitle: '妈的电话3'
         },
       ],
     },
@@ -369,7 +330,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '我心上骨碌一下地震了，问：“啥时候？”',
-          triggerEvent: '妈的电话4'
+          triggerEventTitle: '妈的电话4'
         },
       ],
     },
@@ -380,7 +341,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“简宁晓得吗？”',
-          triggerEvent: '妈的电话5'
+          triggerEventTitle: '妈的电话5'
         },
       ],
     },
@@ -392,7 +353,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“提前出来是啷个回事？”',
-          triggerEvent: '妈的电话6'
+          triggerEventTitle: '妈的电话6'
         },
       ],
     },
@@ -403,7 +364,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '沉默',
-          triggerEvent: '妈的电话7'
+          triggerEventTitle: '妈的电话7'
         },
       ],
     },
@@ -414,32 +375,20 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“晓得了，你跟爸照顾好身体。”',
-          triggerEvent: '挂完电话1'
+          triggerEventTitle: '挂完电话1'
         },
         {
           title: '回想起简宁的父母',
-          triggerEvent: '简宁的父母'
+          openMind: [
+            {
+              title: '简宁父母',
+              description: `第一次见他们时，是在外面的饭馆，全程都是他爸妈自顾聊天，似乎我不存在。吃完饭到他家楼下站了一会儿说话，他母亲也没叫我上楼，我自知没趣，告了辞。等到后来简宁要去我家，他妈妈拿了一盒开过的凤梨酥给我们，让带给我爸妈。简宁有一回扁桃体发炎引起发烧，他妈妈也怪到我头上，说是接送我太辛苦。这些事简宁都清楚，他不放在心上，我亦不便挂怀。简宁叛逆，我们背着他母亲结婚，先斩后奏，他父亲的意见我也从来不知道。
+              简宁失踪以后，他妈妈恨我，说是因为和我结婚坏的事，又不信简宁怎会有仇家，更不至于犯案子。现在她得了癌症，恐怕肇事者也有我的一份。她若知道我到一个三四线的城市工厂上班，或许要拍手称快，又要替简宁不平。`
+            }
+          ],
+          triggerEventTitle: '挂完电话1'
         },
       ],
-    },
-    {
-      title: '简宁的父母',
-      description: `第一次见他们时，是在外面的饭馆，全程都是他爸妈自顾聊天，似乎我不存在。吃完饭到他家楼下站了一会儿说话，他母亲也没叫我上楼，我自知没趣，告了辞。等到后来简宁要去我家，他妈妈拿了一盒开过的凤梨酥给我们，让带给我爸妈。简宁有一回扁桃体发炎引起发烧，他妈妈也怪到我头上，说是接送我太辛苦。这些事简宁都清楚，他不放在心上，我亦不便挂怀。简宁叛逆，我们背着他母亲结婚，先斩后奏，他父亲的意见我也从来不知道。
-      简宁失踪以后，他妈妈恨我，说是因为和我结婚坏的事，又不信简宁怎会有仇家，更不至于犯案子。现在她得了癌症，恐怕肇事者也有我的一份。她若知道我到一个三四线的城市工厂上班，或许要拍手称快，又要替简宁不平。
-      `,
-      actions: [
-        {
-          title: '“晓得了，你跟爸照顾好身体。”',
-          triggerEvent: '挂完电话1'
-        },
-      ],
-      updateMemories: [
-        {
-          title: '简宁父母',
-          description: `第一次见他们时，是在外面的饭馆，全程都是他爸妈自顾聊天，似乎我不存在。吃完饭到他家楼下站了一会儿说话，他母亲也没叫我上楼，我自知没趣，告了辞。等到后来简宁要去我家，他妈妈拿了一盒开过的凤梨酥给我们，让带给我爸妈。简宁有一回扁桃体发炎引起发烧，他妈妈也怪到我头上，说是接送我太辛苦。这些事简宁都清楚，他不放在心上，我亦不便挂怀。简宁叛逆，我们背着他母亲结婚，先斩后奏，他父亲的意见我也从来不知道。
-          简宁失踪以后，他妈妈恨我，说是因为和我结婚坏的事，又不信简宁怎会有仇家，更不至于犯案子。现在她得了癌症，恐怕肇事者也有我的一份。她若知道我到一个三四线的城市工厂上班，或许要拍手称快，又要替简宁不平。`
-        }
-      ]
     },
     {
       title: '挂完电话1',
@@ -447,7 +396,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“一个亲戚得了癌症，晚期。”',
-          triggerEvent: '挂完电话2'
+          triggerEventTitle: '挂完电话2'
         },
       ],
     },
@@ -457,7 +406,7 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“暂时还不用吧。”',
-          triggerEvent: '挂完电话3'
+          triggerEventTitle: '挂完电话3'
         },
       ],
     },

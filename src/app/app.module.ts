@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-
 // angular material
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,25 +11,25 @@ import { MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
-
+// my services
+import { GameService } from './game.service';
 // my components
 import { AppComponent } from './app.component';
 import { GamePlayComponent } from './game-play/game-play.component';
-import { MemoriesDialogComponent } from './memories-dialog/memories-dialog.component';
-
-// my services
-import { GameService } from './game.service';
+import { NotesComponent } from './notes/notes.component';
+import { MindComponent } from './mind/mind.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     GamePlayComponent,
-    MemoriesDialogComponent
+    NotesComponent,
+    MindComponent,
   ],
   entryComponents: [
-    MemoriesDialogComponent
+    NotesComponent,
+    MindComponent
   ],
   imports: [
     BrowserModule,

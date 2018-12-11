@@ -1,0 +1,9 @@
+<mat-dialog-content>
+  <div class="mind">
+    <div class="event">
+      <div class="description">
+        <p *ngFor="let paragraph of mind[0].description.split('\n')" class="paragraph">{{paragraph}}</p>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

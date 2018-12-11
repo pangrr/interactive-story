@@ -2,24 +2,24 @@ export class Game {
   readonly script: Script;
   history: ActiveEvent[];
   currentEvent: ActiveEvent;
-  oldMemories: Memory[];
-  recentMemories: Memory[];
+  oldNotes: Note[];
+  newNotes: Note[];
 
   constructor(source: Save | Script) {
-    if ('script' in source) {
+    if (this.isSave(source)) {
       this.script = source.script;
       this.history = source.history;
-      this.oldMemories = source.oldMemories;
-      this.recentMemories = source.recentMemories;
+      this.oldNotes = source.oldNotes;
+      this.newNotes = source.newNotes;
       this.currentEvent = source.currentEvent;
     } else {
       this.script = source;
       this.history = [];
-      this.oldMemories = [];
-      this.recentMemories = [];
-      this.loadCurrentEvent(this.script.firstEvent);
-      if (this.currentEvent.updateMemories) {
-        this.updateMemories(this.currentEvent.updateMemories);
+      this.oldNotes = [];
+      this.newNotes = [];
+      this.loadCurrentEvent(this.script.firstEventTitle);
+      if (this.currentEvent.updateNotes) {
+        this.updateNotes(this.currentEvent.updateNotes);
       }
     }
   }
@@ -29,44 +29,54 @@ export class Game {
       script: this.script,
       history: this.history,
       currentEvent: this.currentEvent,
-      oldMemories: this.oldMemories,
-      recentMemories: this.recentMemories
+      oldNotes: this.oldNotes,
+      newNotes: this.newNotes
     };
   }
 
   takeAction(action: Action): void {
-    this.antiquateRecentMemories();
+    this.removeActionFromActionsAvailable(action);
+    this.addActionToActionsTaken(action);
 
-    this.removeAction(action.title, this.currentEvent.actionsAvailable);
-    this.currentEvent.actionsTaken.push(action);
-
-    if (action.recallMemories) {
-      this.updateMemories(action.recallMemories);
-    }
-
-    if (action.triggerEvent) {
-      this.triggerEvent(action.triggerEvent);
+    if (action.triggerEventTitle) {
+      this.triggerEvent(action.triggerEventTitle);
     }
   }
 
-  private updateMemories(newMemories: Memory[]): void {
-    newMemories.forEach(newMemory => {
-      this.removeExistingMemory(newMemory.title);
-      this.recentMemories.push({ ...newMemory });
-    });
+  triggerNextEvent(): void {
+    if (this.currentEvent.nextEventTitle) {
+      this.triggerEvent(this.currentEvent.nextEventTitle);
+    }
   }
 
   private triggerEvent(eventTitle: string): void {
+    this.antiquateNewNotes();
+
     this.pushCurrentEventToHistory();
     this.loadCurrentEvent(eventTitle);
-    if (this.currentEvent.updateMemories) {
-      this.updateMemories(this.currentEvent.updateMemories);
+    if (this.currentEvent.updateNotes) {
+      this.updateNotes(this.currentEvent.updateNotes);
     }
   }
 
-  private antiquateRecentMemories(): void {
-    this.oldMemories.push(...this.recentMemories);
-    this.recentMemories = [];
+  private removeActionFromActionsAvailable(action: Action): void {
+    this.removeAction(action.title, this.currentEvent.actionsAvailable);
+  }
+
+  private addActionToActionsTaken(action: Action): void {
+    this.currentEvent.actionsTaken.push(action);
+  }
+
+  private updateNotes(newMemories: Note[]): void {
+    newMemories.forEach(newMemory => {
+      this.removeExistingMemory(newMemory.title);
+      this.newNotes.push({ ...newMemory });
+    });
+  }
+
+  private antiquateNewNotes(): void {
+    this.oldNotes.push(...this.newNotes);
+    this.newNotes = [];
   }
 
   private pushCurrentEventToHistory(): void {
@@ -77,7 +87,7 @@ export class Game {
     const eventFromScript = this.getEventFromScript(eventTitle);
     this.currentEvent = {
       ...eventFromScript,
-      actionsAvailable: [...eventFromScript.actions],
+      actionsAvailable: [...(eventFromScript.actions || [])],
       actionsTaken: []
     };
   }
@@ -91,15 +101,15 @@ export class Game {
   }
 
   private removeExistingMemory(memoryTitle: string): void {
-    for (let i = 0; i < this.oldMemories.length; i++) {
-      if (this.oldMemories[i].title === memoryTitle) {
-        this.oldMemories.splice(i, 1);
+    for (let i = 0; i < this.oldNotes.length; i++) {
+      if (this.oldNotes[i].title === memoryTitle) {
+        this.oldNotes.splice(i, 1);
       }
     }
 
-    for (let i = 0; i < this.recentMemories.length; i++) {
-      if (this.recentMemories[i].title === memoryTitle) {
-        this.recentMemories.splice(i, 1);
+    for (let i = 0; i < this.newNotes.length; i++) {
+      if (this.newNotes[i].title === memoryTitle) {
+        this.newNotes.splice(i, 1);
       }
     }
   }
@@ -111,23 +121,27 @@ export class Game {
       }
     }
   }
+
+  private isSave(arg: any): arg is Save {
+    return arg.script !== undefined;
+  }
 }
 
 
 export interface Script {
   readonly events: Event[];
-  readonly firstEvent: string;
+  readonly firstEventTitle: string;
 }
 
 export interface Save {
   readonly script: Script;
   readonly history: ActiveEvent[];
   readonly currentEvent: ActiveEvent;
-  readonly oldMemories: Memory[];
-  readonly recentMemories: Memory[];
+  readonly oldNotes: Note[];
+  readonly newNotes: Note[];
 }
 
-export interface Memory {
+export interface Note {
   readonly title: string;
   readonly description: string;
 }
@@ -135,8 +149,9 @@ export interface Memory {
 export interface Event {
   readonly title: string;
   readonly description: string;
-  readonly actions: Action[];
-  readonly updateMemories?: Memory[];
+  readonly actions?: Action[];
+  readonly updateNotes?: Note[];
+  readonly nextEventTitle?: string;
 }
 
 export interface ActiveEvent extends Event {
@@ -146,6 +161,6 @@ export interface ActiveEvent extends Event {
 
 export interface Action {
   readonly title: string;
-  readonly recallMemories?: Memory[]; // display memories, add or update these memories
-  readonly triggerEvent?: string;
+  readonly openMind?: Event[];
+  readonly triggerEventTitle?: string;
 }
