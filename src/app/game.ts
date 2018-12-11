@@ -161,6 +161,6 @@ export interface ActiveEvent extends Event {
 
 export interface Action {
   readonly title: string;
-  readonly openMind?: Event[];
+  readonly openMind?: string;
   readonly triggerEventTitle?: string;
 }

@@ -53,7 +53,7 @@ export class GamePlayComponent implements OnInit {
     });
   }
 
-  openMind(mind: Event[]): void {
+  openMind(mind: string): void {
     this.mind.open(MindComponent, {
       width: '800px',
       data: mind,

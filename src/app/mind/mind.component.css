@@ -1,33 +1,9 @@
-.mind {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-
-.event {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  flex-grow: 1;
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-}
-
 .description {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   align-self: center;
   user-select: none;
-  padding: 30px;
 }
 
 .paragraph {
   text-indent: 2em;
-}
-
-.mat-dialog-content {
-  padding: 0;
 }
