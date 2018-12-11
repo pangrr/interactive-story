@@ -43,7 +43,7 @@ export class GameService {
     if (triggeredEventsMissing.length === 0) {
       return { isValid: true };
     } else {
-      return { isValid: false, error: `missing next scene titles:\n${triggeredEventsMissing.join('\n')}\n` };
+      return { isValid: false, error: `missing next event titles:\n${triggeredEventsMissing.join('\n')}\n` };
     }
   }
 

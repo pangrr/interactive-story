@@ -31,10 +31,6 @@ export class GamePlayComponent implements OnInit {
 
   takeAction(action: Action): void {
     this.game.takeAction(action);
-
-    if (this.game.recentMemories.length > 0) {
-      this.openMemory();
-    }
   }
 
   openMemory(): void {

@@ -1,7 +1,7 @@
 <div class="game-play">
   <div class="menu">
     <button mat-icon-button (click)="openMemory()">
-      <mat-icon svgIcon="open-memory" matTooltip="打开我的记忆"></mat-icon>
+      <mat-icon svgIcon="open-memory" [ngClass]="game.recentMemories.length > 0 ? 'memory-updated': 'memory-antiquated'" matTooltip="打开我的记忆"></mat-icon>
     </button>
   </div>
   <div class="event">

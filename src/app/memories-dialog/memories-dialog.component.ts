@@ -8,5 +8,9 @@ import { Memory } from '../game';
   styleUrls: ['./memories-dialog.component.css']
 })
 export class MemoriesDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { oldMemories: Memory[], recentMemories: Memory[] }) { }
+  public memories: Memory[];
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { oldMemories: Memory[], recentMemories: Memory[] }) {
+    this.memories = [...data.recentMemories, ...data.oldMemories];
+  }
 }

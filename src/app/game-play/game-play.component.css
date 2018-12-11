@@ -33,3 +33,11 @@
 .paragraph {
   text-indent: 2em;
 }
+
+.memory-updated {
+  color: black;
+}
+
+.memory-antiquated {
+  color: grey;
+}
