@@ -391,8 +391,185 @@ export const loveStory: Script = {
       actions: [
         {
           title: '“你为了监视我，到时候吃饭都成问题。成都的白米饭里也放辣椒的。”',
+          triggerEventTitle: '挂完电话4'
         },
       ],
+    },
+    {
+      title: '挂完电话4',
+      description: `他把毛巾挂起来，说：“哪有那么夸张，我喜欢吃辣。”说完过来帮我吹头。`,
+      nextEventTitle: '关灯'
+    },
+    {
+      title: '关灯',
+      description: `关了灯，我们在黑暗中哑着声息爱了一回，倒在皱到一起的床单和被单中间睡了。`,
+      nextEventTitle: '醒来'
+    },
+    {
+      title: '醒来',
+      description: `醒来还是半夜。昏白的路灯灯光透过窗帘缝隙印在天花板上，好像外面是白天，而我被剩下在这夜里，剩在阿华身边`,
+      actions: [
+        {
+          title: '我是不是还爱简宁？',
+          openMind: '我妈说，跟坐监牢的人诉讼离婚，法院肯定会同意。我这时候跟他离婚，算不算落井下石？他会饶我吗？阿华怎么办？',
+          triggerEventTitle: '摸索'
+        }
+      ]
+    },
+    {
+      title: '摸索',
+      description: `阿华睡得迷迷糊糊，伸手来摸索，捉住我的手，倒像是睡梦中嗅到我的不宁心绪。`,
+      actions: [
+        {
+          title: '拍拍他的手',
+          triggerEventTitle: '静下来'
+        },
+        {
+          title: '感受着他的呼吸，想着自己要怎样去面对简宁',
+          openMind: '阿华在任何时候都是简宁的反面。简宁若是爱我，也是为了要爱他自己，他懂适可而止。阿华爱我，是奉献。任何时候第一口菜先夹我碗里，给我烫脚，给我剪手指甲脚趾甲。我发烧时，他把我接到他这，每隔一小时就煮姜水逼我一气喝完，半夜搂紧我睡觉，他自己半梦半醒，要把我捂到浑身湿透退烧。但简宁是我的丈夫。',
+          triggerEventTitle: '第二天'
+        }
+      ]
+    },
+    {
+      title: '静下来',
+      description: `阿华又安静下来。`,
+      actions: [
+        {
+          title: '感受着他的呼吸，想着自己要怎样去面对简宁',
+          openMind: '阿华在任何时候都是简宁的反面。简宁若是爱我，也是为了要爱他自己，他懂适可而止。阿华爱我，是奉献。任何时候第一口菜先夹我碗里，给我烫脚，给我剪手指甲脚趾甲。我发烧时，他把我接到他这，每隔一小时就煮姜水逼我一气喝完，半夜搂紧我睡觉，他自己半梦半醒，要把我捂到浑身湿透退烧。但简宁是我的丈夫。',
+          triggerEventTitle: '第二天'
+        }
+      ]
+    },
+    {
+      title: '第二天',
+      description: `第二天，阿华又提同居的事。`,
+      actions: [
+        {
+          title: '“真的不可以。”',
+          triggerEventTitle: '虚伪'
+        }
+      ]
+    },
+    {
+      title: '虚伪',
+      description: `说完自己亦觉出一种虚伪，明明已经这样，仿佛还要因为没结婚的名分做贞洁烈女。其实不是。`,
+      nextEventTitle: '天真'
+    },
+    {
+      title: '天真',
+      description: '阿华说：“如果你不嫌我穷，我们总归要结婚的。”',
+      nextEventTitle: '窝囊'
+    },
+    {
+      title: '窝囊',
+      description: '我有时看他那样笃定天真，时时不忘婚事，怎么看都窝囊。',
+      actions: [
+        {
+          title: '回到自己住处',
+          triggerEventTitle: '回到自己住处'
+        }
+      ]
+    },
+    {
+      title: '回到自己住处',
+      description: `地上已经没有下脚的地方，晾的衣物被室友丢到我床铺上。我的床和桌子都摆满她们的东西。水壶和电吹风也成了公用。女孩子一起住，爱干净便罢了，邋遢起来，连男孩子亦不如。
+      她们出去了。周末两样，不是补瞌睡，就是加班。逛街的地方很远，大家都会网购。`,
+      actions: [
+        {
+          title: '想起阿华的评论',
+          openMind: '阿华说：“最不喜欢跟女的合租，东西又多，卫生间地上都是头发，堵起来还不知道清理。”',
+        },
+        {
+          title: '打电话给我妈',
+          triggerEventTitle: '电话1',
+        }
+      ]
+    },
+    {
+      title: '电话1',
+      description: `我妈没接。`,
+      nextEventTitle: '电话2'
+    },
+    {
+      title: '电话2',
+      description: `过会儿我妈打来电话，说她刚受完一顿饱气。`,
+      nextEventTitle: '电话3'
+    },
+    {
+      title: '电话3',
+      description: `“都到恁种地步见了我们也没啥好脸色。默到（方言，“以为”）我们吃饱了愿跟她沾亲带故，硬是倒了血霉。你给我赶快离赶快离，”`,
+      nextEventTitle: '电话4'
+    },
+    {
+      title: '电话4',
+      description: `“确实看起可怜，人瘦得不成形了，缩成一团。癌症转移了两个地方。”`,
+      actions: [
+        {
+          title: '还是想回去一趟',
+          openMind: '简宁虽粗心跋扈，躲祸也记得回来看我、拿钱给我，我却没尽过什么妻子的义务。',
+          triggerEventTitle: '过几天'
+        }
+      ],
+    },
+    {
+      title: '过几天',
+      description: `过了几天，我找领导请假一个月`,
+      nextEventTitle: '领导说'
+    },
+    {
+      title: '领导说',
+      description: `领导说：“什么亲戚，他自己家人不管你回去管？一个月，你请假还是度假？”`,
+      nextEventTitle: '恩典'
+    },
+    {
+      title: '恩典',
+      description: `最后给放了半个月，钱照扣，已是特大恩典。`,
+      actions: [
+        {
+          title: '跟阿华说，明天就走',
+          triggerEventTitle: '怨气'
+        }
+      ]
+    },
+    {
+      title: '怨气',
+      description: `阿华临时请不得假，自然不提与我同去，但他很气，怨我没有提前说。`,
+      actions: [
+        {
+          title: '“提前又怎样，左不过是这几天，就算我离职不再回来，你也不敢和我一块走。话谁不会说，反正用不着兑现。”',
+        },
+        {
+          title: '往车站去，回去收东西',
+          triggerEventTitle: '车站'
+        }
+      ]
+    },
+    {
+      title: '车站',
+      description: `阿华也恼了，道：“随便你！”`,
+      nextEventTitle: '车来了'
+    },
+    {
+      title: '车来了',
+      description: `车来了`,
+      actions: [
+        {
+          title: '快步上车',
+          triggerEventTitle: '收行李'
+        }
+      ]
+    },
+    {
+      title: '收行李',
+      description: `我正收着行李，阿华来敲门，给我打包了米线。他有些垂头丧气，说：“你没吃晚饭。”逢着吵架他总是先来找我`,
+      actions: [
+        {
+          title: '快步上车',
+          triggerEventTitle: '收行李'
+        }
+      ]
     },
   ],
 
