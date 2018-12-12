@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { GameService } from './game.service';
 // my components
 import { AppComponent } from './app.component';
-import { GamePlayComponent } from './game-play/game-play.component';
+import { GameComponent } from './game/game.component';
 import { NotesComponent } from './notes/notes.component';
 import { MindComponent } from './mind/mind.component';
 
@@ -23,7 +23,7 @@ import { MindComponent } from './mind/mind.component';
 @NgModule({
   declarations: [
     AppComponent,
-    GamePlayComponent,
+    GameComponent,
     NotesComponent,
     MindComponent,
   ],

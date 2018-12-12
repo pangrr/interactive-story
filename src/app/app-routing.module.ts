@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GamePlayComponent } from './game-play/game-play.component';
+import { GameComponent } from './game/game.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/game', pathMatch: 'full' },
-  { path: 'game', component: GamePlayComponent }
+  { path: '', redirectTo: '/story', pathMatch: 'full' },
+  { path: 'story', component: GameComponent }
 ];
 
 @NgModule({

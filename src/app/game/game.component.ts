@@ -10,11 +10,11 @@ import { MindComponent } from '../mind/mind.component';
 
 
 @Component({
-  selector: 'app-game-play',
-  templateUrl: './game-play.component.html',
-  styleUrls: ['./game-play.component.css']
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  styleUrls: ['./game.component.css']
 })
-export class GamePlayComponent implements OnInit {
+export class GameComponent implements OnInit {
   game: Game;
 
   constructor(
