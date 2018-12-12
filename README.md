@@ -1,4 +1,6 @@
-## Story reading can be interactive.
+## Iteractive Story
+
+Inspired by Interactive Fiction, reading a story can be interactive, like playing a game, a role playing game.
 
 
 ## todo
