@@ -41,3 +41,9 @@
 .memory-antiquated {
   color: grey;
 }
+
+.action {
+  white-space: normal;
+  line-height: 20px;
+  margin-top: 10px;
+}

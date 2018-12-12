@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Script, Event, Action } from './game';
-import { loveStory } from '../assets/love-story/script';
+import * as loveStory from '../assets/love-story/script.json';
 
+const script: Script = {
+  events: (<any>loveStory).events,
+  firstEventTitle: (<any>loveStory).firstEventTitle
+};
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +15,10 @@ export class GameService {
   constructor() { }
 
   getScript(): Script {
-    const validationResult = this.validateScript(loveStory);
+    const validationResult = this.validateScript(script);
 
     if (validationResult.isValid) {
-      return loveStory;
+      return script;
     } else {
       return this.invalidScript(validationResult.error);
     }

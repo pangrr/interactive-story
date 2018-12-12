@@ -9,7 +9,7 @@
       <p *ngFor="let paragraph of game.currentEvent.description.split('\n')" class="paragraph">{{paragraph}}</p>
     </div>
     <div class="actions">
-      <button mat-button *ngFor="let action of game.currentEvent.actionsAvailable" (click)="takeAction(action)">{{action.title}}</button>
+      <button mat-button class="action" *ngFor="let action of game.currentEvent.actionsAvailable" (click)="takeAction(action)">{{action.title}}</button>
     </div>
   </div>
 </div>

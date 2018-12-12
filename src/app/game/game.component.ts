@@ -5,7 +5,7 @@ import { GameService } from '../game.service';
 import { Action } from '../game';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
-import { Game, Event } from '../game';
+import { Game } from '../game';
 import { MindComponent } from '../mind/mind.component';
 
 
