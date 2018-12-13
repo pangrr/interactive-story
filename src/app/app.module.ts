@@ -11,6 +11,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material';
 // my services
 import { GameService } from './game.service';
 // my components
@@ -18,6 +22,7 @@ import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
 import { NotesComponent } from './notes/notes.component';
 import { MindComponent } from './mind/mind.component';
+import { ScriptComponent } from './script/script.component';
 
 
 @NgModule({
@@ -26,6 +31,7 @@ import { MindComponent } from './mind/mind.component';
     GameComponent,
     NotesComponent,
     MindComponent,
+    ScriptComponent,
   ],
   entryComponents: [
     NotesComponent,
@@ -43,7 +49,11 @@ import { MindComponent } from './mind/mind.component';
     MatTableModule,
     MatExpansionModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTreeModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [GameService],
   bootstrap: [AppComponent]
