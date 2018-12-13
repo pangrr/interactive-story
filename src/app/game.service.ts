@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Script, Event, Action } from './game';
+import { Script, Events, Action } from './game';
 import * as loveStory from '../assets/love-story/script.json';
 
 const script: Script = {
   events: (<any>loveStory).events,
-  firstEventTitle: (<any>loveStory).firstEventTitle
+  firstEvent: (<any>loveStory).firstEvent
 };
 
 @Injectable({
@@ -26,23 +26,17 @@ export class GameService {
 
   private invalidScript(description: string): Script {
     return {
-      events: [
-        {
-          title: 'invalid script',
-          description,
-          actions: []
+      events: {
+        _: {
+          description
         }
-      ],
-      firstEventTitle: 'invalid script'
+      },
+      firstEvent: '_'
     };
   }
 
   private validateScript(script: Script): ValidationResult {
-    const actions = this.collectActions(script.events);
-    // TODO
-    // const duplicateEventTitles = this.getDuplicateItemsInListByTitle(game.events);
-    // const deplicateActionTitles
-    const triggeredEventsMissing = this.getItemMissingInListByTitle(this.collectTriggeredEventTitlesFromActions(actions), script.events);
+    const triggeredEventsMissing = this.getMissingTriggeredEvents(script.events);
 
     if (triggeredEventsMissing.length === 0) {
       return { isValid: true };
@@ -51,45 +45,25 @@ export class GameService {
     }
   }
 
-  private collectTriggeredEventTitlesFromActions(actions: Action[]): string[] {
-    return actions.reduce((nextSceneTitles, action) => {
-      if (action.triggerEventTitle) {
-        return [...nextSceneTitles, action.triggerEventTitle];
-      } else {
-        return nextSceneTitles;
+  private getMissingTriggeredEvents(events: Events): string[] {
+    const missingTriggetedEvents: string[] = [];
+
+    Object.keys(events).forEach(eventKey => {
+      const event = events[eventKey];
+      if (event.actions) {
+        Object.keys(event.actions).forEach(actionKey => {
+          const action = event.actions[actionKey];
+          if (action.triggerEvent) {
+            if (!events[action.triggerEvent]) {
+              missingTriggetedEvents.push(action.triggerEvent);
+            }
+          }
+        });
       }
-    }, []);
+    });
+
+    return missingTriggetedEvents;
   }
-
-  private collectActions(events: Event[]): Action[] {
-    return events.reduce((actions, event) => [...actions, ...(event.actions || [])], []);
-  }
-
-
-  private getItemMissingInListByTitle(titles: string[], list: TitledItem[]): string[] {
-    return titles.reduce((titlesMissing, title) => {
-      if (this.doesTitleExistInList(title, list)) {
-        return titlesMissing;
-      } else {
-        return [...titlesMissing, title];
-      }
-    }, []);
-  }
-
-  private doesTitleExistInList(title: string, list: TitledItem[]): boolean {
-    for (const item of list) {
-      if (item.title === title) {
-        return true;
-      }
-    }
-    return false;
-  }
-}
-
-
-interface TitledItem {
-  title: string;
-  [key: string]: any;
 }
 
 interface ValidationResult {

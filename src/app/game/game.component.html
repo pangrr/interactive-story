@@ -1,6 +1,6 @@
 <div class="game">
   <div class="menu">
-    <button mat-icon-button (click)="openNotes()" [color]="game.newNotes.length > 0 ? 'warn' : ''">
+    <button mat-icon-button (click)="openNotes()" [color]="newNotesAvailable() ? 'warn' : ''">
       <mat-icon svgIcon="notes" matTooltip="记事本"></mat-icon>
     </button>
   </div>
@@ -9,7 +9,7 @@
       <p *ngFor="let paragraph of game.currentEvent.description.split('\n')" class="paragraph">{{paragraph}}</p>
     </div>
     <div class="actions">
-      <button mat-button class="action" *ngFor="let action of game.currentEvent.actionsAvailable" (click)="takeAction(action)">{{action.title}}</button>
+      <button mat-button class="action" *ngFor="let key of getActionsAvailable()" (click)="takeAction(key, game.currentEvent.actionsAvailable[key])">{{key}}</button>
     </div>
   </div>
 </div>

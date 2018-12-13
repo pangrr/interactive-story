@@ -1,9 +1,9 @@
 export class Game {
   readonly script: Script;
-  history: ActiveEvent[];
-  currentEvent: ActiveEvent;
-  oldNotes: Note[];
-  newNotes: Note[];
+  history: EventHappened[];
+  currentEvent: EventHappened;
+  oldNotes: Notes;
+  newNotes: Notes;
 
   constructor(source: Save | Script) {
     if (this.isSave(source)) {
@@ -15,9 +15,9 @@ export class Game {
     } else {
       this.script = source;
       this.history = [];
-      this.oldNotes = [];
-      this.newNotes = [];
-      this.loadCurrentEvent(this.script.firstEventTitle);
+      this.oldNotes = {};
+      this.newNotes = {};
+      this.loadCurrentEvent(this.script.firstEvent);
       if (this.currentEvent.updateNotes) {
         this.updateNotes(this.currentEvent.updateNotes);
       }
@@ -34,18 +34,18 @@ export class Game {
     };
   }
 
-  takeAction(action: Action): void {
-    this.removeActionFromActionsAvailable(action);
-    this.addActionToActionsTaken(action);
+  takeAction(actionKey: string): void {
+    delete this.currentEvent.actionsAvailable[actionKey];
+    this.currentEvent.actionsTaken.push(actionKey);
 
-    if (action.triggerEventTitle) {
-      this.triggerEvent(action.triggerEventTitle);
+    if (this.currentEvent.actions[actionKey].triggerEvent) {
+      this.triggerEvent(this.currentEvent.actions[actionKey].triggerEvent);
     }
   }
 
   triggerNextEvent(): void {
-    if (this.currentEvent.nextEventTitle) {
-      this.triggerEvent(this.currentEvent.nextEventTitle);
+    if (this.currentEvent.nextEvent) {
+      this.triggerEvent(this.currentEvent.nextEvent);
     }
   }
 
@@ -59,67 +59,29 @@ export class Game {
     }
   }
 
-  private removeActionFromActionsAvailable(action: Action): void {
-    this.removeAction(action.title, this.currentEvent.actionsAvailable);
-  }
-
-  private addActionToActionsTaken(action: Action): void {
-    this.currentEvent.actionsTaken.push(action);
-  }
-
-  private updateNotes(newMemories: Note[]): void {
-    newMemories.forEach(newMemory => {
-      this.removeExistingMemory(newMemory.title);
-      this.newNotes.push({ ...newMemory });
+  private updateNotes(newNotes: Notes): void {
+    Object.keys(newNotes).forEach(key => {
+      delete this.oldNotes[key];
+      this.newNotes[key] = newNotes[key];
     });
   }
 
   private antiquateNewNotes(): void {
-    this.oldNotes.push(...this.newNotes);
-    this.newNotes = [];
+    this.oldNotes = { ...this.oldNotes, ...this.newNotes };
+    this.newNotes = {};
   }
 
   private pushCurrentEventToHistory(): void {
     this.history.push(this.currentEvent);
   }
 
-  private loadCurrentEvent(eventTitle: string): void {
-    const eventFromScript = this.getEventFromScript(eventTitle);
+  private loadCurrentEvent(eventKey: string): void {
+    const eventFromScript = this.script.events[eventKey];
     this.currentEvent = {
       ...eventFromScript,
-      actionsAvailable: [...(eventFromScript.actions || [])],
+      actionsAvailable: { ...(eventFromScript.actions || {}) },
       actionsTaken: []
     };
-  }
-
-  private removeAction(actionTitle: string, actions: Action[]): void {
-    for (let i = 0; i < actions.length; i++) {
-      if (actions[i].title === actionTitle) {
-        actions.splice(i, 1);
-      }
-    }
-  }
-
-  private removeExistingMemory(memoryTitle: string): void {
-    for (let i = 0; i < this.oldNotes.length; i++) {
-      if (this.oldNotes[i].title === memoryTitle) {
-        this.oldNotes.splice(i, 1);
-      }
-    }
-
-    for (let i = 0; i < this.newNotes.length; i++) {
-      if (this.newNotes[i].title === memoryTitle) {
-        this.newNotes.splice(i, 1);
-      }
-    }
-  }
-
-  private getEventFromScript(eventTitle: string): Event {
-    for (const event of this.script.events) {
-      if (event.title === eventTitle) {
-        return event;
-      }
-    }
   }
 
   private isSave(arg: any): arg is Save {
@@ -129,38 +91,43 @@ export class Game {
 
 
 export interface Script {
-  readonly events: Event[];
-  readonly firstEventTitle: string;
+  readonly events: Events;
+  readonly firstEvent: string;
 }
 
 export interface Save {
   readonly script: Script;
-  readonly history: ActiveEvent[];
-  readonly currentEvent: ActiveEvent;
-  readonly oldNotes: Note[];
-  readonly newNotes: Note[];
-}
-
-export interface Note {
-  readonly title: string;
-  readonly description: string;
+  readonly history: EventHappened[];
+  readonly currentEvent: EventHappened;
+  readonly oldNotes: Notes;
+  readonly newNotes: Notes;
 }
 
 export interface Event {
-  readonly title: string;
   readonly description: string;
-  readonly actions?: Action[];
-  readonly updateNotes?: Note[];
-  readonly nextEventTitle?: string;
+  readonly actions?: Actions;
+  readonly updateNotes?: Notes;
+  readonly nextEvent?: string;
 }
 
-export interface ActiveEvent extends Event {
-  actionsAvailable: Action[];
-  actionsTaken: Action[];
+export interface EventHappened extends Event {
+  actionsAvailable: Actions;
+  actionsTaken: string[];
 }
 
 export interface Action {
-  readonly title: string;
   readonly openMind?: string;
-  readonly triggerEventTitle?: string;
+  readonly triggerEvent?: string;
+}
+
+export interface Actions {
+  [key: string]: Action;
+}
+
+export interface Events {
+  [key: string]: Event;
+}
+
+export interface Notes {
+  [key: string]: string;
 }

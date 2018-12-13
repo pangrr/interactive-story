@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { Note } from '../game';
+import { Notes } from '../game';
 
 @Component({
   selector: 'app-notes',
@@ -8,9 +8,11 @@ import { Note } from '../game';
   styleUrls: ['./notes.component.css']
 })
 export class NotesComponent {
-  public notes: Note[];
+  notes: Notes;
+  noteList: string[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { oldNotes: Note[], newNotes: Note[] }) {
-    this.notes = [...data.newNotes, ...data.oldNotes];
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { oldNotes: Notes, newNotes: Notes }) {
+    this.notes = { ...data.oldNotes, ...data.newNotes };
+    this.noteList = [...Object.keys(data.newNotes), ...Object.keys(data.oldNotes)];
   }
 }
