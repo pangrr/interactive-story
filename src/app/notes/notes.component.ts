@@ -9,10 +9,9 @@ import { Notes } from '../game';
 })
 export class NotesComponent {
   notes: Notes;
-  noteList: string[];
+  objectKeys = Object.keys;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { oldNotes: Notes, newNotes: Notes }) {
     this.notes = { ...data.oldNotes, ...data.newNotes };
-    this.noteList = [...Object.keys(data.newNotes), ...Object.keys(data.oldNotes)];
   }
 }

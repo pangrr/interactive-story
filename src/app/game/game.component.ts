@@ -16,6 +16,7 @@ import { MindComponent } from '../mind/mind.component';
 })
 export class GameComponent implements OnInit {
   game: Game;
+  objectKeys = Object.keys;
 
   constructor(
     private service: GameService,
@@ -31,9 +32,10 @@ export class GameComponent implements OnInit {
     this.game = new Game(this.service.getScript());
   }
 
-  takeAction(actionKey: string, action: Action): void {
-    if (action.openMind) {
-      this.openMind(action.openMind);
+  takeAction(actionKey: string): void {
+    const openMind = this.game.currentEvent.actionsAvailable[actionKey].openMind;
+    if (openMind) {
+      this.openMind(openMind);
     }
     this.game.takeAction(actionKey);
   }
@@ -59,14 +61,6 @@ export class GameComponent implements OnInit {
       data: mind,
       backdropClass: 'backdrop'
     });
-  }
-
-  newNotesAvailable(): boolean {
-    return Object.keys(this.game.newNotes).length > 0;
-  }
-
-  getActionsAvailable(): string[] {
-    return Object.keys(this.game.currentEvent.actionsAvailable);
   }
 }
 

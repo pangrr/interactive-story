@@ -1,13 +1,13 @@
 <mat-dialog-content>
   <mat-accordion multi displayMode="flat">
-    <mat-expansion-panel *ngFor="let note of noteList" [expanded]="data.newNotes[note]">
+    <mat-expansion-panel *ngFor="let key of objectKeys(notes)" [expanded]="data.newNotes[key]">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{note}}
+          {{key}}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <p *ngFor="let paragraph of notes[note].split('\n')" class="paragraph">
+        <p *ngFor="let paragraph of notes[key].split('\n')" class="paragraph">
           {{paragraph}}
         </p>
       </ng-template>
