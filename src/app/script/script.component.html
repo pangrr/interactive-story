@@ -17,14 +17,15 @@
               <input matInput placeholder="Event ID" [(ngModel)]="event.key">
             </mat-form-field>
           </td>
+          <td></td>
           <td>
-            <mat-form-field class="full-width" *ngIf="event.value.nextEvent; let nextEvent">
-              <input matInput placeholder="Next Event" [(ngModel)]="nextEvent">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Next Event" [(ngModel)]="event.value.nextEvent">
             </mat-form-field>
           </td>
         </tr>
         <tr>
-          <td>
+          <td colspan="3">
             <mat-form-field class="full-width">
               <textarea matInput placeholder="Description" [(ngModel)]="event.value.description" [rows]="event.value.description.split('\n').length"></textarea>
             </mat-form-field>
@@ -36,7 +37,7 @@
               <input matInput placeholder="Note Title" [(ngModel)]="note.key">
             </mat-form-field>
           </td>
-          <td>
+          <td colspan="2">
             <mat-form-field class="full-width">
               <textarea matInput placeholder="Note Content" [(ngModel)]="note.value" [rows]="note.value.split('\n').length"></textarea>
             </mat-form-field>
@@ -48,14 +49,14 @@
               <input matInput placeholder="Action Description" [(ngModel)]="action.key">
             </mat-form-field>
           </td>
-          <td *ngIf="action.value.triggerEvent">
+          <td>
             <mat-form-field class="full-width">
               <input matInput placeholder="Trigger Event" [(ngModel)]="action.value.triggerEvent">
             </mat-form-field>
           </td>
-          <td *ngIf="action.value.openMind">
+          <td>
             <mat-form-field class="full-width">
-              <textarea matInput placeholder="Open Mind" [(ngModel)]="aciton.value.openMind" [rows]="action.value.openMind.split('\n').length"></textarea>
+              <textarea matInput placeholder="Open Mind" [(ngModel)]="action.value.openMind" [rows]="action.value.openMind ? action.value.openMind.split('\n').length : 1"></textarea>
             </mat-form-field>
           </td>
         </tr>
