@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { NotesComponent } from '../notes/notes.component';
 import { GameService } from '../game.service';
-import { Action } from '../game';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import { Game } from '../game';
@@ -16,7 +15,6 @@ import { MindComponent } from '../mind/mind.component';
 })
 export class GameComponent implements OnInit {
   game: Game;
-  objectKeys = Object.keys;
 
   constructor(
     private service: GameService,

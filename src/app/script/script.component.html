@@ -1,22 +1,33 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-    <button mat-icon-button disabled></button>
-    {{node.item}}
-  </mat-tree-node>
-
-  <mat-tree-node *matTreeNodeDef="let node; when: hasNoContent" matTreeNodePadding>
-    <button mat-icon-button disabled></button>
+<div class="container">
+  <div class="events">
+    <table class="full-width padding" *ngFor="let event of script.events | keyvalue" cellspacing="0">
+      <tr>
+        <td>
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Event ID" [(ngModel)]="event.key">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field class="full-width" *ngIf="event.value.nextEvent; let nextEvent">
+            <input matInput placeholder="Next Event" [(ngModel)]="nextEvent">
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field class="full-width">
+            <textarea matInput placeholder="Description" [(ngModel)]="event.value.description" [rows]="event.value.description.split('\n').length"></textarea>
+          </mat-form-field>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="control">
     <mat-form-field>
-      <input matInput #itemValue placeholder="New item...">
+      <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
     </mat-form-field>
-    <button mat-button (click)="saveNode(node, itemValue.value)">Save</button>
-  </mat-tree-node>
-
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-      <mat-icon [svgIcon]="treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'"></mat-icon>
-    </button>
-    {{node.item}}
-    <button mat-icon-button (click)="addNewItem(node)"><mat-icon svgIcon="add"></mat-icon></button>
-  </mat-tree-node>
-</mat-tree>
+    <button mat-button>Add Event</button>
+    <button mat-button>JSON</button>
+    <button mat-button color="primary">Submit</button>
+  </div>
+</div>

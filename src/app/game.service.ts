@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Script, Events, Action } from './game';
+import { Script, Events } from './game';
 import * as loveStory from '../assets/love-story/script.json';
 
 const script: Script = {

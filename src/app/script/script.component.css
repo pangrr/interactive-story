@@ -1,0 +1,26 @@
+.container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8em;
+}
+
+.events {
+  flex-basis: 100%;
+  overflow: scroll;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.padding {
+  padding: 15px;
+}
+
+.control {
+  display: flex;
+  justify-content: space-evenly;
+}
