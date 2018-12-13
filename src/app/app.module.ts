@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
+import { MatToolbarModule } from '@angular/material/toolbar';
 // my services
 import { GameService } from './game.service';
 // my components
@@ -52,7 +53,8 @@ import { JsonComponent } from './json/json.component';
     MatIconModule,
     MatTooltipModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatToolbarModule
   ],
   providers: [GameService],
   bootstrap: [AppComponent]

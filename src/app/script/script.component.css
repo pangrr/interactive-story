@@ -4,7 +4,6 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  font-size: 0.8em;
 }
 
 .events {
@@ -16,11 +15,19 @@
   width: 100%;
 }
 
-.padding {
-  padding: 15px;
+.mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
 }
 
-.control {
-  display: flex;
-  justify-content: space-evenly;
+.next-event {
+  color: black;
+}
+
+.mat-toolbar, .mat-expansion-panel-header {
+  font-size: 0.8em;
+}
+
+.spacer {
+  flex: 1 1 auto;
 }

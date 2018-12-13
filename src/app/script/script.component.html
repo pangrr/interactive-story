@@ -1,33 +1,75 @@
 <div class="container">
-  <div class="events">
-    <table class="full-width padding" *ngFor="let event of script.events | keyvalue" cellspacing="0">
-      <tr>
-        <td>
-          <mat-form-field class="full-width">
-            <input matInput placeholder="Event ID" [(ngModel)]="event.key">
-          </mat-form-field>
-        </td>
-        <td>
-          <mat-form-field class="full-width" *ngIf="event.value.nextEvent; let nextEvent">
-            <input matInput placeholder="Next Event" [(ngModel)]="nextEvent">
-          </mat-form-field>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field class="full-width">
-            <textarea matInput placeholder="Description" [(ngModel)]="event.value.description" [rows]="event.value.description.split('\n').length"></textarea>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div class="control">
-    <mat-form-field>
-      <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
-    </mat-form-field>
-    <button mat-button>Add Event</button>
-    <button mat-button (click)="openJson()">JSON</button>
-    <button mat-button color="primary">Submit</button>
-  </div>
+  <mat-accordion class="events" multi>
+    <mat-expansion-panel *ngFor="let event of script.events | keyvalue">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{event.key}}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{event.value.description.substring(0, 25) + (event.value.description.length > 25 ? '...' : '')}}
+          <span class="next-event">{{event.value.nextEvent}}</span>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <table class="full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Event ID" [(ngModel)]="event.key">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="full-width" *ngIf="event.value.nextEvent; let nextEvent">
+              <input matInput placeholder="Next Event" [(ngModel)]="nextEvent">
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field class="full-width">
+              <textarea matInput placeholder="Description" [(ngModel)]="event.value.description" [rows]="event.value.description.split('\n').length"></textarea>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr *ngFor="let note of (event.value.updateNotes || {}) | keyvalue">
+          <td>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Note Title" [(ngModel)]="note.key">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="full-width">
+              <textarea matInput placeholder="Note Content" [(ngModel)]="note.value" [rows]="note.value.split('\n').length"></textarea>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr *ngFor="let action of (event.value.actions || {}) | keyvalue">
+          <td>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Action Description" [(ngModel)]="action.key">
+            </mat-form-field>
+          </td>
+          <td *ngIf="action.value.triggerEvent">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Trigger Event" [(ngModel)]="action.value.triggerEvent">
+            </mat-form-field>
+          </td>
+          <td *ngIf="action.value.openMind">
+            <mat-form-field class="full-width">
+              <textarea matInput placeholder="Open Mind" [(ngModel)]="aciton.value.openMind" [rows]="action.value.openMind.split('\n').length"></textarea>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <mat-form-field>
+        <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
+      </mat-form-field>
+      <span class="spacer"></span>
+      <button mat-button>Add Event</button>
+      <button mat-button (click)="openJson()">JSON</button>
+    </mat-toolbar-row>
+  </mat-toolbar>
 </div>
