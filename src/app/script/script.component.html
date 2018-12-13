@@ -27,7 +27,7 @@
       <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
     </mat-form-field>
     <button mat-button>Add Event</button>
-    <button mat-button>JSON</button>
+    <button mat-button (click)="openJson()">JSON</button>
     <button mat-button color="primary">Submit</button>
   </div>
 </div>

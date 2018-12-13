@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Script } from '../game';
+import { JsonComponent } from '../json/json.component';
 import * as loveStory from '../../assets/love-story/script.json';
 
 const script: Script = {
@@ -15,9 +17,23 @@ const script: Script = {
 export class ScriptComponent implements OnInit {
   script: Script;
 
-  constructor() { }
+  constructor(
+    public json: MatDialog,
+
+  ) { }
 
   ngOnInit() {
     this.script = script;
+  }
+
+  openJson(): void {
+    const jsonRef = this.json.open(JsonComponent, {
+      width: '900px',
+      data: this.script
+    });
+
+    jsonRef.afterClosed().subscribe(result => {
+      this.script = result;
+    });
   }
 }

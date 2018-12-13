@@ -21,6 +21,7 @@ import { GameComponent } from './game/game.component';
 import { NotesComponent } from './notes/notes.component';
 import { MindComponent } from './mind/mind.component';
 import { ScriptComponent } from './script/script.component';
+import { JsonComponent } from './json/json.component';
 
 
 @NgModule({
@@ -30,10 +31,12 @@ import { ScriptComponent } from './script/script.component';
     NotesComponent,
     MindComponent,
     ScriptComponent,
+    JsonComponent,
   ],
   entryComponents: [
     NotesComponent,
-    MindComponent
+    MindComponent,
+    JsonComponent
   ],
   imports: [
     BrowserModule,
