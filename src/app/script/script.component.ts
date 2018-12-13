@@ -33,7 +33,22 @@ export class ScriptComponent implements OnInit {
     });
 
     jsonRef.afterClosed().subscribe(result => {
-      this.script = result;
+      if (result) {
+        this.script = result;
+      }
     });
+  }
+
+  addAction(eventKey: string): void {
+    const event = this.script.events[eventKey];
+    if (!event.actions) {
+      event.actions = {};
+    }
+
+    event.actions[''] = {};
+  }
+
+  addNote(event: string): void {
+
   }
 }

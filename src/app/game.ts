@@ -105,7 +105,7 @@ export interface Save {
 
 export interface Event {
   readonly description: string;
-  readonly actions?: Actions;
+  actions?: Actions;
   readonly updateNotes?: Notes;
   readonly nextEvent?: string;
 }

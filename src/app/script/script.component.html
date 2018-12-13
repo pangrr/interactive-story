@@ -31,18 +31,6 @@
             </mat-form-field>
           </td>
         </tr>
-        <tr *ngFor="let note of (event.value.updateNotes || {}) | keyvalue">
-          <td>
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Note Title" [(ngModel)]="note.key">
-            </mat-form-field>
-          </td>
-          <td colspan="2">
-            <mat-form-field class="full-width">
-              <textarea matInput placeholder="Note Content" [(ngModel)]="note.value" [rows]="note.value.split('\n').length"></textarea>
-            </mat-form-field>
-          </td>
-        </tr>
         <tr *ngFor="let action of (event.value.actions || {}) | keyvalue">
           <td>
             <mat-form-field class="full-width">
@@ -60,7 +48,23 @@
             </mat-form-field>
           </td>
         </tr>
+        <tr *ngFor="let note of (event.value.updateNotes || {}) | keyvalue">
+          <td>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Note Title" [(ngModel)]="note.key">
+            </mat-form-field>
+          </td>
+          <td colspan="2">
+            <mat-form-field class="full-width">
+              <textarea matInput placeholder="Note Content" [(ngModel)]="note.value" [rows]="note.value.split('\n').length"></textarea>
+            </mat-form-field>
+          </td>
+        </tr>
       </table>
+      <div class="event-control">
+        <button mat-button (click)="addAction(event.key)">Add Action</button>
+        <button mat-button (click)="addNote(event.key)">Add Note</button>
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
   <mat-toolbar color="primary">

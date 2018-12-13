@@ -11,6 +11,11 @@
   overflow: scroll;
 }
 
+.event-control {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .full-width {
   width: 100%;
 }
