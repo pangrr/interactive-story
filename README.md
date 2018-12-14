@@ -8,6 +8,8 @@ Let's play stories.
 
 
 ## todo
+- sort events
+- keep order
 - save and reload game
 - replay game
 
