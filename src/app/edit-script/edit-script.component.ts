@@ -84,7 +84,7 @@ export class EditScriptComponent implements OnInit {
     event.updateNotes.splice(noteIndex, 1);
   }
 
-  collectPossibleNextEvents(event: Event): string[] {
+  collectPossibleNextEvents(event: EventEditable): string[] {
     const possibleNextEvents: string[] = [];
     if (event.nextEvent) {
       possibleNextEvents.push(event.nextEvent);
@@ -98,6 +98,41 @@ export class EditScriptComponent implements OnInit {
       });
     }
     return possibleNextEvents;
+  }
+
+  sortEvents(): void {
+    const sortedEvents: EventEditable[] = [];
+    const events: { [key: string]: EventEditable } = {};
+    const visited: { [key: string]: boolean } = {};
+    this.scriptEditable.events.forEach(event => {
+      events[event.id] = event;
+      visited[event.id] = false;
+    });
+
+    this.topoSortEventsHelper(this.scriptEditable.firstEvent, events, visited, sortedEvents);
+
+    Object.keys(events).forEach(key => {
+      if (!visited[key]) {
+        this.topoSortEventsHelper(key, events, visited, sortedEvents);
+      }
+    });
+
+    this.scriptEditable.events = sortedEvents;
+  }
+
+  private topoSortEventsHelper(
+    eventId: string,
+    events: { [key: string]: EventEditable },
+    visited: { [key: string]: boolean },
+    stack: EventEditable[]
+  ): void {
+    visited[eventId] = true;
+    this.collectPossibleNextEvents(events[eventId]).forEach(nextEventId => {
+      if (!visited[nextEventId]) {
+        this.topoSortEventsHelper(nextEventId, events, visited, stack);
+      }
+    });
+    stack.unshift(events[eventId]);
   }
 
   private script2ScriptEditable(script: Script): ScriptEditable {

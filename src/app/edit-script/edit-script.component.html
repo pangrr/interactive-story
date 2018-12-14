@@ -75,14 +75,15 @@
       </div>
     </mat-expansion-panel>
   </mat-accordion>
-  <mat-toolbar color="primary">
+  <mat-toolbar color="primary" class="toolbar">
     <mat-toolbar-row>
       <mat-form-field>
         <input matInput placeholder="First Event" [(ngModel)]="scriptEditable.firstEvent">
       </mat-form-field>
       <span class="spacer"></span>
       <button mat-button (click)="addEvent()">Add Event</button>
-      <button mat-button (click)="openJson()" matTooltip="Edit Script in JSON">JSON</button>
+      <button mat-button (click)="openJson()">Show JSON</button>
+      <button mat-button (click)="sortEvents()">Sort Events</button>
     </mat-toolbar-row>
   </mat-toolbar>
 </div>
