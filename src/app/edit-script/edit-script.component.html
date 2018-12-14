@@ -1,7 +1,6 @@
 <div class="container">
   <mat-accordion class="events" multi>
-    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
-      (closed)="event.open = false">
+    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true" (closed)="event.open = false">
       <mat-expansion-panel-header>
         <div class="event-id-container truncate" *ngIf="!event.open">
           {{event.id}}
@@ -84,6 +83,7 @@
       <button mat-button (click)="addEvent()">Add Event</button>
       <button mat-button (click)="openJson()">Show JSON</button>
       <button mat-button (click)="sortEvents()">Sort Events</button>
+      <button mat-button (click)="closeEvents()">Colse Events</button>
     </mat-toolbar-row>
   </mat-toolbar>
 </div>

@@ -100,6 +100,10 @@ export class EditScriptComponent implements OnInit {
     return possibleNextEvents;
   }
 
+  closeEvents(): void {
+    this.scriptEditable.events.forEach(event => event.open = false);
+  }
+
   sortEvents(): void {
     const sortedEvents: EventEditable[] = [];
     const events: { [key: string]: EventEditable } = {};
@@ -170,8 +174,7 @@ export class EditScriptComponent implements OnInit {
       description: event.description,
       nextEvent: event.nextEvent,
       actions: Object.keys(event.actions || {}).map(key => this.action2ActionEditable(key, event.actions[key])),
-      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.note2NoteEditable(key, event.updateNotes[key])),
-      open: false
+      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.note2NoteEditable(key, event.updateNotes[key]))
     };
   }
 
@@ -226,7 +229,7 @@ interface EventEditable {
   actions?: ActionEditable[];
   updateNotes?: NoteEditable[];
   nextEvent?: string;
-  open: boolean;
+  open?: boolean;
 }
 
 interface ActionEditable {
