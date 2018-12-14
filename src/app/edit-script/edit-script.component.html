@@ -1,6 +1,7 @@
 <div class="container">
   <mat-accordion class="events" multi>
-    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true" (closed)="event.open = false">
+    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
+      (closed)="event.open = false">
       <mat-expansion-panel-header>
         <div class="event-id-container truncate" *ngIf="!event.open">
           {{event.id}}
@@ -20,10 +21,14 @@
             </mat-form-field>
           </td>
         </tr>
-        <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true" (mouseleave)="action.mouseover = false">
+        <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true"
+          (mouseleave)="action.mouseover = false">
           <td>
             <mat-form-field class="full-width">
               <input matInput placeholder="Action Description" [(ngModel)]="action.description">
+              <mat-error>
+                Please enter a valid email address
+              </mat-error>
             </mat-form-field>
           </td>
           <td>
@@ -42,7 +47,8 @@
             </button>
           </td>
         </tr>
-        <tr *ngFor="let note of event.updateNotes; let i = index" class="note" (mouseenter)="note.mouseover = true" (mouseleave)="note.mouseover = false">
+        <tr *ngFor="let note of event.updateNotes; let i = index" class="note" (mouseenter)="note.mouseover = true"
+          (mouseleave)="note.mouseover = false">
           <td>
             <mat-form-field class="full-width">
               <input matInput placeholder="Note Title" [(ngModel)]="note.title">

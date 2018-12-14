@@ -8,8 +8,9 @@ Let's play stories.
 
 
 ## todo
-- sort events
-- keep order
+- detect duplicate event id
+- detect duplicate action description
+- detect duplicate note title
 - save and reload game
 - replay game
 

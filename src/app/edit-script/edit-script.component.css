@@ -45,10 +45,6 @@
   font-size: 0.8em;
 }
 
-.mat-toolbar-multiple-rows {
-  min-height: 0;
-}
-
 .mat-icon-button {
   color: rgba(0, 0, 0, 0.4);
   width: 20px;
@@ -71,7 +67,7 @@
 
 .event-description-container {
   flex-grow: 1;
-  color: #777777;
+  color: grey;
 }
 
 .possible-next-events-container {
@@ -90,5 +86,5 @@
 }
 
 .note {
-  background: seashell;
+  background: beige;
 }
