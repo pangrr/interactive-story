@@ -30,18 +30,18 @@ export class ScriptComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.scriptEditable = this.scriptToScriptEditable(scriptExample);
+    this.scriptEditable = this.script2ScriptEditable(scriptExample);
   }
 
   openJson(): void {
     const jsonRef = this.json.open(JsonComponent, {
       width: '900px',
-      data: this.scriptEditableToScript(this.scriptEditable)
+      data: this.scriptEditable2Script(this.scriptEditable)
     });
 
     jsonRef.afterClosed().subscribe(result => {
       if (result) {
-        this.scriptEditable = this.scriptToScriptEditable(result);
+        this.scriptEditable = this.script2ScriptEditable(result);
       }
     });
   }
@@ -50,6 +50,9 @@ export class ScriptComponent implements OnInit {
     this.scriptEditable.events.push({
       id: '',
       description: '',
+      actions: [],
+      nextEvent: '',
+      updateNotes: [],
       open: true
     });
   }
@@ -81,34 +84,47 @@ export class ScriptComponent implements OnInit {
     event.updateNotes.splice(noteIndex, 1);
   }
 
-  private scriptToScriptEditable(script: Script): ScriptEditable {
+  private script2ScriptEditable(script: Script): ScriptEditable {
     return {
       firstEvent: script.firstEvent,
       events: Object.keys(script.events).map(key => {
-        return this.eventToEventEditable(key, script.events[key]);
+        return this.event2EventEditable(key, script.events[key]);
       })
     };
   }
 
-  private scriptEditableToScript(scriptEditable: ScriptEditable): Script {
+  private scriptEditable2Script(scriptEditable: ScriptEditable): Script {
     return {
       firstEvent: scriptEditable.firstEvent,
-      events: this.eventsEditableToEvents(scriptEditable.events)
+      events: this.eventsEditable2Events(scriptEditable.events)
     };
   }
 
-  private eventToEventEditable(eventId: string, event: Event): EventEditable {
+  private eventsEditable2Events(eventsEditable: EventEditable[]): Events {
+    const events: Events = {};
+    eventsEditable.forEach(event => {
+      events[event.id] = {
+        description: event.description,
+        actions: event.actions.length > 0 ? this.actionsEditable2Actions(event.actions) : undefined,
+        nextEvent: event.nextEvent || undefined,
+        updateNotes: event.updateNotes.length > 0 ? this.notesEditable2Notes(event.updateNotes) : undefined
+      };
+    });
+    return events;
+  }
+
+  private event2EventEditable(eventId: string, event: Event): EventEditable {
     return {
       id: eventId,
       description: event.description,
       nextEvent: event.nextEvent,
-      actions: Object.keys(event.actions || {}).map(key => this.actionToActionEditable(key, event.actions[key])),
-      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.noteToNoteEditable(key, event.updateNotes[key])),
+      actions: Object.keys(event.actions || {}).map(key => this.action2ActionEditable(key, event.actions[key])),
+      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.note2NoteEditable(key, event.updateNotes[key])),
       open: false
     };
   }
 
-  private actionToActionEditable(actionDescription: string, action: Action): ActionEditable {
+  private action2ActionEditable(actionDescription: string, action: Action): ActionEditable {
     return {
       description: actionDescription,
       openMind: action.openMind,
@@ -117,7 +133,7 @@ export class ScriptComponent implements OnInit {
     };
   }
 
-  private noteToNoteEditable(noteTitle: string, noteContent: string): NoteEditable {
+  private note2NoteEditable(noteTitle: string, noteContent: string): NoteEditable {
     return {
       title: noteTitle,
       content: noteContent,
@@ -125,30 +141,8 @@ export class ScriptComponent implements OnInit {
     };
   }
 
-  private eventsEditableToEvents(eventsEditable: EventEditable[]): Events {
-    const events: Events = {};
-    eventsEditable.forEach(event => {
-      let actions = this.actionsEditableToActions(event.actions);
-      if (Object.keys(actions).length === 0) {
-        actions = undefined;
-      }
 
-      let updateNotes = this.notesEditableToNotes(event.updateNotes);
-      if (Object.keys(updateNotes).length === 0) {
-        updateNotes = undefined;
-      }
-
-      events[event.id] = {
-        description: event.description,
-        actions,
-        nextEvent: event.nextEvent || undefined,
-        updateNotes
-      };
-    });
-    return events;
-  }
-
-  private actionsEditableToActions(actionsEditable: ActionEditable[]): Actions {
+  private actionsEditable2Actions(actionsEditable: ActionEditable[]): Actions {
     const actions: Actions = {};
     actionsEditable.forEach(action => {
       actions[action.description] = {
@@ -159,7 +153,7 @@ export class ScriptComponent implements OnInit {
     return actions;
   }
 
-  private notesEditableToNotes(notesEditable: NoteEditable[]): Notes {
+  private notesEditable2Notes(notesEditable: NoteEditable[]): Notes {
     const notes: Notes = {};
     notesEditable.forEach(note => {
       notes[note.title] = note.content;
