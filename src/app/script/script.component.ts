@@ -24,7 +24,7 @@ export class ScriptComponent implements OnInit {
   constructor(
     public json: MatDialog,
     iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer  
+    sanitizer: DomSanitizer
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
   }
@@ -82,6 +82,22 @@ export class ScriptComponent implements OnInit {
 
   deleteNote(event: EventEditable, noteIndex: number): void {
     event.updateNotes.splice(noteIndex, 1);
+  }
+
+  collectPossibleNextEvents(event: Event): string[] {
+    const possibleNextEvents: string[] = [];
+    if (event.nextEvent) {
+      possibleNextEvents.push(event.nextEvent);
+    }
+    if (event.actions) {
+      Object.keys(event.actions).forEach(key => {
+        const action = event.actions[key];
+        if (action.triggerEvent) {
+          possibleNextEvents.push(action.triggerEvent);
+        }
+      });
+    }
+    return possibleNextEvents;
   }
 
   private script2ScriptEditable(script: Script): ScriptEditable {

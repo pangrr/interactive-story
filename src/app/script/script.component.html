@@ -3,13 +3,15 @@
     <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
       (closed)="event.open = false">
       <mat-expansion-panel-header>
-        <mat-panel-title *ngIf="!event.open">
+        <div class="event-id-container truncate" *ngIf="!event.open">
           {{event.id}}
-        </mat-panel-title>
-        <mat-panel-description *ngIf="!event.open">
-          {{event.description.substring(0, 25) + (event.description.length > 25 ? '...' : '')}}
-          <span class="next-event">{{event.nextEvent}}</span>
-        </mat-panel-description>
+        </div>
+        <div class="event-description-container truncate" *ngIf="!event.open">
+          {{event.description}}
+        </div>
+        <div class="possible-next-events-container truncate" *ngIf="!event.open">
+          <span *ngFor="let eventId of collectPossibleNextEvents(event)" class="next-event">{{eventId}}</span>
+        </div>
       </mat-expansion-panel-header>
       <table class="full-width" cellspacing="0">
         <tr>
@@ -35,7 +37,7 @@
               <textarea matInput placeholder="Open Mind" [(ngModel)]="action.openMind" [rows]="action.openMind ? action.openMind.split('\n').length : 1"></textarea>
             </mat-form-field>
           </td>
-          <td class="icon-container">
+          <td class="icon-cell">
             <button *ngIf="action.mouseover" mat-icon-button (click)="deleteAction(event, i)">
               <mat-icon svgIcon="delete" matTooltip="delete action"></mat-icon>
             </button>
@@ -52,7 +54,7 @@
               <textarea matInput placeholder="Note Content" [(ngModel)]="note.content" [rows]="note.content.split('\n').length"></textarea>
             </mat-form-field>
           </td>
-          <td class="icon-container">
+          <td class="icon-cell">
             <button *ngIf="note.mouseover" mat-icon-button (click)="deleteNote(event, i)">
               <mat-icon svgIcon="delete" matTooltip="delete note"></mat-icon>
             </button>

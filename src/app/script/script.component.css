@@ -25,10 +25,6 @@
   align-items: center;
 }
 
-.next-event {
-  color: black;
-}
-
 .mat-toolbar, .mat-expansion-panel-header {
   font-size: 0.8em;
 }
@@ -41,7 +37,7 @@
   font-size: 0.9em;
 }
 
-.icon-container {
+.icon-cell {
   width: 20px;
 }
 
@@ -56,4 +52,35 @@
 .mat-icon-button {
   color: rgba(0, 0, 0, 0.4);
   width: 20px;
+}
+
+.mat-expansion-panel-header-description {
+  flex-grow: 7;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-id-container {
+  flex-basis: 100px;
+  flex-shrink: 0;
+}
+
+.event-description-container {
+  flex-grow: 1;
+  color: #777777;
+}
+
+.possible-next-events-container {
+  flex-basis: 200px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.next-event {
+  color: black;
+  margin-right: 10px;
 }
