@@ -3,7 +3,9 @@ import { MatDialog } from '@angular/material';
 import { Script, Event, Action, Events, Actions, Notes } from '../game';
 import { JsonComponent } from '../json/json.component';
 import * as loveStory from '../../assets/love-story/script.json';
-import { not } from '@angular/compiler/src/output/output_ast';
+import { MatIconRegistry } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 const scriptExample: Script = {
   events: (<any>loveStory).events,
@@ -19,7 +21,13 @@ const scriptExample: Script = {
 export class ScriptComponent implements OnInit {
   scriptEditable: ScriptEditable;
 
-  constructor(public json: MatDialog) { }
+  constructor(
+    public json: MatDialog,
+    iconRegistry: MatIconRegistry,
+    sanitizer: DomSanitizer  
+  ) {
+    iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
+  }
 
   ngOnInit() {
     this.scriptEditable = this.scriptToScriptEditable(scriptExample);
@@ -38,19 +46,40 @@ export class ScriptComponent implements OnInit {
     });
   }
 
+  addEvent(): void {
+    this.scriptEditable.events.push({
+      id: '',
+      description: '',
+      open: true
+    });
+  }
+
+  deleteEvent(eventIndex: number): void {
+    this.scriptEditable.events.splice(eventIndex, 1);
+  }
+
   addAction(event: EventEditable): void {
     event.actions.push({
-      description: ''
+      description: '',
+      mouseover: false
     });
   }
 
   addNote(event: EventEditable): void {
     event.updateNotes.push({
       title: '',
-      content: ''
+      content: '',
+      mouseover: false
     });
   }
 
+  deleteAction(event: EventEditable, actionIndex: number): void {
+    event.actions.splice(actionIndex, 1);
+  }
+
+  deleteNote(event: EventEditable, noteIndex: number): void {
+    event.updateNotes.splice(noteIndex, 1);
+  }
 
   private scriptToScriptEditable(script: Script): ScriptEditable {
     return {
@@ -58,6 +87,13 @@ export class ScriptComponent implements OnInit {
       events: Object.keys(script.events).map(key => {
         return this.eventToEventEditable(key, script.events[key]);
       })
+    };
+  }
+
+  private scriptEditableToScript(scriptEditable: ScriptEditable): Script {
+    return {
+      firstEvent: scriptEditable.firstEvent,
+      events: this.eventsEditableToEvents(scriptEditable.events)
     };
   }
 
@@ -76,32 +112,37 @@ export class ScriptComponent implements OnInit {
     return {
       description: actionDescription,
       openMind: action.openMind,
-      triggerEvent: action.triggerEvent
+      triggerEvent: action.triggerEvent,
+      mouseover: false
     };
   }
 
   private noteToNoteEditable(noteTitle: string, noteContent: string): NoteEditable {
     return {
       title: noteTitle,
-      content: noteContent
-    };
-  }
-
-  private scriptEditableToScript(scriptEditable: ScriptEditable): Script {
-    return {
-      firstEvent: scriptEditable.firstEvent,
-      events: this.eventsEditableToEvents(scriptEditable.events)
+      content: noteContent,
+      mouseover: false
     };
   }
 
   private eventsEditableToEvents(eventsEditable: EventEditable[]): Events {
     const events: Events = {};
     eventsEditable.forEach(event => {
+      let actions = this.actionsEditableToActions(event.actions);
+      if (Object.keys(actions).length === 0) {
+        actions = undefined;
+      }
+
+      let updateNotes = this.notesEditableToNotes(event.updateNotes);
+      if (Object.keys(updateNotes).length === 0) {
+        updateNotes = undefined;
+      }
+
       events[event.id] = {
         description: event.description,
-        actions: this.actionsEditableToActions(event.actions),
-        nextEvent: event.nextEvent,
-        updateNotes: this.notesEditableToNotes(event.updateNotes)
+        actions,
+        nextEvent: event.nextEvent || undefined,
+        updateNotes
       };
     });
     return events;
@@ -147,9 +188,11 @@ interface ActionEditable {
   description: string;
   openMind?: string;
   triggerEvent?: string;
+  mouseover: boolean;
 }
 
 interface NoteEditable {
   title: string;
   content: string;
+  mouseover: boolean;
 }
