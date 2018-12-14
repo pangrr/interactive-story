@@ -5,7 +5,17 @@ import { JsonComponent } from '../json/json.component';
 import * as loveStory from '../../assets/love-story/script.json';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, FormArray, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 const scriptExample: Script = {
   events: (<any>loveStory).events,
@@ -19,7 +29,8 @@ const scriptExample: Script = {
   styleUrls: ['edit-script.component.css']
 })
 export class EditScriptComponent implements OnInit {
-  scriptEditable: ScriptEditable;
+  scriptFormGroup: FormGroup;
+  errorStateMatcher = new MyErrorStateMatcher();
 
   constructor(
     public json: MatDialog,
@@ -30,63 +41,55 @@ export class EditScriptComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.scriptEditable = this.script2ScriptEditable(scriptExample);
+    this.scriptFormGroup = this.buildScriptFormGroup(scriptExample);
   }
 
   openJson(): void {
     const jsonRef = this.json.open(JsonComponent, {
       width: '900px',
-      data: this.scriptEditable2Script(this.scriptEditable)
+      data: this.scriptEditable2Script(this.scriptFormGroup)
     });
 
     jsonRef.afterClosed().subscribe(result => {
       if (result) {
-        this.scriptEditable = this.script2ScriptEditable(result);
+        this.scriptFormGroup = this.buildScriptFormGroup(result);
       }
     });
   }
 
   addEvent(): void {
-    this.scriptEditable.events.push({
-      id: '',
-      description: '',
-      actions: [],
-      nextEvent: '',
-      updateNotes: [],
-      open: true
-    });
+    (this.scriptFormGroup.get('events') as FormArray).push(new FormGroup({
+      id: new FormControl(''),
+      description: new FormControl(''),
+      actions: new FormArray([]),
+      nextEvent: new FormControl(''),
+      updateNotes: new FormArray([]),
+      open: new FormControl(true)
+    }));
   }
 
-  deleteEvent(eventIndex: number): void {
-    this.scriptEditable.events.splice(eventIndex, 1);
+  deleteEvent(i: number): void {
+    (this.scriptFormGroup.get('events') as FormArray).removeAt(i);
   }
 
-  addAction(event: EventEditable): void {
-    event.actions.push({
-      description: '',
-      mouseover: false
-    });
+  addAction(actions: FormArray): void {
+    actions.push(new FormGroup({
+      description: new FormControl(''),
+      mouseover: new FormControl(false)
+    }));
   }
 
-  addNote(event: EventEditable): void {
-    event.updateNotes.push({
-      title: '',
-      content: '',
-      mouseover: false
-    });
+  addNote(notes: FormArray): void {
+    notes.push(new FormGroup({
+      title: new FormControl(''),
+      content: new FormControl(''),
+      mouseover: new FormControl(false)
+    }));
   }
 
-  deleteAction(event: EventEditable, actionIndex: number): void {
-    event.actions.splice(actionIndex, 1);
-  }
-
-  deleteNote(event: EventEditable, noteIndex: number): void {
-    event.updateNotes.splice(noteIndex, 1);
-  }
-
-  collectPossibleNextEvents(event: EventEditable): string[] {
+  collectPossibleNextEvents(event: FormGroup): string[] {
     const possibleNextEvents: string[] = [];
-    if (event.nextEvent) {
+    if (event.get('nextEvent')) {
       possibleNextEvents.push(event.nextEvent);
     }
     if (event.actions) {
@@ -101,19 +104,19 @@ export class EditScriptComponent implements OnInit {
   }
 
   closeEvents(): void {
-    this.scriptEditable.events.forEach(event => event.open = false);
+    this.scriptFormGroup.events.forEach(event => event.open = false);
   }
 
   sortEvents(): void {
     const sortedEvents: EventEditable[] = [];
     const events: { [key: string]: EventEditable } = {};
     const visited: { [key: string]: boolean } = {};
-    this.scriptEditable.events.forEach(event => {
+    this.scriptFormGroup.events.forEach(event => {
       events[event.id] = event;
       visited[event.id] = false;
     });
 
-    this.topoSortEventsHelper(this.scriptEditable.firstEvent, events, visited, sortedEvents);
+    this.topoSortEventsHelper(this.scriptFormGroup.firstEvent, events, visited, sortedEvents);
 
     Object.keys(events).forEach(key => {
       if (!visited[key]) {
@@ -121,7 +124,7 @@ export class EditScriptComponent implements OnInit {
       }
     });
 
-    this.scriptEditable.events = sortedEvents;
+    this.scriptFormGroup.events = sortedEvents;
   }
 
   private topoSortEventsHelper(
@@ -139,16 +142,22 @@ export class EditScriptComponent implements OnInit {
     stack.unshift(events[eventId]);
   }
 
-  private script2ScriptEditable(script: Script): ScriptEditable {
-    return {
-      firstEvent: script.firstEvent,
-      events: Object.keys(script.events).map(key => {
-        return this.event2EventEditable(key, script.events[key]);
-      })
-    };
+  private buildScriptFormGroup(script: Script): FormGroup {
+    return new FormGroup({
+      firstEvent: new FormControl(script.firstEvent),
+      events: new FormArray(
+        Object.keys(script.events).map(
+          key => this.buildEventFormGroup(key, script.events[key])
+        )
+      )
+    }, { validators: this.formValidator });
   }
 
-  private scriptEditable2Script(scriptEditable: ScriptEditable): Script {
+  private formValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    return null;
+  }
+
+  private scriptEditable2Script(scriptEditable: FormGroup): Script {
     return {
       firstEvent: scriptEditable.firstEvent,
       events: this.eventsEditable2Events(scriptEditable.events)
@@ -168,26 +177,25 @@ export class EditScriptComponent implements OnInit {
     return events;
   }
 
-  private event2EventEditable(eventId: string, event: Event): EventEditable {
-    return {
-      id: eventId,
-      description: event.description,
-      nextEvent: event.nextEvent,
-      actions: Object.keys(event.actions || {}).map(key => this.action2ActionEditable(key, event.actions[key])),
-      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.note2NoteEditable(key, event.updateNotes[key]))
-    };
+  private buildEventFormGroup(eventId: string, event: Event): FormGroup {
+    return new FormGroup({
+      id: new FormControl(eventId),
+      description: new FormControl(event.description),
+      nextEvent: new FormControl(event.nextEvent),
+      actions: Object.keys(event.actions || {}).map(key => this.buildActionFormGroup(key, event.actions[key])),
+      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.buildNoteFormGroup(key, event.updateNotes[key]))
+    });
   }
 
-  private action2ActionEditable(actionDescription: string, action: Action): ActionEditable {
-    return {
-      description: actionDescription,
-      think: action.think,
-      triggerEvent: action.triggerEvent,
-      mouseover: false
-    };
+  private buildActionFormGroup(actionDescription: string, action: Action): FormGroup {
+    return new FormGroup({
+      description: new FormControl(actionDescription),
+      think: new FormControl(action.think),
+      triggerEvent: new FormControl(action.triggerEvent)
+    });
   }
 
-  private note2NoteEditable(noteTitle: string, noteContent: string): NoteEditable {
+  private buildNoteFormGroup(noteTitle: string, noteContent: string): NoteEditable {
     return {
       title: noteTitle,
       content: noteContent,
@@ -214,33 +222,4 @@ export class EditScriptComponent implements OnInit {
     });
     return notes;
   }
-}
-
-
-
-interface ScriptEditable {
-  firstEvent: string;
-  events: EventEditable[];
-}
-
-interface EventEditable {
-  id: string;
-  description: string;
-  actions?: ActionEditable[];
-  updateNotes?: NoteEditable[];
-  nextEvent?: string;
-  open?: boolean;
-}
-
-interface ActionEditable {
-  description: string;
-  think?: string;
-  triggerEvent?: string;
-  mouseover: boolean;
-}
-
-interface NoteEditable {
-  title: string;
-  content: string;
-  mouseover: boolean;
 }
