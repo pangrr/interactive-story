@@ -1,6 +1,7 @@
 <div class="container">
   <mat-accordion class="events" multi>
-    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true" (closed)="event.open = false">
+    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
+      (closed)="event.open = false">
       <mat-expansion-panel-header>
         <mat-panel-title *ngIf="!event.open">
           {{event.id}}
@@ -11,19 +12,6 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <table class="full-width" cellspacing="0">
-        <tr>
-          <td>
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Event ID" [(ngModel)]="event.id">
-            </mat-form-field>
-          </td>
-          <td></td>
-          <td>
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
-            </mat-form-field>
-          </td>
-        </tr>
         <tr>
           <td colspan="4">
             <mat-form-field class="full-width">
@@ -72,6 +60,13 @@
         </tr>
       </table>
       <div class="event-control">
+        <mat-form-field>
+          <input matInput placeholder="Event ID" [(ngModel)]="event.id">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
+        </mat-form-field>
+        <span class="spacer"></span>
         <button mat-button (click)="addAction(event)">Add Action</button>
         <button mat-button (click)="addNote(event)">Add Note</button>
         <button mat-button color="warn" (click)="deleteEvent(i)">Delete Event</button>
