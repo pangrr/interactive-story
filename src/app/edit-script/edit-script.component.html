@@ -17,7 +17,7 @@
         <tr>
           <td colspan="4">
             <mat-form-field class="full-width">
-              <textarea matInput placeholder="Description" [(ngModel)]="event.description" [rows]="event.description.split('\n').length"></textarea>
+              <textarea matInput placeholder="Description" [(ngModel)]="event.description" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
           </td>
         </tr>
@@ -38,7 +38,7 @@
           </td>
           <td>
             <mat-form-field class="full-width">
-              <textarea matInput placeholder="Open Mind" [(ngModel)]="action.think" [rows]="action.think ? action.think.split('\n').length : 1"></textarea>
+              <textarea matInput placeholder="Open Mind" [(ngModel)]="action.think" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
           </td>
           <td class="icon-cell">
@@ -56,7 +56,7 @@
           </td>
           <td colspan="2">
             <mat-form-field class="full-width">
-              <textarea matInput placeholder="Note Content" [(ngModel)]="note.content" [rows]="note.content.split('\n').length"></textarea>
+              <textarea matInput placeholder="Note Content" [(ngModel)]="note.content" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
           </td>
           <td class="icon-cell">
@@ -74,8 +74,8 @@
           <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
         </mat-form-field>
         <span class="spacer"></span>
-        <button mat-button (click)="addAction(event)">Add Action</button>
-        <button mat-button (click)="addNote(event)">Add Note</button>
+        <button mat-button color="primary" (click)="addAction(event)">Add Action</button>
+        <button mat-button color="accent" (click)="addNote(event)">Add Note</button>
         <button mat-button color="warn" (click)="deleteEvent(i)">Delete Event</button>
       </div>
     </mat-expansion-panel>
@@ -89,7 +89,7 @@
       <button mat-button (click)="addEvent()">Add Event</button>
       <button mat-button (click)="openJson()">Show JSON</button>
       <button mat-button (click)="sortEvents()">Sort Events</button>
-      <button mat-button (click)="closeEvents()">Colse Events</button>
+      <button mat-button (click)="closeEvents()">Close Events</button>
     </mat-toolbar-row>
   </mat-toolbar>
 </div>
