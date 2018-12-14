@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Script, Event, Action, Events, Actions, Notes } from '../game';
+import { Script, Event, Action, Events, Actions, Notes } from '../story-playable';
 import { JsonComponent } from '../json/json.component';
 import * as loveStory from '../../assets/love-story/script.json';
 import { MatIconRegistry } from '@angular/material';
@@ -14,11 +14,11 @@ const scriptExample: Script = {
 
 
 @Component({
-  selector: 'app-script',
-  templateUrl: 'script.component.html',
-  styleUrls: ['script.component.css']
+  selector: 'app-edit-script',
+  templateUrl: 'edit-script.component.html',
+  styleUrls: ['edit-script.component.css']
 })
-export class ScriptComponent implements OnInit {
+export class EditScriptComponent implements OnInit {
   scriptEditable: ScriptEditable;
 
   constructor(
@@ -143,7 +143,7 @@ export class ScriptComponent implements OnInit {
   private action2ActionEditable(actionDescription: string, action: Action): ActionEditable {
     return {
       description: actionDescription,
-      openMind: action.openMind,
+      think: action.think,
       triggerEvent: action.triggerEvent,
       mouseover: false
     };
@@ -163,7 +163,7 @@ export class ScriptComponent implements OnInit {
     actionsEditable.forEach(action => {
       actions[action.description] = {
         triggerEvent: action.triggerEvent,
-        openMind: action.openMind
+        think: action.think
       };
     });
     return actions;
@@ -196,7 +196,7 @@ interface EventEditable {
 
 interface ActionEditable {
   description: string;
-  openMind?: string;
+  think?: string;
   triggerEvent?: string;
   mouseover: boolean;
 }

@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="menu">
+    <button mat-icon-button (click)="openNotes()" [color]="(storyPlayable.newNotes | keyvalue).length > 0 ? 'warn' : ''">
+      <mat-icon svgIcon="notes" matTooltip="记事本"></mat-icon>
+    </button>
+  </div>
+  <div class="event">
+    <div class="description" (click)="triggerNextEvent()">
+      <p *ngFor="let paragraph of storyPlayable.currentEvent.description.split('\n')" class="paragraph">{{paragraph}}</p>
+    </div>
+    <div class="actions">
+      <button mat-button class="action" *ngFor="let key of objectKeys(storyPlayable.currentEvent.actionsAvailable)" (click)="takeAction(key)">{{key}}</button>
+    </div>
+  </div>
+</div>

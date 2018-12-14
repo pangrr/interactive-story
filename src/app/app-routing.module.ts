@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { GameComponent } from './game/game.component';
-import { ScriptComponent } from './script/script.component';
+import { PlayStoryComponent } from './play-story/play-story.component';
+import { EditScriptComponent } from './edit-script/edit-script.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/story', pathMatch: 'full' },
-  { path: 'story', component: GameComponent },
-  { path: 'script', component: ScriptComponent }
+  { path: 'story', component: PlayStoryComponent },
+  { path: 'script', component: EditScriptComponent }
 ];
 
 @NgModule({

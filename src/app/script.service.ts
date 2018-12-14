@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Script, Events } from './game';
+import { Script, Events } from './story-playable';
 import * as loveStory from '../assets/love-story/script.json';
 
 const script: Script = {
@@ -10,7 +10,7 @@ const script: Script = {
 @Injectable({
   providedIn: 'root'
 })
-export class GameService {
+export class ScriptService {
 
   constructor() { }
 

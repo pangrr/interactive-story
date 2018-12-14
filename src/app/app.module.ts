@@ -15,28 +15,28 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 // my services
-import { GameService } from './game.service';
+import { ScriptService } from './script.service';
 // my components
 import { AppComponent } from './app.component';
-import { GameComponent } from './game/game.component';
+import { PlayStoryComponent } from './play-story/play-story.component';
 import { NotesComponent } from './notes/notes.component';
-import { MindComponent } from './mind/mind.component';
-import { ScriptComponent } from './script/script.component';
+import { DialogComponent } from './dialog/dialog.component';
+import { EditScriptComponent } from './edit-script/edit-script.component';
 import { JsonComponent } from './json/json.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent,
+    PlayStoryComponent,
     NotesComponent,
-    MindComponent,
-    ScriptComponent,
+    DialogComponent,
+    EditScriptComponent,
     JsonComponent,
   ],
   entryComponents: [
     NotesComponent,
-    MindComponent,
+    DialogComponent,
     JsonComponent
   ],
   imports: [
@@ -56,7 +56,7 @@ import { JsonComponent } from './json/json.component';
     MatInputModule,
     MatToolbarModule
   ],
-  providers: [GameService],
+  providers: [ScriptService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,4 +1,4 @@
-export class Game {
+export class StoryPlayable {
   readonly script: Script;
   history: EventHappened[];
   currentEvent: EventHappened;
@@ -116,7 +116,7 @@ export interface EventHappened extends Event {
 }
 
 export interface Action {
-  readonly openMind?: string;
+  readonly think?: string;
   readonly triggerEvent?: string;
 }
 
