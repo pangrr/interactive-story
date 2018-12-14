@@ -15,6 +15,7 @@ import { MindComponent } from '../mind/mind.component';
 })
 export class GameComponent implements OnInit {
   game: Game;
+  objectKeys = Object.keys;
 
   constructor(
     private service: GameService,
