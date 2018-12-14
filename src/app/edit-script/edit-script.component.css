@@ -84,3 +84,11 @@
   color: black;
   margin-right: 10px;
 }
+
+.action {
+  background: aliceblue;
+}
+
+.note {
+  background: seashell;
+}

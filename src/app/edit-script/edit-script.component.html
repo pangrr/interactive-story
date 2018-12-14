@@ -21,7 +21,7 @@
             </mat-form-field>
           </td>
         </tr>
-        <tr *ngFor="let action of event.actions; let i = index" (mouseenter)="action.mouseover = true" (mouseleave)="action.mouseover = false">
+        <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true" (mouseleave)="action.mouseover = false">
           <td>
             <mat-form-field class="full-width">
               <input matInput placeholder="Action Description" [(ngModel)]="action.description">
@@ -39,11 +39,11 @@
           </td>
           <td class="icon-cell">
             <button *ngIf="action.mouseover" mat-icon-button (click)="deleteAction(event, i)">
-              <mat-icon svgIcon="delete" matTooltip="delete action"></mat-icon>
+              <mat-icon svgIcon="delete" matTooltip="Delete Action"></mat-icon>
             </button>
           </td>
         </tr>
-        <tr *ngFor="let note of event.updateNotes; let i = index" (mouseenter)="note.mouseover = true" (mouseleave)="note.mouseover = false">
+        <tr *ngFor="let note of event.updateNotes; let i = index" class="note" (mouseenter)="note.mouseover = true" (mouseleave)="note.mouseover = false">
           <td>
             <mat-form-field class="full-width">
               <input matInput placeholder="Note Title" [(ngModel)]="note.title">
@@ -56,7 +56,7 @@
           </td>
           <td class="icon-cell">
             <button *ngIf="note.mouseover" mat-icon-button (click)="deleteNote(event, i)">
-              <mat-icon svgIcon="delete" matTooltip="delete note"></mat-icon>
+              <mat-icon svgIcon="delete" matTooltip="Delete Note"></mat-icon>
             </button>
           </td>
         </tr>
@@ -82,7 +82,7 @@
       </mat-form-field>
       <span class="spacer"></span>
       <button mat-button (click)="addEvent()">Add Event</button>
-      <button mat-button (click)="openJson()">JSON</button>
+      <button mat-button (click)="openJson()" matTooltip="Edit Script in JSON">JSON</button>
     </mat-toolbar-row>
   </mat-toolbar>
 </div>
