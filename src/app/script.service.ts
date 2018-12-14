@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Script, Events } from './story-playable';
 import * as loveStory from '../assets/love-story/script.json';
 
-const script: Script = {
+const scriptExample: Script = {
   events: (<any>loveStory).events,
   firstEvent: (<any>loveStory).firstEvent
 };
@@ -15,10 +15,10 @@ export class ScriptService {
   constructor() { }
 
   getScript(): Script {
-    const validationResult = this.validateScript(script);
+    const validationResult = this.validateScript(scriptExample);
 
     if (validationResult.isValid) {
-      return script;
+      return scriptExample;
     } else {
       return this.invalidScript(validationResult.error);
     }
