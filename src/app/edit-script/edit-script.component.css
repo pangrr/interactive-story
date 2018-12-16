@@ -86,5 +86,9 @@
 }
 
 .note {
-  background: lavenderblush;
+  background: #efefef;
+}
+
+.red {
+  color: red;
 }

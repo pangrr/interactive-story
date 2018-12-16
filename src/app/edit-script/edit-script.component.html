@@ -24,11 +24,9 @@
         <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true"
           (mouseleave)="action.mouseover = false">
           <td>
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" [ngClass]="event.actions && getDuplicateActionDescriptions(event.actions)[action.description] ? 'red' : ''">
               <input matInput placeholder="Action Description" [(ngModel)]="action.description">
-              <mat-error>
-                Please enter a valid email address
-              </mat-error>
+              <mat-hint class="red" *ngIf="event.actions && getDuplicateActionDescriptions(event.actions)[action.description]">Duplicate Action Description!</mat-hint>
             </mat-form-field>
           </td>
           <td>
@@ -50,8 +48,9 @@
         <tr *ngFor="let note of event.updateNotes; let i = index" class="note" (mouseenter)="note.mouseover = true"
           (mouseleave)="note.mouseover = false">
           <td>
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" [ngClass]="event.updateNotes && getDuplicateNoteTitles(event.updateNotes)[note.title] ? 'red' : ''">
               <input matInput placeholder="Note Title" [(ngModel)]="note.title">
+              <mat-hint class="red" *ngIf="event.updateNotes && getDuplicateNoteTitles(event.updateNotes)[note.title]">Duplicate Note Title!</mat-hint>
             </mat-form-field>
           </td>
           <td colspan="2">
@@ -67,15 +66,16 @@
         </tr>
       </table>
       <div class="event-control">
-        <mat-form-field>
+        <mat-form-field [ngClass]="getDuplicateEventIds()[event.id] ? 'red' : ''">
           <input matInput placeholder="Event ID" [(ngModel)]="event.id">
+          <mat-hint *ngIf="getDuplicateEventIds()[event.id]" class="red">Duplicate Event ID!</mat-hint>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
         </mat-form-field>
         <span class="spacer"></span>
         <button mat-button color="primary" (click)="addAction(event)">Add Action</button>
-        <button mat-button color="accent" (click)="addNote(event)">Add Note</button>
+        <button mat-button class="yellow" (click)="addNote(event)">Add Note</button>
         <button mat-button color="warn" (click)="deleteEvent(i)">Delete Event</button>
       </div>
     </mat-expansion-panel>

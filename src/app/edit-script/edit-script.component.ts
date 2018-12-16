@@ -124,6 +124,48 @@ export class EditScriptComponent implements OnInit {
     this.scriptEditable.events = sortedEvents;
   }
 
+  getDuplicateEventIds(): { [key: string]: boolean } {
+    const eventIds: { [key: string]: boolean } = {};
+    const duplicateEventIds: { [key: string]: boolean } = {};
+    this.scriptEditable.events.forEach(event => {
+      const id = event.id;
+      if (!eventIds[id]) {
+        eventIds[id] = true;
+      } else {
+        duplicateEventIds[id] = true;
+      }
+    });
+    return duplicateEventIds;
+  }
+
+  getDuplicateActionDescriptions(actions: ActionEditable[]): { [key: string]: boolean } {
+    const actionDescriptions: { [key: string]: boolean } = {};
+    const duplicateActionDescriptions: { [key: string]: boolean } = {};
+    actions.forEach(action => {
+      const description = action.description;
+      if (!actionDescriptions[description]) {
+        actionDescriptions[description] = true;
+      } else {
+        duplicateActionDescriptions[description] = true;
+      }
+    });
+    return duplicateActionDescriptions;
+  }
+
+  getDuplicateNoteTitles(notes: NoteEditable[]): { [key: string]: boolean } {
+    const noteTitles: { [key: string]: boolean } = {};
+    const duplicateNoteTitles: { [key: string]: boolean } = {};
+    notes.forEach(note => {
+      const title = note.title;
+      if (!noteTitles[title]) {
+        noteTitles[title] = true;
+      } else {
+        duplicateNoteTitles[title] = true;
+      }
+    });
+    return duplicateNoteTitles;
+  }
+
   private topoSortEventsHelper(
     eventId: string,
     events: { [key: string]: EventEditable },
