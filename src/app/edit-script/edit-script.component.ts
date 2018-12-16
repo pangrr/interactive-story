@@ -47,7 +47,7 @@ export class EditScriptComponent implements OnInit {
   openJson(): void {
     const jsonRef = this.json.open(JsonComponent, {
       width: '900px',
-      data: this.scriptEditable2Script(this.scriptFormGroup)
+      data: this.scriptFormGroupToScript(this.scriptFormGroup)
     });
 
     jsonRef.afterClosed().subscribe(result => {
@@ -75,6 +75,8 @@ export class EditScriptComponent implements OnInit {
   addAction(actions: FormArray): void {
     actions.push(new FormGroup({
       description: new FormControl(''),
+      triggerEvent: new FormControl(''),
+      think: new FormControl(''),
       mouseover: new FormControl(false)
     }));
   }
@@ -87,59 +89,63 @@ export class EditScriptComponent implements OnInit {
     }));
   }
 
-  collectPossibleNextEvents(event: FormGroup): string[] {
+  collectPossibleNextEventIds(event: FormGroup): string[] {
     const possibleNextEvents: string[] = [];
-    if (event.get('nextEvent')) {
-      possibleNextEvents.push(event.nextEvent);
+    const nextEvent = event.get('nextEvent').value;
+
+    if (nextEvent) {
+      possibleNextEvents.push(nextEvent);
     }
-    if (event.actions) {
-      Object.keys(event.actions).forEach(key => {
-        const action = event.actions[key];
-        if (action.triggerEvent) {
-          possibleNextEvents.push(action.triggerEvent);
-        }
-      });
-    }
+
+    const actions = (event.get('actions') as FormArray);
+    actions.controls.forEach(action => {
+      const triggerEvent = action.get('triggerEvent').value;
+      if (triggerEvent) {
+        possibleNextEvents.push(triggerEvent);
+      }
+    });
+
     return possibleNextEvents;
   }
 
   closeEvents(): void {
-    this.scriptFormGroup.events.forEach(event => event.open = false);
+    (this.scriptFormGroup.get('events') as FormArray).controls.forEach(eventControlGroup => eventControlGroup.get('open').setValue(false));
   }
 
   sortEvents(): void {
-    const sortedEvents: EventEditable[] = [];
-    const events: { [key: string]: EventEditable } = {};
-    const visited: { [key: string]: boolean } = {};
-    this.scriptFormGroup.events.forEach(event => {
-      events[event.id] = event;
-      visited[event.id] = false;
+    const sortedEventsFormArray: FormArray = new FormArray([]);
+    const eventFormGroupMap: { [key: string]: FormGroup } = {};
+    const visitedEventIdMap: { [key: string]: boolean } = {};
+    (this.scriptFormGroup.get('events') as FormArray).controls.forEach((eventControlGroup: FormGroup) => {
+      const eventId: string = eventControlGroup.get('id').value;
+      eventFormGroupMap[eventId] = eventControlGroup;
+      visitedEventIdMap[eventId] = false;
     });
 
-    this.topoSortEventsHelper(this.scriptFormGroup.firstEvent, events, visited, sortedEvents);
+    this.topoSortEventsHelper(this.scriptFormGroup.get('firstEvent').value, eventFormGroupMap, visitedEventIdMap, sortedEventsFormArray);
 
-    Object.keys(events).forEach(key => {
-      if (!visited[key]) {
-        this.topoSortEventsHelper(key, events, visited, sortedEvents);
+    Object.keys(eventFormGroupMap).forEach(eventId => {
+      if (!visitedEventIdMap[eventId]) {
+        this.topoSortEventsHelper(eventId, eventFormGroupMap, visitedEventIdMap, sortedEventsFormArray);
       }
     });
 
-    this.scriptFormGroup.events = sortedEvents;
+    this.scriptFormGroup.setValue({ 'events': sortedEventsFormArray });
   }
 
   private topoSortEventsHelper(
     eventId: string,
-    events: { [key: string]: EventEditable },
-    visited: { [key: string]: boolean },
-    stack: EventEditable[]
+    eventControlGroupMap: { [key: string]: FormGroup },
+    visitedEventIdMap: { [key: string]: boolean },
+    eventsFormArray: FormArray
   ): void {
-    visited[eventId] = true;
-    this.collectPossibleNextEvents(events[eventId]).forEach(nextEventId => {
-      if (!visited[nextEventId]) {
-        this.topoSortEventsHelper(nextEventId, events, visited, stack);
+    visitedEventIdMap[eventId] = true;
+    this.collectPossibleNextEventIds(eventControlGroupMap[eventId]).forEach(nextEventId => {
+      if (!visitedEventIdMap[nextEventId]) {
+        this.topoSortEventsHelper(nextEventId, eventControlGroupMap, visitedEventIdMap, eventsFormArray);
       }
     });
-    stack.unshift(events[eventId]);
+    eventsFormArray.insert(0, eventControlGroupMap[eventId]);
   }
 
   private buildScriptFormGroup(script: Script): FormGroup {
@@ -154,24 +160,27 @@ export class EditScriptComponent implements OnInit {
   }
 
   private formValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    // TODO
     return null;
   }
 
-  private scriptEditable2Script(scriptEditable: FormGroup): Script {
+  private scriptFormGroupToScript(scriptFormGroup: FormGroup): Script {
     return {
-      firstEvent: scriptEditable.firstEvent,
-      events: this.eventsEditable2Events(scriptEditable.events)
+      firstEvent: scriptFormGroup.get('value').value,
+      events: this.eventsFormArrayToEvents(scriptFormGroup.get('events') as FormArray)
     };
   }
 
-  private eventsEditable2Events(eventsEditable: EventEditable[]): Events {
+  private eventsFormArrayToEvents(eventsFormArray: FormArray): Events {
     const events: Events = {};
-    eventsEditable.forEach(event => {
-      events[event.id] = {
-        description: event.description,
-        actions: event.actions.length > 0 ? this.actionsEditable2Actions(event.actions) : undefined,
-        nextEvent: event.nextEvent || undefined,
-        updateNotes: event.updateNotes.length > 0 ? this.notesEditable2Notes(event.updateNotes) : undefined
+    eventsFormArray.controls.forEach((eventFormGroup: FormGroup) => {
+      events[eventFormGroup.get('id').value] = {
+        description: eventFormGroup.get('description').value,
+        actions: (eventFormGroup.get('actions') as FormArray).length > 0 ?
+          this.actionsFormArrayToActions(eventFormGroup.get('actions') as FormArray) : undefined,
+        nextEvent: eventFormGroup.get('nextEvent').value || undefined,
+        updateNotes: (eventFormGroup.get('updateNotes') as FormArray).length > 0 ?
+          this.notesFormArrayToNotes(eventFormGroup.get('updateNotes') as FormArray) : undefined
       };
     });
     return events;
@@ -182,8 +191,8 @@ export class EditScriptComponent implements OnInit {
       id: new FormControl(eventId),
       description: new FormControl(event.description),
       nextEvent: new FormControl(event.nextEvent),
-      actions: Object.keys(event.actions || {}).map(key => this.buildActionFormGroup(key, event.actions[key])),
-      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.buildNoteFormGroup(key, event.updateNotes[key]))
+      actions: new FormArray(Object.keys(event.actions || {}).map(key => this.buildActionFormGroup(key, event.actions[key]))),
+      updateNotes: new FormArray(Object.keys(event.updateNotes || {}).map(key => this.buildNoteFormGroup(key, event.updateNotes[key])))
     });
   }
 
@@ -195,30 +204,30 @@ export class EditScriptComponent implements OnInit {
     });
   }
 
-  private buildNoteFormGroup(noteTitle: string, noteContent: string): NoteEditable {
-    return {
-      title: noteTitle,
-      content: noteContent,
-      mouseover: false
-    };
+  private buildNoteFormGroup(noteTitle: string, noteContent: string): FormGroup {
+    return new FormGroup({
+      title: new FormControl(noteTitle),
+      content: new FormControl(noteContent),
+      mouseover: new FormControl(false)
+    });
   }
 
 
-  private actionsEditable2Actions(actionsEditable: ActionEditable[]): Actions {
+  private actionsFormArrayToActions(actionsFormArray: FormArray): Actions {
     const actions: Actions = {};
-    actionsEditable.forEach(action => {
-      actions[action.description] = {
-        triggerEvent: action.triggerEvent,
-        think: action.think
+    actionsFormArray.controls.forEach((actionFormGroup: FormGroup) => {
+      actions[actionFormGroup.get('description').value] = {
+        triggerEvent: actionFormGroup.get('triggerEvent').value || undefined,
+        think: actionFormGroup.get('think').value || undefined
       };
     });
     return actions;
   }
 
-  private notesEditable2Notes(notesEditable: NoteEditable[]): Notes {
+  private notesFormArrayToNotes(notesFormArray: FormArray): Notes {
     const notes: Notes = {};
-    notesEditable.forEach(note => {
-      notes[note.title] = note.content;
+    notesFormArray.controls.forEach((noteFormGroup: FormGroup) => {
+      notes[noteFormGroup.get('title').value] = noteFormGroup.get('content').value;
     });
     return notes;
   }

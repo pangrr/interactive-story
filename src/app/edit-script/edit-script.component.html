@@ -1,15 +1,15 @@
-<div class="container">
-  <mat-accordion class="events" multi>
-    <mat-expansion-panel *ngFor="let event of scriptEditable.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
-      (closed)="event.open = false">
+<form class="container" [formGroup]="scriptFormGroup" (ngSubmit)="submitForm()">
+  <mat-accordion formArrayName="events" class="events" multi>
+    <mat-expansion-panel *ngFor="let event of events.controls; let i = index" [formGroup]="i" [expanded]="event.get('open').value" (opened)="event.get('open').setValue(true)"
+      (closed)="event.get('open').setValue(false)">
       <mat-expansion-panel-header>
-        <div class="event-id-container truncate" *ngIf="!event.open">
-          {{event.id}}
+        <div class="event-id-container truncate" *ngIf="!event.get('open').value">
+          {{event.get('id').value}}
         </div>
-        <div class="event-description-container truncate" *ngIf="!event.open">
-          {{event.description}}
+        <div class="event-description-container truncate" *ngIf="!event.get('open').value">
+          {{event.get('description').value}}
         </div>
-        <div class="possible-next-events-container truncate" *ngIf="!event.open">
+        <div class="possible-next-events-container truncate" *ngIf="!event.get('open').value">
           <span *ngFor="let eventId of collectPossibleNextEvents(event)" class="next-event">{{eventId}}</span>
         </div>
       </mat-expansion-panel-header>
@@ -92,4 +92,4 @@
       <button mat-button (click)="closeEvents()">Close Events</button>
     </mat-toolbar-row>
   </mat-toolbar>
-</div>
+</form>
