@@ -166,6 +166,15 @@ export class EditScriptComponent implements OnInit {
     return duplicateNoteTitles;
   }
 
+  eventIdExists(eventId: string): boolean {
+    for (const event of this.scriptEditable.events) {
+      if (event.id === eventId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private topoSortEventsHelper(
     eventId: string,
     events: { [key: string]: EventEditable },

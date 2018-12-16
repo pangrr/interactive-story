@@ -30,8 +30,9 @@
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" [ngClass]="action.triggerEvent && !eventIdExists(action.triggerEvent) ? 'red' : ''">
               <input matInput placeholder="Trigger Event" [(ngModel)]="action.triggerEvent">
+              <mat-hint *ngIf="action.triggerEvent && !eventIdExists(action.triggerEvent)" class="red">Event ID Not Exist!</mat-hint>
             </mat-form-field>
           </td>
           <td>
@@ -70,20 +71,22 @@
           <input matInput placeholder="Event ID" [(ngModel)]="event.id">
           <mat-hint *ngIf="getDuplicateEventIds()[event.id]" class="red">Duplicate Event ID!</mat-hint>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field [ngClass]="event.nextEvent && !eventIdExists(event.nextEvent) ? 'red' : ''">
           <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
+          <mat-hint *ngIf="event.nextEvent && !eventIdExists(event.nextEvent)" class="red">Event ID Not Exist!</mat-hint>
         </mat-form-field>
         <span class="spacer"></span>
         <button mat-button color="primary" (click)="addAction(event)">Add Action</button>
-        <button mat-button class="yellow" (click)="addNote(event)">Add Note</button>
+        <button mat-button (click)="addNote(event)">Add Note</button>
         <button mat-button color="warn" (click)="deleteEvent(i)">Delete Event</button>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
   <mat-toolbar color="primary" class="toolbar">
     <mat-toolbar-row>
-      <mat-form-field>
+      <mat-form-field [ngClass]="eventIdExists(scriptEditable.firstEvent) ? '' : 'red'">
         <input matInput placeholder="First Event" [(ngModel)]="scriptEditable.firstEvent">
+        <mat-hint *ngIf="!eventIdExists(scriptEditable.firstEvent)" class="red">Event ID Not Exist!</mat-hint>
       </mat-form-field>
       <span class="spacer"></span>
       <button mat-button (click)="addEvent()">Add Event</button>
