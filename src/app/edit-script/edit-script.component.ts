@@ -19,7 +19,7 @@ const scriptExample: Script = {
   styleUrls: ['edit-script.component.css']
 })
 export class EditScriptComponent implements OnInit {
-  scriptEditable: ScriptEditable;
+  script: Script4Edit;
 
   constructor(
     public json: MatDialog,
@@ -30,61 +30,70 @@ export class EditScriptComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.scriptEditable = this.script2ScriptEditable(scriptExample);
+    this.script = this.buildScript4Edit(scriptExample);
   }
 
   openJson(): void {
     const jsonRef = this.json.open(JsonComponent, {
       width: '900px',
-      data: this.scriptEditable2Script(this.scriptEditable)
+      data: this.buildScript(this.script)
     });
 
     jsonRef.afterClosed().subscribe(result => {
       if (result) {
-        this.scriptEditable = this.script2ScriptEditable(result);
+        this.script = this.buildScript4Edit(result);
       }
     });
   }
 
   addEvent(): void {
-    this.scriptEditable.events.push({
-      id: '',
-      description: '',
+    this.script.events.push({
+      // data
+      id: undefined,
+      description: undefined,
       actions: [],
-      nextEvent: '',
+      nextEvent: undefined,
       updateNotes: [],
-      open: true
+      // helper
+      open: true,
+      invalid: {}
     });
   }
 
   deleteEvent(eventIndex: number): void {
-    this.scriptEditable.events.splice(eventIndex, 1);
+    this.script.events.splice(eventIndex, 1);
   }
 
-  addAction(event: EventEditable): void {
+  addAction(event: Event4Edit): void {
     event.actions.push({
-      description: '',
-      mouseover: false
+      // data
+      description: undefined,
+      // helper
+      mouseover: false,
+      invalid: {}
     });
   }
 
-  addNote(event: EventEditable): void {
+  addNote(event: Event4Edit): void {
     event.updateNotes.push({
+      // data
       title: '',
       content: '',
-      mouseover: false
+      // helper
+      mouseover: false,
+      invalid: {}
     });
   }
 
-  deleteAction(event: EventEditable, actionIndex: number): void {
+  deleteAction(event: Event4Edit, actionIndex: number): void {
     event.actions.splice(actionIndex, 1);
   }
 
-  deleteNote(event: EventEditable, noteIndex: number): void {
+  deleteNote(event: Event4Edit, noteIndex: number): void {
     event.updateNotes.splice(noteIndex, 1);
   }
 
-  collectPossibleNextEvents(event: EventEditable): string[] {
+  collectPossibleNextEvents(event: Event4Edit): string[] {
     const possibleNextEvents: string[] = [];
     if (event.nextEvent) {
       possibleNextEvents.push(event.nextEvent);
@@ -101,19 +110,19 @@ export class EditScriptComponent implements OnInit {
   }
 
   closeEvents(): void {
-    this.scriptEditable.events.forEach(event => event.open = false);
+    this.script.events.forEach(event => event.open = false);
   }
 
   sortEvents(): void {
-    const sortedEvents: EventEditable[] = [];
-    const events: { [key: string]: EventEditable } = {};
+    const sortedEvents: Event4Edit[] = [];
+    const events: { [key: string]: Event4Edit } = {};
     const visited: { [key: string]: boolean } = {};
-    this.scriptEditable.events.forEach(event => {
+    this.script.events.forEach(event => {
       events[event.id] = event;
       visited[event.id] = false;
     });
 
-    this.topoSortEventsHelper(this.scriptEditable.firstEvent, events, visited, sortedEvents);
+    this.topoSortEventsHelper(this.script.firstEvent, events, visited, sortedEvents);
 
     Object.keys(events).forEach(key => {
       if (!visited[key]) {
@@ -121,13 +130,13 @@ export class EditScriptComponent implements OnInit {
       }
     });
 
-    this.scriptEditable.events = sortedEvents;
+    this.script.events = sortedEvents;
   }
 
   getDuplicateEventIds(): { [key: string]: boolean } {
     const eventIds: { [key: string]: boolean } = {};
     const duplicateEventIds: { [key: string]: boolean } = {};
-    this.scriptEditable.events.forEach(event => {
+    this.script.events.forEach(event => {
       const id = event.id;
       if (!eventIds[id]) {
         eventIds[id] = true;
@@ -138,7 +147,7 @@ export class EditScriptComponent implements OnInit {
     return duplicateEventIds;
   }
 
-  getDuplicateActionDescriptions(actions: ActionEditable[]): { [key: string]: boolean } {
+  getDuplicateActionDescriptions(actions: Action4Edit[]): { [key: string]: boolean } {
     const actionDescriptions: { [key: string]: boolean } = {};
     const duplicateActionDescriptions: { [key: string]: boolean } = {};
     actions.forEach(action => {
@@ -152,7 +161,7 @@ export class EditScriptComponent implements OnInit {
     return duplicateActionDescriptions;
   }
 
-  getDuplicateNoteTitles(notes: NoteEditable[]): { [key: string]: boolean } {
+  getDuplicateNoteTitles(notes: Note4Edit[]): { [key: string]: boolean } {
     const noteTitles: { [key: string]: boolean } = {};
     const duplicateNoteTitles: { [key: string]: boolean } = {};
     notes.forEach(note => {
@@ -167,7 +176,7 @@ export class EditScriptComponent implements OnInit {
   }
 
   eventIdExists(eventId: string): boolean {
-    for (const event of this.scriptEditable.events) {
+    for (const event of this.script.events) {
       if (event.id === eventId) {
         return true;
       }
@@ -177,9 +186,9 @@ export class EditScriptComponent implements OnInit {
 
   private topoSortEventsHelper(
     eventId: string,
-    events: { [key: string]: EventEditable },
+    events: { [key: string]: Event4Edit },
     visited: { [key: string]: boolean },
-    stack: EventEditable[]
+    stack: Event4Edit[]
   ): void {
     visited[eventId] = true;
     this.collectPossibleNextEvents(events[eventId]).forEach(nextEventId => {
@@ -190,66 +199,71 @@ export class EditScriptComponent implements OnInit {
     stack.unshift(events[eventId]);
   }
 
-  private script2ScriptEditable(script: Script): ScriptEditable {
+  private buildScript4Edit(script: Script): Script4Edit {
     return {
+      // data
       firstEvent: script.firstEvent,
       events: Object.keys(script.events).map(key => {
-        return this.event2EventEditable(key, script.events[key]);
-      })
+        return this.buildEvent4Edit(key, script.events[key]);
+      }),
+      invalid: {}
     };
   }
 
-  private scriptEditable2Script(scriptEditable: ScriptEditable): Script {
+  private buildScript(script4Edit: Script4Edit): Script {
     return {
-      firstEvent: scriptEditable.firstEvent,
-      events: this.eventsEditable2Events(scriptEditable.events)
+      firstEvent: script4Edit.firstEvent,
+      events: this.buildEvents(script4Edit.events)
     };
   }
 
-  private eventsEditable2Events(eventsEditable: EventEditable[]): Events {
+  private buildEvents(eventsEditable: Event4Edit[]): Events {
     const events: Events = {};
     eventsEditable.forEach(event => {
       events[event.id] = {
         description: event.description,
-        actions: event.actions.length > 0 ? this.actionsEditable2Actions(event.actions) : undefined,
+        actions: event.actions.length > 0 ? this.buildActions(event.actions) : undefined,
         nextEvent: event.nextEvent || undefined,
-        updateNotes: event.updateNotes.length > 0 ? this.notesEditable2Notes(event.updateNotes) : undefined
+        updateNotes: event.updateNotes.length > 0 ? this.buildNotes(event.updateNotes) : undefined
       };
     });
     return events;
   }
 
-  private event2EventEditable(eventId: string, event: Event): EventEditable {
+  private buildEvent4Edit(eventId: string, event: Event): Event4Edit {
     return {
       id: eventId,
       description: event.description,
       nextEvent: event.nextEvent,
-      actions: Object.keys(event.actions || {}).map(key => this.action2ActionEditable(key, event.actions[key])),
-      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.note2NoteEditable(key, event.updateNotes[key]))
+      actions: Object.keys(event.actions || {}).map(key => this.buildAction4Edit(key, event.actions[key])),
+      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.buildNote4Edit(key, event.updateNotes[key])),
+      invalid: {}
     };
   }
 
-  private action2ActionEditable(actionDescription: string, action: Action): ActionEditable {
+  private buildAction4Edit(actionDescription: string, action: Action): Action4Edit {
     return {
       description: actionDescription,
       think: action.think,
       triggerEvent: action.triggerEvent,
-      mouseover: false
+      mouseover: false,
+      invalid: {}
     };
   }
 
-  private note2NoteEditable(noteTitle: string, noteContent: string): NoteEditable {
+  private buildNote4Edit(noteTitle: string, noteContent: string): Note4Edit {
     return {
       title: noteTitle,
       content: noteContent,
-      mouseover: false
+      mouseover: false,
+      invalid: {}
     };
   }
 
 
-  private actionsEditable2Actions(actionsEditable: ActionEditable[]): Actions {
+  private buildActions(actions4Edit: Action4Edit[]): Actions {
     const actions: Actions = {};
-    actionsEditable.forEach(action => {
+    actions4Edit.forEach(action => {
       actions[action.description] = {
         triggerEvent: action.triggerEvent,
         think: action.think
@@ -258,9 +272,9 @@ export class EditScriptComponent implements OnInit {
     return actions;
   }
 
-  private notesEditable2Notes(notesEditable: NoteEditable[]): Notes {
+  private buildNotes(notes4Edit: Note4Edit[]): Notes {
     const notes: Notes = {};
-    notesEditable.forEach(note => {
+    notes4Edit.forEach(note => {
       notes[note.title] = note.content;
     });
     return notes;
@@ -269,29 +283,41 @@ export class EditScriptComponent implements OnInit {
 
 
 
-interface ScriptEditable {
+interface Script4Edit {
+  // data
   firstEvent: string;
-  events: EventEditable[];
+  events: Event4Edit[];
+  // helper
+  invalid: { [key: string]: any };
 }
 
-interface EventEditable {
+interface Event4Edit {
+  // data
   id: string;
   description: string;
-  actions?: ActionEditable[];
-  updateNotes?: NoteEditable[];
+  actions?: Action4Edit[];
+  updateNotes?: Note4Edit[];
   nextEvent?: string;
+  // helper
   open?: boolean;
+  invalid: { [key: string]: any };
 }
 
-interface ActionEditable {
+interface Action4Edit {
+  // data
   description: string;
   think?: string;
   triggerEvent?: string;
+  // helper
   mouseover: boolean;
+  invalid: { [key: string]: any };
 }
 
-interface NoteEditable {
+interface Note4Edit {
+  // data
   title: string;
   content: string;
+  // helper
   mouseover: boolean;
+  invalid: { [key: string]: any };
 }
