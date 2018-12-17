@@ -1,10 +1,15 @@
 .container {
   display: flex;
   flex-direction: column;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 .edit {
   height: 500px;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 0.8em;
+}
+
+.mat-error {
   font-size: 0.8em;
 }
