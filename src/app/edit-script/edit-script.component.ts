@@ -63,19 +63,14 @@ export class EditScriptComponent implements OnInit {
       // data
       description: undefined,
       triggerEvent: undefined,
-      think: undefined,
-      // helper
-      mouseover: false
+      think: undefined
     });
   }
 
   addNote(event: Event4Edit): void {
     event.updateNotes.push({
-      // data
       title: undefined,
-      content: undefined,
-      // helper
-      mouseover: false
+      content: undefined
     });
   }
 
@@ -114,80 +109,65 @@ export class EditScriptComponent implements OnInit {
 
   validateScript(): void {
     const eventIdOccurance = this.countEventIdOccurance();
+    this.script.invalid = (this.script.firstEventIdNotExist = this.script.firstEvent && !eventIdOccurance[this.script.firstEvent]) ||
+      this.validateEvents(this.script, eventIdOccurance);
+  }
 
-    const invalidScript: InvalidScript = {};
+  private validateEvents(script: Script4Edit, eventIdOccurance: Occurance): boolean {
+    let anyInvalidEvent = false;
 
-    if (!eventIdOccurance[this.script.firstEvent]) {
-      invalidScript.firstEventNotExists = this.script.firstEvent;
-    }
-
-    const duplicateEventIds = Object.keys(eventIdOccurance).reduce((eventIds, eventId) => {
-      if (eventIdOccurance[eventId] > 1) {
-        return [...eventIds, eventId];
-      } else {
-        return eventIds;
-      }
-    }, []);
-    if (duplicateEventIds.length > 0) {
-      invalidScript.duplicateEventIds = duplicateEventIds;
-    }
-
-    const invalidEvents: InvalidEvent[] = [];
-
-    this.script.events.forEach(event => {
-      const invalidEvent: InvalidEvent = { id: event.id };
-      if (!eventIdOccurance[event.nextEvent]) {
-        invalidEvent.nextEventNotExists = event.nextEvent;
-      }
-
-      const duplicateActionDescriptions = this.getDuplicateActionDescriptions(event.actions);
-      if (duplicateActionDescriptions.length > 0) {
-        invalidEvent.duplicateActionDescriptions = duplicateActionDescriptions;
-      }
-
-      const duplicateNoteTitles = this.getDuplicateNoteTitles(event.updateNotes);
-      if (duplicateNoteTitles.length > 0) {
-        invalidEvent.duplicateNoteTitles = duplicateNoteTitles;
-      }
-
-      const invalidActions: InvalidAction[] = [];
-      event.actions.forEach(action => {
-        if (!eventIdOccurance[action.triggerEvent]) {
-          invalidActions.push({
-            description: action.description,
-            triggerEventNotExists: action.triggerEvent
-          });
-        }
-      });
-      if (invalidActions.length > 0) {
-        invalidEvent.invalidActions = invalidActions;
-      }
-
-      const invalidNotes: InvalidNote[] = [];
-      event.updateNotes.forEach(note => {
-        if (!note.title) {
-          invalidNotes.push({
-            
-          })
-        }
-      })
-
-      if (Object.keys(invalidEvent).length > 1) {
-        invalidEvents.push(invalidEvent);
-      }
+    script.events.forEach(event => {
+      anyInvalidEvent = anyInvalidEvent || (event.invalid =
+          (event.duplicateId = (event.id && eventIdOccurance[event.id] > 1)) ||
+          (event.nextEventIdNotExist = event.nextEventIdNotExist && !eventIdOccurance[event.nextEvent]) ||
+          this.validateActions(event.actions, eventIdOccurance) ||
+          this.validateNotes(event.updateNotes)
+        );
     });
 
-    if (invalidEvents.length > 0) {
-      invalidScript.invalidEvents = invalidEvents;
-    }
+    return anyInvalidEvent;
+  }
 
-    this.showJson(invalidScript);
+  private validateActions(actions: Action4Edit[], eventIdOccurance: Occurance): boolean {
+    let anyActionInvalid = false;
+    const actionDescriptionOccurance: Occurance = actions.reduce(
+      (occurance, action) => {
+        occurance[action.description] = (occurance[action.description] || 0) + 1;
+        return occurance;
+      },
+      {}
+    );
+
+    actions.forEach(action => {
+      anyActionInvalid = anyActionInvalid ||
+        (action.duplicateDescription = actionDescriptionOccurance[action.description] > 1) ||
+        (action.triggerEventIdNotExist = action.triggerEvent && !eventIdOccurance[action.triggerEvent]);
+    });
+
+    return anyActionInvalid;
+  }
+
+  private validateNotes(notes: Note4Edit[]): boolean {
+    let anyNoteInValid = false;
+    const noteTitleOccurance: Occurance = notes.reduce(
+      (occurance, note) => {
+        occurance[note.title] = (occurance[note.title] || 0) + 1;
+        return occurance;
+      },
+      {}
+    );
+
+    notes.forEach(note => {
+      anyNoteInValid = anyNoteInValid || (note.duplicateTitle = noteTitleOccurance[note.title] > 1);
+    });
+
+    return anyNoteInValid;
   }
 
   private showJson(object: any, done?: (data: any) => any): void {
     const jsonRef = this.json.open(JsonComponent, {
       width: '900px',
-      data: { object, showSubmit: done !== undefined }
+      data: { object, submittable: done !== undefined }
     });
 
     if (done) {
@@ -195,12 +175,12 @@ export class EditScriptComponent implements OnInit {
     }
   }
 
-  private countEventIdOccurance(): { [key: string]: number } {
-    const eventIds: { [key: string]: number } = {};
+  private countEventIdOccurance(): Occurance {
+    const eventIdOccurance: Occurance = {};
     this.script.events.forEach(event => {
-      eventIds[event.id] = (eventIds[event.id] || 0) + 1;
+      eventIdOccurance[event.id] = (eventIdOccurance[event.id] || 0) + 1;
     });
-    return eventIds;
+    return eventIdOccurance;
   }
 
   private collectPossibleNextEvents(event: Event4Edit): string[] {
@@ -216,34 +196,6 @@ export class EditScriptComponent implements OnInit {
       });
     }
     return possibleNextEvents;
-  }
-
-  private getDuplicateActionDescriptions(actions: Action4Edit[]): string[] {
-    const actionDescriptions: { [key: string]: boolean } = {};
-    const duplicateActionDescriptions: string[] = [];
-    actions.forEach(action => {
-      const description = action.description;
-      if (!actionDescriptions[description]) {
-        actionDescriptions[description] = true;
-      } else {
-        duplicateActionDescriptions.push(description);
-      }
-    });
-    return duplicateActionDescriptions;
-  }
-
-  private getDuplicateNoteTitles(notes: Note4Edit[]): string[] {
-    const noteTitles: { [key: string]: boolean } = {};
-    const duplicateNoteTitles: string[] = [];
-    notes.forEach(note => {
-      const title = note.title;
-      if (!noteTitles[title]) {
-        noteTitles[title] = true;
-      } else {
-        duplicateNoteTitles.push(title);
-      }
-    });
-    return duplicateNoteTitles;
   }
 
   private topoSortEventsHelper(
@@ -340,12 +292,15 @@ export class EditScriptComponent implements OnInit {
   }
 }
 
-
+/* interfaces */
 
 interface Script4Edit {
   // data
   firstEvent: string;
   events: Event4Edit[];
+  // helper
+  invalid?: boolean;
+  firstEventIdNotExist?: boolean;
 }
 
 interface Event4Edit {
@@ -356,7 +311,10 @@ interface Event4Edit {
   updateNotes: Note4Edit[];
   nextEvent: string;
   // helper
-  open: boolean;
+  open?: boolean;
+  invalid?: boolean;
+  duplicateId?: boolean;
+  nextEventIdNotExist?: boolean;
 }
 
 interface Action4Edit {
@@ -365,7 +323,9 @@ interface Action4Edit {
   think: string;
   triggerEvent: string;
   // helper
-  mouseover: boolean;
+  mouseover?: boolean;
+  duplicateDescription?: boolean;
+  triggerEventIdNotExist?: boolean;
 }
 
 interface Note4Edit {
@@ -373,32 +333,10 @@ interface Note4Edit {
   title: string;
   content: string;
   // helper
-  mouseover: boolean;
+  mouseover?: boolean;
+  duplicateTitle?: boolean;
 }
 
-interface InvalidScript {
-  firstEventNotExists?: string;
-  firstEventUndefined?: boolean;
-  duplicateEventIds?: string[];
-  invalidEvents?: InvalidEvent[];
-}
-
-interface InvalidEvent {
-  id: string;
-  idUndefined?: boolean;
-  nextEventNotExists?: string;
-  duplicateNoteTitles?: string[];
-  duplicateActionDescriptions?: string[];
-  invalidActions?: InvalidAction[];
-}
-
-interface InvalidAction {
-  description: string;
-  descriptionUndefined?: boolean;
-  triggerEventNotExists: string;
-}
-
-interface InvalidNote {
-  title: string;
-  titleUndefined?: boolean;
+interface Occurance {
+  [key: string]: number;
 }
