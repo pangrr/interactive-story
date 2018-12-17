@@ -9,14 +9,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 })
 export class JsonComponent {
   json: string;
-  submittable: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<JsonComponent>,
-    @Inject(MAT_DIALOG_DATA) data: { object: { [key: string]: any }, submittable: boolean }
+    @Inject(MAT_DIALOG_DATA) data: any
   ) {
-    this.json = JSON.stringify(data.object, null, 2);
-    this.submittable = data.submittable;
+    this.json = JSON.stringify(data, null, 2);
   }
 
   submit(): void {

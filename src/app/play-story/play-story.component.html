@@ -1,6 +1,6 @@
 <div class="container">
   <div class="menu">
-    <button mat-icon-button (click)="openNotes()" [color]="(storyPlayable.newNotes | keyvalue).length > 0 ? 'warn' : ''">
+    <button mat-icon-button (click)="openNotes()" [color]="objectKeys(storyPlayable.newNotes).length > 0 ? 'warn' : ''">
       <mat-icon svgIcon="notes" matTooltip="记事本"></mat-icon>
     </button>
   </div>

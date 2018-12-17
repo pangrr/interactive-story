@@ -4,9 +4,9 @@ import { PlayStoryComponent } from './play-story/play-story.component';
 import { EditScriptComponent } from './edit-script/edit-script.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/story', pathMatch: 'full' },
-  { path: 'story', component: PlayStoryComponent },
-  { path: 'script', component: EditScriptComponent }
+  { path: '', redirectTo: '/edit', pathMatch: 'full' },
+  { path: 'play', component: PlayStoryComponent },
+  { path: 'edit', component: EditScriptComponent }
 ];
 
 @NgModule({

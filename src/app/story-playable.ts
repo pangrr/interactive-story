@@ -5,21 +5,21 @@ export class StoryPlayable {
   oldNotes: Notes;
   newNotes: Notes;
 
-  constructor(source: Save | Script) {
-    if (this.isSave(source)) {
-      this.script = source.script;
-      this.history = source.history;
-      this.oldNotes = source.oldNotes;
-      this.newNotes = source.newNotes;
-      this.currentEvent = source.currentEvent;
+  constructor(scriptOrSave: Save | Script) {
+    if (this.isSave(scriptOrSave)) {
+      this.script = scriptOrSave.script;
+      this.history = scriptOrSave.history;
+      this.oldNotes = scriptOrSave.oldNotes;
+      this.newNotes = scriptOrSave.newNotes;
+      this.currentEvent = scriptOrSave.currentEvent;
     } else {
-      this.script = source;
+      this.script = scriptOrSave;
       this.history = [];
       this.oldNotes = {};
       this.newNotes = {};
       this.loadCurrentEvent(this.script.firstEvent);
-      if (this.currentEvent.updateNotes) {
-        this.updateNotes(this.currentEvent.updateNotes);
+      if (this.currentEvent.notes) {
+        this.updateNotes(this.currentEvent.notes);
       }
     }
   }
@@ -54,8 +54,8 @@ export class StoryPlayable {
 
     this.pushCurrentEventToHistory();
     this.loadCurrentEvent(eventTitle);
-    if (this.currentEvent.updateNotes) {
-      this.updateNotes(this.currentEvent.updateNotes);
+    if (this.currentEvent.notes) {
+      this.updateNotes(this.currentEvent.notes);
     }
   }
 
@@ -106,7 +106,7 @@ export interface Save {
 export interface Event {
   readonly description: string;
   readonly actions?: Actions;
-  readonly updateNotes?: Notes;
+  readonly notes?: Notes;
   readonly nextEvent?: string;
 }
 

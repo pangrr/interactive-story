@@ -2,16 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Script, Event, Action, Events, Actions, Notes } from '../story-playable';
 import { JsonComponent } from '../json/json.component';
-import * as loveStory from '../../assets/love-story/script.json';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
-
-
-const scriptExample: Script = {
-  events: (<any>loveStory).events,
-  firstEvent: (<any>loveStory).firstEvent
-};
+import { ScriptService } from '../script.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,27 +15,41 @@ const scriptExample: Script = {
   styleUrls: ['edit-script.component.css']
 })
 export class EditScriptComponent implements OnInit {
-  script: Script4Edit;
+  script: Script4Edit = {
+    firstEvent: '0',
+    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '0' }]
+  };
 
   constructor(
     public json: MatDialog,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    private service: ScriptService,
+    private router: Router
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
   }
 
   ngOnInit() {
-    this.script = this.buildScript4Edit(scriptExample);
+
   }
 
-  showScriptJson(): void {
-    this.showJson(this.buildScript(this.script), (script: Script) => {
-      if (script) {
-        this.script = this.buildScript4Edit(script);
-      }
-    });
+  playScript(): void {
+    if (this.validateScript()) {
+      this.service.setScript(this.buildScript(this.script));
+      this.router.navigate(['/play']);
+    }
+  }
+
+  openScriptJsonEditor(): void {
+    if (this.validateScript()) {
+      this.openJsonEditor(this.buildScript(this.script), (script: Script) => {
+        if (script) {
+          this.script = this.buildScript4Edit(script);
+        }
+      });
+    }
   }
 
   addEvent(): void {
@@ -50,7 +59,7 @@ export class EditScriptComponent implements OnInit {
       description: undefined,
       actions: [],
       nextEvent: undefined,
-      updateNotes: [],
+      notes: [],
       // helper
       open: true
     });
@@ -70,7 +79,7 @@ export class EditScriptComponent implements OnInit {
   }
 
   addNote(event: Event4Edit): void {
-    event.updateNotes.push({
+    event.notes.push({
       title: undefined,
       content: undefined
     });
@@ -81,7 +90,7 @@ export class EditScriptComponent implements OnInit {
   }
 
   deleteNote(event: Event4Edit, noteIndex: number): void {
-    event.updateNotes.splice(noteIndex, 1);
+    event.notes.splice(noteIndex, 1);
   }
 
 
@@ -90,26 +99,28 @@ export class EditScriptComponent implements OnInit {
   }
 
   sortEvents(): void {
-    const sortedEvents: Event4Edit[] = [];
-    const events: { [key: string]: Event4Edit } = {};
-    const visited: { [key: string]: boolean } = {};
-    this.script.events.forEach(event => {
-      events[event.id] = event;
-      visited[event.id] = false;
-    });
+    if (this.validateScript()) {
+      const sortedEvents: Event4Edit[] = [];
+      const events: { [key: string]: Event4Edit } = {};
+      const visited: { [key: string]: boolean } = {};
+      this.script.events.forEach(event => {
+        events[event.id] = event;
+        visited[event.id] = false;
+      });
 
-    this.topoSortEventsHelper(this.script.firstEvent, events, visited, sortedEvents);
+      this.topoSortEventsHelper(this.script.firstEvent, events, visited, sortedEvents);
 
-    Object.keys(events).forEach(key => {
-      if (!visited[key]) {
-        this.topoSortEventsHelper(key, events, visited, sortedEvents);
-      }
-    });
+      Object.keys(events).forEach(key => {
+        if (!visited[key]) {
+          this.topoSortEventsHelper(key, events, visited, sortedEvents);
+        }
+      });
 
-    this.script.events = sortedEvents;
+      this.script.events = sortedEvents;
+    }
   }
 
-  validateScript(): void {
+  validateScript(showSnackBarIfValid: boolean = false): boolean {
     const eventIdOccurance = this.countEventIdOccurance();
 
     this.script.firstEventIdNotExist = this.script.firstEvent && !eventIdOccurance[this.script.firstEvent];
@@ -119,9 +130,11 @@ export class EditScriptComponent implements OnInit {
 
     if (this.script.invalid) {
       this.openSnackBar('Invalid Script', true);
-    } else {
+    } else if (showSnackBarIfValid) {
       this.openSnackBar('Valid Script');
     }
+
+    return !this.script.invalid;
   }
 
   private openSnackBar(message: string, warn: boolean = false): void {
@@ -138,7 +151,7 @@ export class EditScriptComponent implements OnInit {
       event.duplicateId = (event.id && eventIdOccurance[event.id] > 1);
       event.nextEventIdNotExist = event.nextEventIdNotExist && !eventIdOccurance[event.nextEvent];
       const anyInvalidAction = this.validateActions(event.actions, eventIdOccurance);
-      const anyInvalidNote = this.validateNotes(event.updateNotes);
+      const anyInvalidNote = this.validateNotes(event.notes);
 
       event.invalid = !event.id || event.duplicateId || event.nextEventIdNotExist || anyInvalidAction || anyInvalidNote;
 
@@ -185,10 +198,10 @@ export class EditScriptComponent implements OnInit {
     return anyNoteInValid;
   }
 
-  private showJson(object: any, done?: (data: any) => any): void {
+  private openJsonEditor(data: any, done?: (data: any) => any): void {
     const jsonRef = this.json.open(JsonComponent, {
       width: '900px',
-      data: { object, submittable: done !== undefined }
+      data
     });
 
     if (done) {
@@ -258,7 +271,7 @@ export class EditScriptComponent implements OnInit {
         description: event.description,
         actions: event.actions.length > 0 ? this.buildActions(event.actions) : undefined,
         nextEvent: event.nextEvent || undefined,
-        updateNotes: event.updateNotes.length > 0 ? this.buildNotes(event.updateNotes) : undefined
+        notes: event.notes.length > 0 ? this.buildNotes(event.notes) : undefined
       };
     });
     return events;
@@ -270,7 +283,7 @@ export class EditScriptComponent implements OnInit {
       description: event.description,
       nextEvent: event.nextEvent,
       actions: Object.keys(event.actions || {}).map(key => this.buildAction4Edit(key, event.actions[key])),
-      updateNotes: Object.keys(event.updateNotes || {}).map(key => this.buildNote4Edit(key, event.updateNotes[key])),
+      notes: Object.keys(event.notes || {}).map(key => this.buildNote4Edit(key, event.notes[key])),
       open: false
     };
   }
@@ -329,7 +342,7 @@ interface Event4Edit {
   id: string;
   description: string;
   actions: Action4Edit[];
-  updateNotes: Note4Edit[];
+  notes: Note4Edit[];
   nextEvent: string;
   // helper
   open?: boolean;

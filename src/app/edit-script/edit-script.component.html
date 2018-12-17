@@ -101,7 +101,8 @@
     <button mat-button (click)="addEvent()">Add Event</button>
     <button mat-button (click)="sortEvents()" [disabled]="script.invalid">Sort Events</button>
     <button mat-button (click)="closeEvents()">Close Events</button>
-    <button mat-button color="primary" (click)="showScriptJson()" [disabled]="script.invalid">Script JSON</button>
-    <button mat-button color="accent" (click)="validateScript()">Validate Script</button>
+    <button mat-button color="primary" (click)="openScriptJsonEditor()" [disabled]="script.invalid">Script JSON</button>
+    <button mat-button color="warn" (click)="validateScript(true)">Validate Script</button>
+    <button mat-button (click)="playScript()" [disabled]="script.invalid">Play</button>
   </div>
 </div>
