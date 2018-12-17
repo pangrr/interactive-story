@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import { Game } from '../game';
 import { DialogComponent } from '../dialog/dialog.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -22,9 +23,11 @@ export class PlayComponent implements OnInit {
     public notes: MatDialog,
     public dialog: MatDialog,
     iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer
+    sanitizer: DomSanitizer,
+    private router: Router
   ) {
     iconRegistry.addSvgIcon('notes', sanitizer.bypassSecurityTrustResourceUrl('assets/notes.svg'));
+    iconRegistry.addSvgIcon('edit', sanitizer.bypassSecurityTrustResourceUrl('assets/edit.svg'));
   }
 
   ngOnInit() {
@@ -58,6 +61,10 @@ export class PlayComponent implements OnInit {
       width: '800px',
       data: content
     });
+  }
+
+  editScript(): void {
+    this.router.navigate(['/edit']);
   }
 }
 
