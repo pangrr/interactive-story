@@ -163,6 +163,15 @@ export class EditScriptComponent implements OnInit {
         invalidEvent.invalidActions = invalidActions;
       }
 
+      const invalidNotes: InvalidNote[] = [];
+      event.updateNotes.forEach(note => {
+        if (!note.title) {
+          invalidNotes.push({
+            
+          })
+        }
+      })
+
       if (Object.keys(invalidEvent).length > 1) {
         invalidEvents.push(invalidEvent);
       }
@@ -369,12 +378,14 @@ interface Note4Edit {
 
 interface InvalidScript {
   firstEventNotExists?: string;
+  firstEventUndefined?: boolean;
   duplicateEventIds?: string[];
   invalidEvents?: InvalidEvent[];
 }
 
 interface InvalidEvent {
   id: string;
+  idUndefined?: boolean;
   nextEventNotExists?: string;
   duplicateNoteTitles?: string[];
   duplicateActionDescriptions?: string[];
@@ -383,5 +394,11 @@ interface InvalidEvent {
 
 interface InvalidAction {
   description: string;
+  descriptionUndefined?: boolean;
   triggerEventNotExists: string;
+}
+
+interface InvalidNote {
+  title: string;
+  titleUndefined?: boolean;
 }
