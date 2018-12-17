@@ -13,7 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 // my services
 import { ScriptService } from './script.service';
 // my components
@@ -37,7 +38,7 @@ import { JsonComponent } from './json/json.component';
   entryComponents: [
     NotesComponent,
     DialogComponent,
-    JsonComponent
+    JsonComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,7 +56,7 @@ import { JsonComponent } from './json/json.component';
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
-    MatToolbarModule
+    MatSnackBarModule
   ],
   providers: [ScriptService],
   bootstrap: [AppComponent]

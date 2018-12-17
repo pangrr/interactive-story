@@ -5,6 +5,7 @@ import { JsonComponent } from '../json/json.component';
 import * as loveStory from '../../assets/love-story/script.json';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material';
 
 
 const scriptExample: Script = {
@@ -24,7 +25,8 @@ export class EditScriptComponent implements OnInit {
   constructor(
     public json: MatDialog,
     iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer
+    sanitizer: DomSanitizer,
+    public snackBar: MatSnackBar
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
   }
@@ -114,6 +116,19 @@ export class EditScriptComponent implements OnInit {
     const anyInvalidEvent = this.validateEvents(this.script, eventIdOccurance);
 
     this.script.invalid = !this.script.firstEvent || this.script.firstEventIdNotExist || anyInvalidEvent;
+
+    if (this.script.invalid) {
+      this.openSnackBar('Invalid Script', true);
+    } else {
+      this.openSnackBar('Valid Script');
+    }
+  }
+
+  private openSnackBar(message: string, warn: boolean = false): void {
+    this.snackBar.open(message, '', {
+      duration: 2000,
+      panelClass: warn ? 'red' : 'green'
+    });
   }
 
   private validateEvents(script: Script4Edit, eventIdOccurance: Occurance): boolean {
@@ -127,7 +142,7 @@ export class EditScriptComponent implements OnInit {
 
       event.invalid = !event.id || event.duplicateId || event.nextEventIdNotExist || anyInvalidAction || anyInvalidNote;
 
-      anyInvalidEvent = anyInvalidEvent ||  event.invalid;
+      anyInvalidEvent = anyInvalidEvent || event.invalid;
     });
 
     return anyInvalidEvent;
