@@ -33,15 +33,10 @@ export class EditScriptComponent implements OnInit {
     this.script = this.buildScript4Edit(scriptExample);
   }
 
-  openJson(): void {
-    const jsonRef = this.json.open(JsonComponent, {
-      width: '900px',
-      data: this.buildScript(this.script)
-    });
-
-    jsonRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.script = this.buildScript4Edit(result);
+  showScriptJson(): void {
+    this.showJson(this.buildScript(this.script), (script: Script) => {
+      if (script) {
+        this.script = this.buildScript4Edit(script);
       }
     });
   }
@@ -49,8 +44,8 @@ export class EditScriptComponent implements OnInit {
   addEvent(): void {
     this.script.events.push({
       // data
-      id: '',
-      description: '',
+      id: undefined,
+      description: undefined,
       actions: [],
       nextEvent: undefined,
       updateNotes: [],
@@ -66,9 +61,9 @@ export class EditScriptComponent implements OnInit {
   addAction(event: Event4Edit): void {
     event.actions.push({
       // data
-      description: '',
-      triggerEvent: '',
-      think: '',
+      description: undefined,
+      triggerEvent: undefined,
+      think: undefined,
       // helper
       mouseover: false
     });
@@ -77,8 +72,8 @@ export class EditScriptComponent implements OnInit {
   addNote(event: Event4Edit): void {
     event.updateNotes.push({
       // data
-      title: '',
-      content: '',
+      title: undefined,
+      content: undefined,
       // helper
       mouseover: false
     });
@@ -123,7 +118,7 @@ export class EditScriptComponent implements OnInit {
     const invalidScript: InvalidScript = {};
 
     if (!eventIdOccurance[this.script.firstEvent]) {
-      invalidScript.firstEventNotExists = true;
+      invalidScript.firstEventNotExists = this.script.firstEvent;
     }
 
     const duplicateEventIds = Object.keys(eventIdOccurance).reduce((eventIds, eventId) => {
@@ -142,7 +137,7 @@ export class EditScriptComponent implements OnInit {
     this.script.events.forEach(event => {
       const invalidEvent: InvalidEvent = { id: event.id };
       if (!eventIdOccurance[event.nextEvent]) {
-        invalidEvent.nextEventNotExists = true;
+        invalidEvent.nextEventNotExists = event.nextEvent;
       }
 
       const duplicateActionDescriptions = this.getDuplicateActionDescriptions(event.actions);
@@ -160,7 +155,7 @@ export class EditScriptComponent implements OnInit {
         if (!eventIdOccurance[action.triggerEvent]) {
           invalidActions.push({
             description: action.description,
-            triggerEventNotExists: true
+            triggerEventNotExists: action.triggerEvent
           });
         }
       });
@@ -177,9 +172,19 @@ export class EditScriptComponent implements OnInit {
       invalidScript.invalidEvents = invalidEvents;
     }
 
-    console.log(invalidScript);
+    this.showJson(invalidScript);
   }
 
+  private showJson(object: any, done?: (data: any) => any): void {
+    const jsonRef = this.json.open(JsonComponent, {
+      width: '900px',
+      data: { object, showSubmit: done !== undefined }
+    });
+
+    if (done) {
+      jsonRef.afterClosed().subscribe(done);
+    }
+  }
 
   private countEventIdOccurance(): { [key: string]: number } {
     const eventIds: { [key: string]: number } = {};
@@ -363,14 +368,14 @@ interface Note4Edit {
 }
 
 interface InvalidScript {
-  firstEventNotExists?: boolean;
+  firstEventNotExists?: string;
   duplicateEventIds?: string[];
   invalidEvents?: InvalidEvent[];
 }
 
 interface InvalidEvent {
   id: string;
-  nextEventNotExists?: boolean;
+  nextEventNotExists?: string;
   duplicateNoteTitles?: string[];
   duplicateActionDescriptions?: string[];
   invalidActions?: InvalidAction[];
@@ -378,5 +383,5 @@ interface InvalidEvent {
 
 interface InvalidAction {
   description: string;
-  triggerEventNotExists: boolean;
+  triggerEventNotExists: string;
 }
