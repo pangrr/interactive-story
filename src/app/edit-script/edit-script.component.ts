@@ -109,20 +109,25 @@ export class EditScriptComponent implements OnInit {
 
   validateScript(): void {
     const eventIdOccurance = this.countEventIdOccurance();
-    this.script.invalid = (this.script.firstEventIdNotExist = this.script.firstEvent && !eventIdOccurance[this.script.firstEvent]) ||
-      this.validateEvents(this.script, eventIdOccurance);
+
+    this.script.firstEventIdNotExist = this.script.firstEvent && !eventIdOccurance[this.script.firstEvent];
+    const anyInvalidEvent = this.validateEvents(this.script, eventIdOccurance);
+
+    this.script.invalid = !this.script.firstEvent || this.script.firstEventIdNotExist || anyInvalidEvent;
   }
 
   private validateEvents(script: Script4Edit, eventIdOccurance: Occurance): boolean {
     let anyInvalidEvent = false;
 
     script.events.forEach(event => {
-      anyInvalidEvent = anyInvalidEvent || (event.invalid =
-          (event.duplicateId = (event.id && eventIdOccurance[event.id] > 1)) ||
-          (event.nextEventIdNotExist = event.nextEventIdNotExist && !eventIdOccurance[event.nextEvent]) ||
-          this.validateActions(event.actions, eventIdOccurance) ||
-          this.validateNotes(event.updateNotes)
-        );
+      event.duplicateId = (event.id && eventIdOccurance[event.id] > 1);
+      event.nextEventIdNotExist = event.nextEventIdNotExist && !eventIdOccurance[event.nextEvent];
+      const anyInvalidAction = this.validateActions(event.actions, eventIdOccurance);
+      const anyInvalidNote = this.validateNotes(event.updateNotes);
+
+      event.invalid = !event.id || event.duplicateId || event.nextEventIdNotExist || anyInvalidAction || anyInvalidNote;
+
+      anyInvalidEvent = anyInvalidEvent ||  event.invalid;
     });
 
     return anyInvalidEvent;
@@ -139,9 +144,9 @@ export class EditScriptComponent implements OnInit {
     );
 
     actions.forEach(action => {
-      anyActionInvalid = anyActionInvalid ||
-        (action.duplicateDescription = actionDescriptionOccurance[action.description] > 1) ||
-        (action.triggerEventIdNotExist = action.triggerEvent && !eventIdOccurance[action.triggerEvent]);
+      action.duplicateDescription = actionDescriptionOccurance[action.description] > 1;
+      action.triggerEventIdNotExist = action.triggerEvent && !eventIdOccurance[action.triggerEvent];
+      anyActionInvalid = anyActionInvalid || !action.description || action.duplicateDescription || action.triggerEventIdNotExist;
     });
 
     return anyActionInvalid;
@@ -158,7 +163,8 @@ export class EditScriptComponent implements OnInit {
     );
 
     notes.forEach(note => {
-      anyNoteInValid = anyNoteInValid || (note.duplicateTitle = noteTitleOccurance[note.title] > 1);
+      note.duplicateTitle = noteTitleOccurance[note.title] > 1;
+      anyNoteInValid = anyNoteInValid || !note.title || note.duplicateTitle;
     });
 
     return anyNoteInValid;

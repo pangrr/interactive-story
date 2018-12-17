@@ -2,7 +2,7 @@
   <mat-accordion class="events" multi>
     <mat-expansion-panel *ngFor="let event of script.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
       (closed)="event.open = false">
-      <mat-expansion-panel-header>
+      <mat-expansion-panel-header [ngClass]="event.invalid ? 'background-warn' : ''">
         <div class="event-id-container truncate" *ngIf="!event.open">
           {{event.id}}
         </div>
@@ -21,20 +21,23 @@
           <td colspan="4">
             <mat-form-field class="full-width">
               <textarea matInput placeholder="Description" [(ngModel)]="event.description" matTextareaAutosize
-                matAutosizeMinRows="1" matAutosizeMaxRows="5" required></textarea>
+                matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
           </td>
         </tr>
         <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true"
           (mouseleave)="action.mouseover = false">
           <td>
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Action Description" [(ngModel)]="action.description" required>
+            <mat-form-field class="full-width" [ngClass]="!action.description || action.duplicateDescription ? 'red' : ''">
+              <input matInput placeholder="Action Description" [(ngModel)]="action.description">
+              <mat-hint *ngIf="!action.description" class="red">Cannot Be Empty</mat-hint>
+              <mat-hint *ngIf="action.duplicateDescription" class="red">Duplicate Action Description</mat-hint>
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" [ngClass]="action.triggerEventIdNotExist ? 'red' : ''">
               <input matInput placeholder="Trigger Event" [(ngModel)]="action.triggerEvent">
+              <mat-hint *ngIf="action.triggerEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
             </mat-form-field>
           </td>
           <td>
@@ -52,8 +55,10 @@
         <tr *ngFor="let note of event.updateNotes; let i = index" class="note" (mouseenter)="note.mouseover = true"
           (mouseleave)="note.mouseover = false">
           <td>
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Note Title" [(ngModel)]="note.title" required>
+            <mat-form-field class="full-width" [ngClass]="!note.title || note.duplicateTitle ? 'red' : ''">
+              <input matInput placeholder="Note Title" [(ngModel)]="note.title">
+              <mat-hint *ngIf="!note.title" class="red">Cannot Be Empty</mat-hint>
+              <mat-hint *ngIf="note.duplicateTitle" class="red">Duplicate Note Title</mat-hint>
             </mat-form-field>
           </td>
           <td colspan="2">
@@ -70,11 +75,14 @@
         </tr>
       </table>
       <div class="event-control">
-        <mat-form-field>
-          <input matInput placeholder="Event ID" [(ngModel)]="event.id" required>
+        <mat-form-field [ngClass]="!event.id || event.duplicateId ? 'red' : ''">
+          <input matInput placeholder="Event ID" [(ngModel)]="event.id">
+          <mat-hint *ngIf="!event.id" class="red">Cannot Be Empty</mat-hint>
+          <mat-hint *ngIf="event.duplicateId" class="red">Duplicate Event ID</mat-hint>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field [ngClass]="event.nextEventIdNotExist ? 'red' : ''">
           <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
+          <mat-hint *ngIf="event.nextEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
         </mat-form-field>
         <span class="spacer"></span>
         <button mat-button color="primary" (click)="addAction(event)">Add Action</button>
@@ -84,14 +92,16 @@
     </mat-expansion-panel>
   </mat-accordion>
   <div color="primary" class="toolbar">
-    <mat-form-field>
-      <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent" required>
+    <mat-form-field [ngClass]="!script.firstEvent || script.firstEventIdNotExist ? 'red' : ''">
+      <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
+      <mat-hint *ngIf="!script.firstEvent" class="red">Cannot Be Empty</mat-hint>
+      <mat-hint *ngIf="script.firstEventIdNotExist" class="red"> Event ID Not Exist</mat-hint>
     </mat-form-field>
     <span class="spacer"></span>
     <button mat-button (click)="addEvent()">Add Event</button>
-    <button mat-button (click)="sortEvents()">Sort Events</button>
+    <button mat-button (click)="sortEvents()" [disabled]="script.invalid">Sort Events</button>
     <button mat-button (click)="closeEvents()">Close Events</button>
-    <button mat-button color="primary" (click)="showScriptJson()">Script JSON</button>
+    <button mat-button color="primary" (click)="showScriptJson()" [disabled]="script.invalid">Script JSON</button>
     <button mat-button color="accent" (click)="validateScript()">Validate Script</button>
   </div>
 </div>

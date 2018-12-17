@@ -94,3 +94,11 @@
   display: flex;
   padding-left: 10px;
 }
+
+.red {
+  color: red;
+}
+
+.background-warn {
+  background: lightyellow;
+}
