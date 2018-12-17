@@ -19,20 +19,20 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ScriptService } from './script.service';
 // my components
 import { AppComponent } from './app.component';
-import { PlayStoryComponent } from './play-story/play-story.component';
+import { PlayComponent } from './play/play.component';
 import { NotesComponent } from './notes/notes.component';
 import { DialogComponent } from './dialog/dialog.component';
-import { EditScriptComponent } from './edit-script/edit-script.component';
+import { EditComponent } from './edit/edit.component';
 import { JsonComponent } from './json/json.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlayStoryComponent,
+    PlayComponent,
     NotesComponent,
     DialogComponent,
-    EditScriptComponent,
+    EditComponent,
     JsonComponent,
   ],
   entryComponents: [

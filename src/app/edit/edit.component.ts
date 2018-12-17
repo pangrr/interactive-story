@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Script, Event, Action, Events, Actions, Notes } from '../story-playable';
+import { Script, Event, Action, Events, Actions, Notes } from '../script';
 import { JsonComponent } from '../json/json.component';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -10,11 +10,11 @@ import { Router } from '@angular/router';
 
 
 @Component({
-  selector: 'app-edit-script',
-  templateUrl: 'edit-script.component.html',
-  styleUrls: ['edit-script.component.css']
+  selector: 'app-edit',
+  templateUrl: 'edit.component.html',
+  styleUrls: ['edit.component.css']
 })
-export class EditScriptComponent implements OnInit {
+export class EditComponent implements OnInit {
   script: Script4Edit = {
     firstEvent: '0',
     events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '0' }]

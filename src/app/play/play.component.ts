@@ -4,17 +4,17 @@ import { NotesComponent } from '../notes/notes.component';
 import { ScriptService } from '../script.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
-import { StoryPlayable } from '../story-playable';
+import { Game } from '../game';
 import { DialogComponent } from '../dialog/dialog.component';
 
 
 @Component({
-  selector: 'app-play-story',
-  templateUrl: './play-story.component.html',
-  styleUrls: ['./play-story.component.css']
+  selector: 'app-play',
+  templateUrl: './play.component.html',
+  styleUrls: ['./play.component.css']
 })
-export class PlayStoryComponent implements OnInit {
-  storyPlayable: StoryPlayable;
+export class PlayComponent implements OnInit {
+  game: Game;
   objectKeys = Object.keys;
 
   constructor(
@@ -28,27 +28,27 @@ export class PlayStoryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.storyPlayable = new StoryPlayable(this.service.getScript());
+    this.game = new Game(this.service.getScript());
   }
 
   takeAction(actionKey: string): void {
-    const thought = this.storyPlayable.currentEvent.actionsAvailable[actionKey].think;
+    const thought = this.game.currentEvent.actionsAvailable[actionKey].think;
     if (thought) {
       this.openDialog(thought);
     }
-    this.storyPlayable.takeAction(actionKey);
+    this.game.takeAction(actionKey);
   }
 
   triggerNextEvent(): void {
-    this.storyPlayable.triggerNextEvent();
+    this.game.triggerNextEvent();
   }
 
   openNotes(): void {
     this.notes.open(NotesComponent, {
       width: '800px',
       data: {
-        oldNotes: this.storyPlayable.oldNotes,
-        newNotes: this.storyPlayable.newNotes
+        oldNotes: this.game.oldNotes,
+        newNotes: this.game.newNotes
       }
     });
   }

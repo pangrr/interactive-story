@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { Notes } from '../story-playable';
+import { Notes } from '../script';
 
 @Component({
   selector: 'app-notes',

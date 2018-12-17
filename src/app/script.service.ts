@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Script } from './story-playable';
+import { Script } from './script';
 
 @Injectable({
   providedIn: 'root'
