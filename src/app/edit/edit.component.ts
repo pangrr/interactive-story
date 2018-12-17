@@ -141,7 +141,7 @@ export class EditComponent implements OnInit {
 
   private openSnackBar(message: string, warn: boolean = false): void {
     this.snackBar.open(message, '', {
-      duration: 2000,
+      duration: 1000,
       panelClass: warn ? 'red' : 'green'
     });
   }
