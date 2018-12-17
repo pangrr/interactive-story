@@ -32,7 +32,9 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    if (this.service.getScript()) {
+      this.script = this.buildScript4Edit(this.service.getScript());
+    }
   }
 
   playScript(): void {
