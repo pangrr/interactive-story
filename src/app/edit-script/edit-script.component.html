@@ -10,7 +10,10 @@
           {{event.description}}
         </div>
         <div class="possible-next-events-container truncate" *ngIf="!event.open">
-          <span *ngFor="let eventId of collectPossibleNextEvents(event)" class="next-event">{{eventId}}</span>
+          <span *ngIf="event.nextEvent" class="next-event">{{event.nextEvent}}</span>
+          <ng-container *ngFor="let action of event.actions">
+            <span *ngIf="action.triggerEvent" class="next-event">{{action.triggerEvent}}</span>
+          </ng-container>
         </div>
       </mat-expansion-panel-header>
       <table class="full-width" cellspacing="0">
@@ -25,16 +28,13 @@
         <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true"
           (mouseleave)="action.mouseover = false">
           <td>
-            <mat-form-field class="full-width" [ngClass]="action.invalid.duplicateActionDescription ? 'red' : ''">
+            <mat-form-field class="full-width">
               <input matInput placeholder="Action Description" [(ngModel)]="action.description">
-              <mat-hint class="red" *ngIf="action.invalid.duplicateActionDescription">Duplicate Action Description!</mat-hint>
             </mat-form-field>
           </td>
           <td>
-            <mat-form-field class="full-width" [ngClass]="action.triggerEvent && !eventIdExists(action.triggerEvent) ? 'red' : ''">
+            <mat-form-field class="full-width">
               <input matInput placeholder="Trigger Event" [(ngModel)]="action.triggerEvent">
-              <mat-hint *ngIf="action.triggerEvent && !eventIdExists(action.triggerEvent)" class="red">Event ID Not
-                Exist!</mat-hint>
             </mat-form-field>
           </td>
           <td>
@@ -52,9 +52,8 @@
         <tr *ngFor="let note of event.updateNotes; let i = index" class="note" (mouseenter)="note.mouseover = true"
           (mouseleave)="note.mouseover = false">
           <td>
-            <mat-form-field class="full-width" [ngClass]="note.invalid.duplicateNoteTitle ? 'red' : ''">
+            <mat-form-field class="full-width">
               <input matInput placeholder="Note Title" [(ngModel)]="note.title">
-              <mat-hint class="red" *ngIf="note.invalid.duplicateNoteTitle">Duplicate Note Title!</mat-hint>
             </mat-form-field>
           </td>
           <td colspan="2">
@@ -71,13 +70,11 @@
         </tr>
       </table>
       <div class="event-control">
-        <mat-form-field [ngClass]="event.invalid.duplicateEventId ? 'red' : ''">
+        <mat-form-field>
           <input matInput placeholder="Event ID" [(ngModel)]="event.id">
-          <mat-hint *ngIf="event.invalid.duplicateEventId" class="red">Duplicate Event ID!</mat-hint>
         </mat-form-field>
-        <mat-form-field [ngClass]="event.invalid.missingNextEventId ? 'red' : ''">
+        <mat-form-field>
           <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent">
-          <mat-hint *ngIf="event.invalid.missingNextEventId" class="red">Event ID Not Exist!</mat-hint>
         </mat-form-field>
         <span class="spacer"></span>
         <button mat-button color="primary" (click)="addAction(event)">Add Action</button>
@@ -87,9 +84,8 @@
     </mat-expansion-panel>
   </mat-accordion>
   <div color="primary" class="toolbar">
-    <mat-form-field [ngClass]="script.invalid.missingFirstEventId ? 'red' : ''">
+    <mat-form-field>
       <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
-      <mat-hint *ngIf="script.invalid.missingFirstEventId" class="red">Event ID Not Exist!</mat-hint>
     </mat-form-field>
     <span class="spacer"></span>
     <button mat-button color="primary" (click)="addEvent()">Add Event</button>
