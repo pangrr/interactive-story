@@ -117,6 +117,78 @@ export class EditScriptComponent implements OnInit {
     this.script.events = sortedEvents;
   }
 
+  validateScript(): void {
+    const eventIdOccurance = this.countEventIdOccurance();
+
+    const invalidScript: InvalidScript = {};
+
+    if (!eventIdOccurance[this.script.firstEvent]) {
+      invalidScript.firstEventNotExists = true;
+    }
+
+    const duplicateEventIds = Object.keys(eventIdOccurance).reduce((eventIds, eventId) => {
+      if (eventIdOccurance[eventId] > 1) {
+        return [...eventIds, eventId];
+      } else {
+        return eventIds;
+      }
+    }, []);
+    if (duplicateEventIds.length > 0) {
+      invalidScript.duplicateEventIds = duplicateEventIds;
+    }
+
+    const invalidEvents: InvalidEvent[] = [];
+
+    this.script.events.forEach(event => {
+      const invalidEvent: InvalidEvent = { id: event.id };
+      if (!eventIdOccurance[event.nextEvent]) {
+        invalidEvent.nextEventNotExists = true;
+      }
+
+      const duplicateActionDescriptions = this.getDuplicateActionDescriptions(event.actions);
+      if (duplicateActionDescriptions.length > 0) {
+        invalidEvent.duplicateActionDescriptions = duplicateActionDescriptions;
+      }
+
+      const duplicateNoteTitles = this.getDuplicateNoteTitles(event.updateNotes);
+      if (duplicateNoteTitles.length > 0) {
+        invalidEvent.duplicateNoteTitles = duplicateNoteTitles;
+      }
+
+      const invalidActions: InvalidAction[] = [];
+      event.actions.forEach(action => {
+        if (!eventIdOccurance[action.triggerEvent]) {
+          invalidActions.push({
+            description: action.description,
+            triggerEventNotExists: true
+          });
+        }
+      });
+      if (invalidActions.length > 0) {
+        invalidEvent.invalidActions = invalidActions;
+      }
+
+      if (Object.keys(invalidEvent).length > 1) {
+        invalidEvents.push(invalidEvent);
+      }
+    });
+
+    if (invalidEvents.length > 0) {
+      invalidScript.invalidEvents = invalidEvents;
+    }
+
+    console.log(invalidScript);
+  }
+
+
+  private countEventIdOccurance(): { [key: string]: number } {
+    const eventIds: { [key: string]: number } = {};
+    this.script.events.forEach(event => {
+      eventIds[event.id] = (eventIds[event.id] || 0) + 1;
+    });
+    return eventIds;
+  }
+
   private collectPossibleNextEvents(event: Event4Edit): string[] {
     const possibleNextEvents: string[] = [];
     if (event.nextEvent) {
@@ -132,56 +204,32 @@ export class EditScriptComponent implements OnInit {
     return possibleNextEvents;
   }
 
-  private getDuplicateEventIds(): { [key: string]: boolean } {
-    const eventIds: { [key: string]: boolean } = {};
-    const duplicateEventIds: { [key: string]: boolean } = {};
-    this.script.events.forEach(event => {
-      const id = event.id;
-      if (!eventIds[id]) {
-        eventIds[id] = true;
-      } else {
-        duplicateEventIds[id] = true;
-      }
-    });
-    return duplicateEventIds;
-  }
-
-  private getDuplicateActionDescriptions(actions: Action4Edit[]): { [key: string]: boolean } {
+  private getDuplicateActionDescriptions(actions: Action4Edit[]): string[] {
     const actionDescriptions: { [key: string]: boolean } = {};
-    const duplicateActionDescriptions: { [key: string]: boolean } = {};
+    const duplicateActionDescriptions: string[] = [];
     actions.forEach(action => {
       const description = action.description;
       if (!actionDescriptions[description]) {
         actionDescriptions[description] = true;
       } else {
-        duplicateActionDescriptions[description] = true;
+        duplicateActionDescriptions.push(description);
       }
     });
     return duplicateActionDescriptions;
   }
 
-  private getDuplicateNoteTitles(notes: Note4Edit[]): { [key: string]: boolean } {
+  private getDuplicateNoteTitles(notes: Note4Edit[]): string[] {
     const noteTitles: { [key: string]: boolean } = {};
-    const duplicateNoteTitles: { [key: string]: boolean } = {};
+    const duplicateNoteTitles: string[] = [];
     notes.forEach(note => {
       const title = note.title;
       if (!noteTitles[title]) {
         noteTitles[title] = true;
       } else {
-        duplicateNoteTitles[title] = true;
+        duplicateNoteTitles.push(title);
       }
     });
     return duplicateNoteTitles;
-  }
-
-  eventIdExists(eventId: string): boolean {
-    console.log('eventIdExists', eventId);
-    for (const event of this.script.events) {
-      if (event.id === eventId) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private topoSortEventsHelper(
@@ -312,4 +360,23 @@ interface Note4Edit {
   content: string;
   // helper
   mouseover: boolean;
+}
+
+interface InvalidScript {
+  firstEventNotExists?: boolean;
+  duplicateEventIds?: string[];
+  invalidEvents?: InvalidEvent[];
+}
+
+interface InvalidEvent {
+  id: string;
+  nextEventNotExists?: boolean;
+  duplicateNoteTitles?: string[];
+  duplicateActionDescriptions?: string[];
+  invalidActions?: InvalidAction[];
+}
+
+interface InvalidAction {
+  description: string;
+  triggerEventNotExists: boolean;
 }

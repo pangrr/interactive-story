@@ -88,9 +88,10 @@
       <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent">
     </mat-form-field>
     <span class="spacer"></span>
-    <button mat-button color="primary" (click)="addEvent()">Add Event</button>
+    <button mat-button (click)="addEvent()">Add Event</button>
+    <button mat-button (click)="sortEvents()">Sort Events</button>
+    <button mat-button (click)="closeEvents()">Close Events</button>
     <button mat-button color="primary" (click)="openJson()">Show JSON</button>
-    <button mat-button color="primary" (click)="sortEvents()">Sort Events</button>
-    <button mat-button color="primary" (click)="closeEvents()">Close Events</button>
+    <button mat-button color="accent" (click)="validateScript()">Validate Script</button>
   </div>
 </div>
