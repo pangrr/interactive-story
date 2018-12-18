@@ -29,7 +29,8 @@
           (mouseleave)="action.mouseover = false">
           <td>
             <mat-form-field class="full-width" [ngClass]="!action.description || action.duplicateDescription ? 'red' : ''">
-              <input matInput placeholder="Action Description" [(ngModel)]="action.description" (change)="validateScript()">
+              <textarea matInput placeholder="Action Description" [(ngModel)]="action.description" (change)="validateScript()"
+                matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
               <mat-hint *ngIf="!action.description" class="red">Cannot Be Empty</mat-hint>
               <mat-hint *ngIf="action.duplicateDescription" class="red">Duplicate Action Description</mat-hint>
             </mat-form-field>
