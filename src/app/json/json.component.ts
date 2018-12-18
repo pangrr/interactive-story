@@ -11,6 +11,7 @@ class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+
 function validateScript(control: AbstractControl) {
   let script: Script;
   try {
@@ -19,9 +20,6 @@ function validateScript(control: AbstractControl) {
     return { invalidJson: true };
   }
 
-  if (typeof script.firstEvent !== 'string') {
-    return { invalidFirstEvent: true };
-  } else if ()
   return null;
 }
 
