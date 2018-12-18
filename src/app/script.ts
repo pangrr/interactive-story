@@ -50,7 +50,7 @@ export interface Event4Edit {
   nextEventIdNotExist?: boolean;
 }
 
-interface Action4Edit {
+export interface Action4Edit {
   // data
   description: string;
   think: string;
@@ -61,7 +61,7 @@ interface Action4Edit {
   triggerEventIdNotExist?: boolean;
 }
 
-interface Note4Edit {
+export interface Note4Edit {
   // data
   title: string;
   content: string;
@@ -317,7 +317,7 @@ function validateEvents4Edit(script: Script4Edit, eventIdOccurance: Occurance): 
 
   script.events.forEach(event => {
     event.duplicateId = (event.id && eventIdOccurance[event.id] > 1);
-    event.nextEventIdNotExist = event.nextEventIdNotExist && !eventIdOccurance[event.nextEvent];
+    event.nextEventIdNotExist = event.nextEvent && !eventIdOccurance[event.nextEvent];
     const anyInvalidAction = !validateActions4Edit(event.actions, eventIdOccurance);
     const anyInvalidNote = !validateNotes4Edit(event.notes);
 

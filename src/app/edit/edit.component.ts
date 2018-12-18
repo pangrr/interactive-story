@@ -6,7 +6,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 import { ScriptService } from '../script.service';
 import { Router } from '@angular/router';
-import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit, sortEvents } from '../script';
+import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit,
+  sortEvents, Note4Edit, Action4Edit } from '../script';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript
 export class EditComponent implements OnInit {
   script: Script4Edit = {
     firstEvent: '0',
-    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '0' }]
+    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '0', open: true }]
   };
 
   constructor(
@@ -80,8 +81,8 @@ export class EditComponent implements OnInit {
     this.script.events = sortEvents(this.script.events, this.script.firstEvent);
   }
 
-  addAction(event: Event4Edit): void {
-    event.actions.push({
+  addAction(actions: Action4Edit[]): void {
+    actions.push({
       // data
       description: undefined,
       triggerEvent: undefined,
@@ -91,8 +92,8 @@ export class EditComponent implements OnInit {
     this.validateScript();
   }
 
-  addNote(event: Event4Edit): void {
-    event.notes.push({
+  addNote(notes: Note4Edit[]): void {
+    notes.push({
       title: undefined,
       content: undefined
     });
