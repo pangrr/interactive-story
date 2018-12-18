@@ -130,7 +130,7 @@ export function sortEvents(events: Event4Edit[], firstEventId: string): Event4Ed
 
   topoSortEventsHelper(firstEventId, eventsMap, visited, sortedEvents);
 
-  Object.keys(events).forEach(key => {
+  Object.keys(eventsMap).forEach(key => {
     if (!visited[key]) {
       topoSortEventsHelper(key, eventsMap, visited, sortedEvents);
     }

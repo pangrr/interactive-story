@@ -38,29 +38,21 @@ export class EditComponent implements OnInit {
   }
 
   playScript(): void {
-    if (validateScript4Edit(this.script)) {
-      this.service.setScript(buildScript(this.script));
-      this.router.navigate(['/play']);
-    } else {
-      this.openSnackBarForInvalidScript();
-    }
+    this.service.setScript(buildScript(this.script));
+    this.router.navigate(['/play']);
   }
 
   openScriptJsonEditor(): void {
-    if (validateScript4Edit(this.script)) {
-      const jsonRef = this.json.open(JsonComponent, {
-        width: '1000px',
-        data: buildScript(this.script)
-      });
+    const jsonRef = this.json.open(JsonComponent, {
+      width: '1000px',
+      data: buildScript(this.script)
+    });
 
-      jsonRef.afterClosed().subscribe((script: Script) => {
-        if (script) {
-          this.script = buildScript4Edit(script);
-        }
-      });
-    } else {
-      this.openSnackBarForInvalidScript();
-    }
+    jsonRef.afterClosed().subscribe((script: Script) => {
+      if (script) {
+        this.script = buildScript4Edit(script);
+      }
+    });
   }
 
   addEvent(): void {
@@ -85,11 +77,7 @@ export class EditComponent implements OnInit {
   }
 
   sortEvents(): void {
-    if (validateScript4Edit(this.script)) {
-      this.script.events = sortEvents(this.script.events, this.script.firstEvent);
-    } else {
-      this.openSnackBarForInvalidScript();
-    }
+    this.script.events = sortEvents(this.script.events, this.script.firstEvent);
   }
 
   addAction(event: Event4Edit): void {
