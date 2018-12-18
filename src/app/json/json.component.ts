@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, AbstractControl } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { Script } from '../script';
+
 
 class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -13,11 +13,10 @@ class MyErrorStateMatcher implements ErrorStateMatcher {
 
 
 function validateScript(control: AbstractControl) {
-  let script: Script;
   try {
-    script = JSON.parse(control.value);
+    JSON.parse(control.value);
   } catch (e) {
-    return { invalidJson: true };
+    return { validJson: true };
   }
 
   return null;
@@ -38,7 +37,6 @@ export class JsonComponent {
     @Inject(MAT_DIALOG_DATA) data: any
   ) {
     this.script = new FormControl(JSON.stringify(data, null, 2), [
-      Validators.required,
       validateScript
     ]);
   }

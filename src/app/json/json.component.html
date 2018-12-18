@@ -1,7 +1,7 @@
 <form class="container" (ngSubmit)="submit()">
   <textarea class="edit" placeholder="Script" matInput [formControl]="script" [errorStateMatcher]="matcher"></textarea>
-  <mat-error *ngIf="script.hasError('required')">
-    Script cannot be empty
+  <mat-error *ngIf="script.hasError('validJson')">
+    Invalid JSON
   </mat-error>
   <button mat-button color="primary" type="submit" [disabled]="script.invalid">Submit</button>
 </form>

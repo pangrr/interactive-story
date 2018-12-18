@@ -48,7 +48,12 @@ export class EditComponent implements OnInit {
 
   openScriptJsonEditor(): void {
     if (validateScript(this.script)) {
-      this.openJsonEditor(buildScript(this.script), (script: Script) => {
+      const jsonRef = this.json.open(JsonComponent, {
+        width: '1000px',
+        data: this.script
+      });
+
+      jsonRef.afterClosed().subscribe((script: Script) => {
         if (script) {
           this.script = buildScript4Edit(script);
         }
@@ -131,16 +136,5 @@ export class EditComponent implements OnInit {
       duration: 1000,
       panelClass: 'green'
     });
-  }
-
-  private openJsonEditor(data: any, done?: (data: any) => any): void {
-    const jsonRef = this.json.open(JsonComponent, {
-      width: '900px',
-      data
-    });
-
-    if (done) {
-      jsonRef.afterClosed().subscribe(done);
-    }
   }
 }
