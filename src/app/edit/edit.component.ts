@@ -74,10 +74,14 @@ export class EditComponent implements OnInit {
       // helper
       open: true
     });
+
+    this.validateScript();
   }
 
   deleteEvent(eventIndex: number): void {
     this.script.events.splice(eventIndex, 1);
+
+    this.validateScript();
   }
 
   sortEvents(): void {
@@ -95,6 +99,8 @@ export class EditComponent implements OnInit {
       triggerEvent: undefined,
       think: undefined
     });
+
+    this.validateScript();
   }
 
   addNote(event: Event4Edit): void {
@@ -102,25 +108,35 @@ export class EditComponent implements OnInit {
       title: undefined,
       content: undefined
     });
+
+    this.validateScript();
   }
 
   deleteAction(event: Event4Edit, actionIndex: number): void {
     event.actions.splice(actionIndex, 1);
+
+    this.validateScript();
   }
 
   deleteNote(event: Event4Edit, noteIndex: number): void {
     event.notes.splice(noteIndex, 1);
+
+    this.validateScript();
   }
 
   closeEvents(): void {
     this.script.events.forEach(event => event.open = false);
   }
 
-  validateScript(): void {
-    if (validateScript4Edit(this.script)) {
-      this.openSnackBarForValidScript();
-    } else {
-      this.openSnackBarForInvalidScript();
+  validateScript(openSnackBar: boolean = false): void {
+    const valid = validateScript4Edit(this.script);
+
+    if (openSnackBar) {
+      if (valid) {
+        this.openSnackBarForValidScript();
+      } else {
+        this.openSnackBarForInvalidScript();
+      }
     }
   }
 
