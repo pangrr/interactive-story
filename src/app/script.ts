@@ -50,7 +50,7 @@ export interface Event4Edit {
   nextEventIdNotExist?: boolean;
 }
 
-export interface Action4Edit {
+interface Action4Edit {
   // data
   description: string;
   think: string;
@@ -61,7 +61,7 @@ export interface Action4Edit {
   triggerEventIdNotExist?: boolean;
 }
 
-export interface Note4Edit {
+interface Note4Edit {
   // data
   title: string;
   content: string;
@@ -70,8 +70,25 @@ export interface Note4Edit {
   duplicateTitle?: boolean;
 }
 
-export interface Occurance {
+interface Occurance {
   [key: string]: number;
+}
+
+interface InvalidScript {
+  invalidJson: boolean;
+  firstEventInvalidType: boolean;
+  firstEventNotExist: boolean;
+  eventsInvalidType: boolean;
+  eventsOfInvalidType: string[];
+  eventsWithDescriptionOfInvalidType: string[];
+  eventsWithActionsOfInvalidType: string[];
+  eventsWithNotesOfInvalidType: string[];
+  eventsWithNextEventOfInvalidType: string[];
+  eventsWithNextEventNotExist: string[];
+  actionsWithThinkOfInvalidType: string[];
+  actionsWithTriggerEventOfInvalidType: string[];
+  actionsWithTriggerEventNotExist: string[];
+  notesOfInvalidType: string[];
 }
 
 export function buildScript4Edit(script: Script): Script4Edit {
@@ -91,11 +108,11 @@ export function buildScript(script4Edit: Script4Edit): Script {
   };
 }
 
-export function validateScript(script: Script4Edit): boolean {
+export function validateScript4Edit(script: Script4Edit): boolean {
   const eventIdOccurance = countEventIdOccurance(script.events);
 
   script.firstEventIdNotExist = script.firstEvent && !eventIdOccurance[script.firstEvent];
-  const anyInvalidEvent = !validateEvents(script, eventIdOccurance);
+  const anyInvalidEvent = !validateEvents4Edit(script, eventIdOccurance);
 
   script.invalid = !script.firstEvent || script.firstEventIdNotExist || anyInvalidEvent;
 
@@ -120,6 +137,117 @@ export function sortEvents(events: Event4Edit[], firstEventId: string): Event4Ed
   });
 
   return sortedEvents;
+}
+
+export function validateScript(scriptString: string): InvalidScript {
+  let script: Script;
+  const invalid: InvalidScript = {
+    invalidJson: false,
+    firstEventInvalidType: false,
+    firstEventNotExist: false,
+    eventsInvalidType: false,
+    eventsOfInvalidType: [],
+    eventsWithDescriptionOfInvalidType: [],
+    eventsWithActionsOfInvalidType: [],
+    eventsWithNotesOfInvalidType: [],
+    eventsWithNextEventOfInvalidType: [],
+    eventsWithNextEventNotExist: [],
+    actionsWithThinkOfInvalidType: [],
+    actionsWithTriggerEventOfInvalidType: [],
+    actionsWithTriggerEventNotExist: [],
+    notesOfInvalidType: []
+  };
+
+  try {
+    script = JSON.parse(scriptString);
+  } catch (e) {
+    invalid.invalidJson = true;
+    return invalid;
+  }
+
+  const firstEvent = script.firstEvent;
+  const events = script.events;
+
+  if (typeof firstEvent !== 'string') {
+    invalid.firstEventInvalidType = true;
+  }
+
+  if (!isObject(events)) {
+    invalid.eventsInvalidType = true;
+  }
+
+  if (!invalid.firstEventInvalidType && !invalid.eventsInvalidType) {
+    if (events[firstEvent] === undefined) {
+      invalid.firstEventNotExist = true;
+    }
+  }
+
+  if (!invalid.eventsInvalidType) {
+    Object.keys(events).forEach(eventId => {
+      const event = events[eventId];
+      if (!isObject(event)) {
+        invalid.eventsOfInvalidType.push(eventId);
+      } else {
+        if (typeof event.description !== 'string') {
+          invalid.eventsWithDescriptionOfInvalidType.push(eventId);
+        }
+        if (!(event.nextEvent === undefined || typeof event.nextEvent === 'string')) {
+          invalid.eventsWithNextEventOfInvalidType.push(eventId);
+        }
+        if (typeof event.nextEvent === 'string') {
+          if (events[event.nextEvent] === undefined) {
+            invalid.eventsWithNextEventNotExist.push(eventId);
+          }
+        }
+
+        const actions = event.actions;
+        const notes = event.notes;
+
+        if (!(actions === undefined || isObject(actions))) {
+          invalid.eventsWithActionsOfInvalidType.push(eventId);
+        }
+        if (!(notes === undefined || isObject(notes))) {
+          invalid.eventsWithNotesOfInvalidType.push(eventId);
+        }
+
+        if (isObject(actions)) {
+          Object.keys(actions).forEach(actionDescription => {
+            const action = actions[actionDescription];
+            const think = action.think;
+            const triggerEvent = action.triggerEvent;
+
+            if (!(think === undefined || typeof think === 'string')) {
+              invalid.actionsWithThinkOfInvalidType.push(`${eventId} | ${actionDescription}`);
+            }
+            if (!(triggerEvent === undefined || typeof triggerEvent === 'string')) {
+              invalid.actionsWithTriggerEventOfInvalidType.push(`${eventId} | ${actionDescription}`);
+            }
+            if (typeof triggerEvent === 'string') {
+              if (events[triggerEvent] === undefined) {
+                invalid.actionsWithTriggerEventNotExist.push(`${eventId} | ${actionDescription}`);
+              }
+            }
+          });
+        }
+
+        if (isObject(notes)) {
+          Object.keys(notes).forEach(noteTitle => {
+            const note = notes[noteTitle];
+
+            if (typeof note !== 'string') {
+              invalid.notesOfInvalidType.push(`${eventId} | ${noteTitle}`);
+            }
+          });
+        }
+      }
+    });
+  }
+
+  return invalid;
+}
+
+function isObject(x: any): boolean {
+  return typeof x === 'object' && x.constructor === {}.constructor;
 }
 
 function buildEvents(eventsEditable: Event4Edit[]): Events {
@@ -184,14 +312,14 @@ function buildNotes(notes4Edit: Note4Edit[]): Notes {
 }
 
 
-function validateEvents(script: Script4Edit, eventIdOccurance: Occurance): boolean {
+function validateEvents4Edit(script: Script4Edit, eventIdOccurance: Occurance): boolean {
   let anyInvalidEvent = false;
 
   script.events.forEach(event => {
     event.duplicateId = (event.id && eventIdOccurance[event.id] > 1);
     event.nextEventIdNotExist = event.nextEventIdNotExist && !eventIdOccurance[event.nextEvent];
-    const anyInvalidAction = !validateActions(event.actions, eventIdOccurance);
-    const anyInvalidNote = !validateNotes(event.notes);
+    const anyInvalidAction = !validateActions4Edit(event.actions, eventIdOccurance);
+    const anyInvalidNote = !validateNotes4Edit(event.notes);
 
     event.invalid = !event.id || event.duplicateId || event.nextEventIdNotExist || anyInvalidAction || anyInvalidNote;
 
@@ -201,7 +329,7 @@ function validateEvents(script: Script4Edit, eventIdOccurance: Occurance): boole
   return !anyInvalidEvent;
 }
 
-function validateActions(actions: Action4Edit[], eventIdOccurance: Occurance): boolean {
+function validateActions4Edit(actions: Action4Edit[], eventIdOccurance: Occurance): boolean {
   let anyActionInvalid = false;
   const actionDescriptionOccurance: Occurance = actions.reduce(
     (occurance, action) => {
@@ -220,7 +348,7 @@ function validateActions(actions: Action4Edit[], eventIdOccurance: Occurance): b
   return !anyActionInvalid;
 }
 
-function validateNotes(notes: Note4Edit[]): boolean {
+function validateNotes4Edit(notes: Note4Edit[]): boolean {
   let anyNoteInValid = false;
   const noteTitleOccurance: Occurance = notes.reduce(
     (occurance, note) => {

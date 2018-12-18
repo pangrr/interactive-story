@@ -1,7 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { FormControl, FormGroupDirective, NgForm, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, AbstractControl } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { validateScript } from '../script';
 
 
 class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -11,12 +12,13 @@ class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+function Validator(control: AbstractControl): { [key: string]: any } | null {
+  const invalid = validateScript(control.value);
 
-function validateScript(control: AbstractControl) {
-  try {
-    JSON.parse(control.value);
-  } catch (e) {
-    return { validJson: true };
+  for (const key of Object.keys(invalid)) {
+    if (invalid[key] === true || invalid[key].length > 0) {
+      return invalid;
+    }
   }
 
   return null;
@@ -31,14 +33,13 @@ function validateScript(control: AbstractControl) {
 export class JsonComponent {
   script: FormControl;
   matcher = new MyErrorStateMatcher();
+  objectKeys = Object.keys;
 
   constructor(
     public dialogRef: MatDialogRef<JsonComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
   ) {
-    this.script = new FormControl(JSON.stringify(data, null, 2), [
-      validateScript
-    ]);
+    this.script = new FormControl(JSON.stringify(data, null, 2), [Validator]);
   }
 
   submit(): void {

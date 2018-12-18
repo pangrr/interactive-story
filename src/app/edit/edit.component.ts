@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 import { ScriptService } from '../script.service';
 import { Router } from '@angular/router';
-import { Script, Script4Edit, buildScript4Edit, validateScript, buildScript, Event4Edit, sortEvents } from '../script';
+import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit, sortEvents } from '../script';
 
 
 @Component({
@@ -38,7 +38,7 @@ export class EditComponent implements OnInit {
   }
 
   playScript(): void {
-    if (validateScript(this.script)) {
+    if (validateScript4Edit(this.script)) {
       this.service.setScript(buildScript(this.script));
       this.router.navigate(['/play']);
     } else {
@@ -47,10 +47,10 @@ export class EditComponent implements OnInit {
   }
 
   openScriptJsonEditor(): void {
-    if (validateScript(this.script)) {
+    if (validateScript4Edit(this.script)) {
       const jsonRef = this.json.open(JsonComponent, {
         width: '1000px',
-        data: this.script
+        data: buildScript(this.script)
       });
 
       jsonRef.afterClosed().subscribe((script: Script) => {
@@ -81,7 +81,7 @@ export class EditComponent implements OnInit {
   }
 
   sortEvents(): void {
-    if (validateScript(this.script)) {
+    if (validateScript4Edit(this.script)) {
       this.script.events = sortEvents(this.script.events, this.script.firstEvent);
     } else {
       this.openSnackBarForInvalidScript();
@@ -117,7 +117,7 @@ export class EditComponent implements OnInit {
   }
 
   validateScript(): void {
-    if (validateScript(this.script)) {
+    if (validateScript4Edit(this.script)) {
       this.openSnackBarForValidScript();
     } else {
       this.openSnackBarForInvalidScript();
