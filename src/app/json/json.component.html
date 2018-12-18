@@ -6,5 +6,7 @@
       <mat-error *ngIf="script.errors[key].length > 0">{{key}} {{script.errors[key]}}</mat-error>
     </ng-container>
   </ng-container>
-  <button mat-button color="primary" type="submit" [disabled]="script.invalid">Submit</button>
+  <div class="flex">
+    <button mat-button color="primary" type="submit" [disabled]="script.invalid">Submit</button>
+  </div>
 </form>

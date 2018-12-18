@@ -13,3 +13,8 @@
 .mat-error {
   font-size: 0.8em;
 }
+
+.flex {
+  display: flex;
+  justify-content: flex-end;
+}
