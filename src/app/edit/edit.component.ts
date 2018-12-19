@@ -58,13 +58,15 @@ export class EditComponent implements OnInit {
 
   addEvent(): void {
     this.script.events.push({
-      // data
-      id: undefined,
-      description: undefined,
-      actions: [],
-      nextEvent: undefined,
+      id: '',
+      description: '',
+      actions: [{
+        description: '',
+        triggerEvent: '',
+        think: ''
+      }],
+      nextEvent: '',
       notes: [],
-      // helper
       open: true
     });
 
@@ -83,10 +85,9 @@ export class EditComponent implements OnInit {
 
   addAction(actions: Action4Edit[]): void {
     actions.push({
-      // data
-      description: undefined,
-      triggerEvent: undefined,
-      think: undefined
+      description: '',
+      triggerEvent: '',
+      think: ''
     });
 
     this.validateScript();
@@ -94,8 +95,8 @@ export class EditComponent implements OnInit {
 
   addNote(notes: Note4Edit[]): void {
     notes.push({
-      title: undefined,
-      content: undefined
+      title: '',
+      content: ''
     });
 
     this.validateScript();
