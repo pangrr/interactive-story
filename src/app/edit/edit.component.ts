@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material';
 import { ScriptService } from '../script.service';
 import { Router } from '@angular/router';
 import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit,
-  sortEvents, Note4Edit, Action4Edit } from '../script';
+  sortEvents, Note4Edit, Action4Edit, collectPossibleNextEvents } from '../script';
 
 
 @Component({
@@ -57,18 +57,13 @@ export class EditComponent implements OnInit {
   }
 
   addEvent(): void {
-    this.script.events.push({
-      id: '',
-      description: '',
-      actions: [{
-        description: '',
-        triggerEvent: '',
-        think: ''
-      }],
-      nextEvent: '',
-      notes: [],
-      open: true
-    });
+    this.script.events.push(this.buildNewEvent4Edit());
+  }
+
+  appendEvent(toEventIndex: number): void {
+    const newEvents: Event4Edit[] = collectPossibleNextEvents(this.script.events[toEventIndex]).map(id => this.buildNewEvent4Edit(id));
+
+    this.script.events.splice(toEventIndex + 1, 0, ...newEvents);
 
     this.validateScript();
   }
@@ -128,6 +123,21 @@ export class EditComponent implements OnInit {
         this.openSnackBarForInvalidScript();
       }
     }
+  }
+
+  private buildNewEvent4Edit(id: string = ''): Event4Edit {
+    return {
+      id,
+      description: '',
+      actions: [{
+        description: '',
+        triggerEvent: '',
+        think: ''
+      }],
+      nextEvent: '',
+      notes: [],
+      open: true
+    };
   }
 
   private openSnackBarForInvalidScript(): void {

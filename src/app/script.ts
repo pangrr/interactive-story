@@ -139,6 +139,21 @@ export function sortEvents(events: Event4Edit[], firstEventId: string): Event4Ed
   return sortedEvents;
 }
 
+export function collectPossibleNextEvents(event: Event4Edit): string[] {
+  const possibleNextEvents: string[] = [];
+  if (event.nextEvent) {
+    possibleNextEvents.push(event.nextEvent);
+  }
+  if (event.actions) {
+    event.actions.forEach(action => {
+      if (action.triggerEvent) {
+        possibleNextEvents.push(action.triggerEvent);
+      }
+    });
+  }
+  return possibleNextEvents;
+}
+
 export function validateScript(scriptString: string): InvalidScript {
   let script: Script;
   const invalid: InvalidScript = {
@@ -387,19 +402,4 @@ function countEventIdOccurance(events: Event4Edit[]): Occurance {
     eventIdOccurance[event.id] = (eventIdOccurance[event.id] || 0) + 1;
   });
   return eventIdOccurance;
-}
-
-function collectPossibleNextEvents(event: Event4Edit): string[] {
-  const possibleNextEvents: string[] = [];
-  if (event.nextEvent) {
-    possibleNextEvents.push(event.nextEvent);
-  }
-  if (event.actions) {
-    event.actions.forEach(action => {
-      if (action.triggerEvent) {
-        possibleNextEvents.push(action.triggerEvent);
-      }
-    });
-  }
-  return possibleNextEvents;
 }

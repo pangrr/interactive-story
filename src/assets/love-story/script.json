@@ -562,6 +562,50 @@
       }
     },
     "麻烦你了": {
+      "description": "他父亲说：“那也行，就麻烦你了。”",
+      "nextEvent": "犹犹豫豫"
+    },
+    "犹犹豫豫": {
+      "description": "",
+      "actions": {
+        "我犹犹豫豫，拖了几天": {
+          "triggerEvent": "死",
+          "think": ""
+        }
+      }
+    },
+    "死": {
+      "description": "还没来得及去看简宁，他妈妈就死了。",
+      "actions": {
+        "去看简宁": {
+          "triggerEvent": "再见简宁",
+          "think": ""
+        }
+      }
+    },
+    "再见简宁": {
+      "description": "再见到的简宁，比过去清瘦了些。他惊讶，转而愤怒，都在脸上。",
+      "nextEvent": "怎么来了"
+    },
+    "怎么来了": {
+      "description": "“你啷个来了？”",
+      "actions": {
+        "“来看哈你，我恁几年在嘉兴上班，厂头管得严，回来得少。”": {
+          "triggerEvent": "脸别过去",
+          "think": ""
+        }
+      }
+    },
+    "脸别过去": {
+      "description": "他苦着一双眼睛看我，又把脸别过去。",
+      "actions": {
+        "问他知不知道他母亲去世的消息": {
+          "triggerEvent": "更痛苦",
+          "think": ""
+        }
+      }
+    },
+    "更痛苦": {
       "description": ""
     }
   }
