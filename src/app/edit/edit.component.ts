@@ -18,7 +18,7 @@ import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript
 export class EditComponent implements OnInit {
   script: Script4Edit = {
     firstEvent: '0',
-    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '0', open: true }]
+    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '', open: true }]
   };
 
   constructor(
