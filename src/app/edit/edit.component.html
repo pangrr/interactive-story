@@ -48,7 +48,7 @@
             </mat-form-field>
           </td>
           <td class="icon-cell">
-            <button *ngIf="action.mouseover" mat-icon-button (click)="deleteAction(event, i)">
+            <button *ngIf="action.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteAction(event, i)">
               <mat-icon svgIcon="delete" matTooltip="Delete Action"></mat-icon>
             </button>
           </td>
@@ -69,7 +69,7 @@
             </mat-form-field>
           </td>
           <td class="icon-cell">
-            <button *ngIf="note.mouseover" mat-icon-button (click)="deleteNote(event, i)">
+            <button *ngIf="note.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteNote(event, i)">
               <mat-icon svgIcon="delete" matTooltip="Delete Note"></mat-icon>
             </button>
           </td>
@@ -89,7 +89,9 @@
         <button mat-button color="accent" (click)="appendEvent(i)">Add Event</button>
         <button mat-button color="primary" (click)="addAction(event.actions)">Add Action</button>
         <button mat-button (click)="addNote(event.notes)">Add Note</button>
-        <button mat-button color="warn" (click)="deleteEvent(i)">Delete Event</button>
+        <button mat-icon-button (click)="deleteEvent(i)">
+          <mat-icon svgIcon="delete" matTooltip="Delete Event"></mat-icon>
+        </button>
       </div>
     </mat-expansion-panel>
   </mat-accordion>

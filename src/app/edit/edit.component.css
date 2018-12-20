@@ -14,6 +14,7 @@
 .event-control {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .full-width {
@@ -43,6 +44,9 @@
 
 .mat-icon-button {
   color: rgba(0, 0, 0, 0.4);
+}
+
+.narrow-icon-button {
   width: 20px;
 }
 
