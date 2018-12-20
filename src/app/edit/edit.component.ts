@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 import { ScriptService } from '../script.service';
 import { Router } from '@angular/router';
+import { ClipboardService } from 'ngx-clipboard';
 import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit,
   sortEvents, Note4Edit, Action4Edit, collectPossibleNextEvents } from '../script';
 
@@ -27,7 +28,8 @@ export class EditComponent implements OnInit {
     sanitizer: DomSanitizer,
     public snackBar: MatSnackBar,
     private service: ScriptService,
-    private router: Router
+    private router: Router,
+    private clipboardService: ClipboardService
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
   }
@@ -123,6 +125,10 @@ export class EditComponent implements OnInit {
         this.openSnackBarForInvalidScript();
       }
     }
+  }
+
+  copyScriptToClipboard(): void {
+    this.clipboardService.copyFromContent(JSON.stringify(buildScript(this.script), null, 2));
   }
 
   private buildNewEvent4Edit(id: string = ''): Event4Edit {

@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClipboardModule } from 'ngx-clipboard';
 // angular material
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -46,6 +47,7 @@ import { JsonComponent } from './json/json.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    ClipboardModule,
     // angular material
     MatCardModule,
     MatButtonModule,
