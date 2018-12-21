@@ -8,10 +8,9 @@ Let's play stories.
 
 
 ## todo
-- detect duplicate event id
-- detect duplicate action description
-- detect duplicate note title
 - save and reload game
 - replay game
+- handle slow render event list
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.2.
+Use `serve` to host production `cd dist && sudo serve -l 80 -c ../serve.json -n`
