@@ -311,8 +311,8 @@ function buildActions(actions4Edit: Action4Edit[]): Actions {
   const actions: Actions = {};
   actions4Edit.forEach(action => {
     actions[action.description] = {
-      triggerEvent: action.triggerEvent,
-      think: action.think
+      triggerEvent: action.triggerEvent || undefined,
+      think: action.think || undefined
     };
   });
   return actions;
