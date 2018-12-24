@@ -1,4 +1,4 @@
-<div class="container">
+<div *ngIf="script" class="container">
   <mat-accordion class="events" multi>
     <mat-expansion-panel *ngFor="let event of script.events; let i = index" [expanded]="event.open" (opened)="event.open = true"
       (closed)="event.open = false">

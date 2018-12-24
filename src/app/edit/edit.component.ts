@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { JsonComponent } from '../json/json.component';
 import { MatIconRegistry } from '@angular/material';
@@ -16,11 +16,8 @@ import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript
   templateUrl: 'edit.component.html',
   styleUrls: ['edit.component.css']
 })
-export class EditComponent implements OnInit {
-  script: Script4Edit = {
-    firstEvent: '0',
-    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '', open: true }]
-  };
+export class EditComponent implements OnInit, AfterViewInit {
+  script: Script4Edit;
 
   constructor(
     public json: MatDialog,
@@ -37,6 +34,19 @@ export class EditComponent implements OnInit {
   ngOnInit() {
     if (this.service.getScript()) {
       this.script = buildScript4Edit(this.service.getScript());
+    }
+  }
+
+  ngAfterViewInit() {
+    if (!this.script) {
+      // use setTimeout to handle ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        this.script = {
+          firstEvent: '0',
+          events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '', open: true }]
+        };
+        this.openScriptJsonEditor();
+      });
     }
   }
 
