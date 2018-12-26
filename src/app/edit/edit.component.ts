@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { JsonComponent } from '../json/json.component';
 import { MatIconRegistry } from '@angular/material';
@@ -7,8 +7,10 @@ import { MatSnackBar } from '@angular/material';
 import { ScriptService } from '../script.service';
 import { Router } from '@angular/router';
 import { ClipboardService } from 'ngx-clipboard';
-import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit,
-  sortEvents, Note4Edit, Action4Edit, collectPossibleNextEvents } from '../script';
+import {
+  Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit,
+  sortEvents, Note4Edit, Action4Edit, collectPossibleNextEvents
+} from '../script';
 
 
 @Component({
@@ -16,7 +18,7 @@ import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript
   templateUrl: 'edit.component.html',
   styleUrls: ['edit.component.css']
 })
-export class EditComponent implements AfterViewInit {
+export class EditComponent implements AfterViewInit, AfterViewChecked {
   script: Script4Edit;
 
   constructor(
@@ -42,6 +44,14 @@ export class EditComponent implements AfterViewInit {
         };
         this.openScriptJsonEditor();
       });
+    }
+  }
+
+  ngAfterViewChecked() {
+    const firstEventId = this.service.getFirstEventId();
+    if (firstEventId) {
+      // use setTimeout to handle ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => this.script.firstEvent = firstEventId);
     }
   }
 

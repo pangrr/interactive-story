@@ -6,6 +6,7 @@ import { Script } from './script';
 })
 export class ScriptService {
   script: Script;
+  firstEventId: string;
 
   constructor() { }
 
@@ -15,6 +16,14 @@ export class ScriptService {
 
   getScript(): Script {
     return this.script;
+  }
+
+  setFirstEventId(eventId: string): void {
+    this.firstEventId = eventId;
+  }
+
+  getFirstEventId(): string {
+    return this.firstEventId;
   }
 }
 

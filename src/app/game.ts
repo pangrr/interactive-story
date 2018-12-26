@@ -51,11 +51,11 @@ export class Game {
     }
   }
 
-  private triggerEvent(eventTitle: string): void {
+  private triggerEvent(eventId: string): void {
     this.antiquateNewNotes();
 
     this.pushCurrentEventToHistory();
-    this.loadCurrentEvent(eventTitle);
+    this.loadCurrentEvent(eventId);
     if (this.currentEvent.notes) {
       this.updateNotes(this.currentEvent.notes);
     }
@@ -77,9 +77,10 @@ export class Game {
     this.history.push(this.currentEvent);
   }
 
-  private loadCurrentEvent(eventKey: string): void {
-    const eventFromScript = this.script.events[eventKey];
+  private loadCurrentEvent(eventId: string): void {
+    const eventFromScript = this.script.events[eventId];
     this.currentEvent = {
+      id: eventId,
       ...eventFromScript,
       actionsAvailable: { ...(eventFromScript.actions || {}) },
       actionsTaken: []
@@ -101,6 +102,7 @@ export interface Save {
 }
 
 export interface EventHappened extends Event {
+  id: string;
   actionsAvailable: Actions;
   actionsTaken: string[];
 }

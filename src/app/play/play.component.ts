@@ -64,7 +64,20 @@ export class PlayComponent implements OnInit {
   }
 
   editScript(): void {
+    this.service.setFirstEventId(this.getSecondFromLastEventId());
     this.router.navigate(['/edit']);
+  }
+
+  private getSecondFromLastEventId(): string {
+    const history = this.game.history;
+
+    if (history.length >= 2) {
+      return history[history.length - 2].id;
+    } else if (history.length >= 1) {
+      return history[history.length - 1].id;
+    } else {
+      return this.game.currentEvent.id;
+    }
   }
 }
 

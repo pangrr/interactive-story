@@ -16,83 +16,85 @@
           </ng-container>
         </div>
       </mat-expansion-panel-header>
-      <table class="full-width" cellspacing="0">
-        <tr>
-          <td colspan="4">
-            <mat-form-field class="full-width">
-              <textarea matInput placeholder="Description" [(ngModel)]="event.description" matTextareaAutosize
-                matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true"
-          (mouseleave)="action.mouseover = false">
-          <td>
-            <mat-form-field class="full-width" [ngClass]="!action.description || action.duplicateDescription ? 'red' : ''">
-              <textarea matInput placeholder="Action Description" [(ngModel)]="action.description" (change)="validateScript()"
-                matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
-              <mat-hint *ngIf="!action.description" class="red">Cannot Be Empty</mat-hint>
-              <mat-hint *ngIf="action.duplicateDescription" class="red">Duplicate Action Description</mat-hint>
-            </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field class="full-width" [ngClass]="action.triggerEventIdNotExist ? 'red' : ''">
-              <input matInput placeholder="Trigger Event" [(ngModel)]="action.triggerEvent" (change)="validateScript()">
-              <mat-hint *ngIf="action.triggerEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
-            </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field class="full-width">
-              <textarea matInput placeholder="Think" [(ngModel)]="action.think" matTextareaAutosize
-                matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
-            </mat-form-field>
-          </td>
-          <td class="icon-cell">
-            <button *ngIf="action.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteAction(event, i)">
-              <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Action"></mat-icon>
-            </button>
-          </td>
-        </tr>
-        <tr *ngFor="let note of event.notes; let i = index" class="note" (mouseenter)="note.mouseover = true"
-          (mouseleave)="note.mouseover = false">
-          <td>
-            <mat-form-field class="full-width" [ngClass]="!note.title || note.duplicateTitle ? 'red' : ''">
-              <input matInput placeholder="Note Title" [(ngModel)]="note.title" (change)="validateScript()">
-              <mat-hint *ngIf="!note.title" class="red">Cannot Be Empty</mat-hint>
-              <mat-hint *ngIf="note.duplicateTitle" class="red">Duplicate Note Title</mat-hint>
-            </mat-form-field>
-          </td>
-          <td colspan="2">
-            <mat-form-field class="full-width">
-              <textarea matInput placeholder="Note Content" [(ngModel)]="note.content" matTextareaAutosize
-                matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
-            </mat-form-field>
-          </td>
-          <td class="icon-cell">
-            <button *ngIf="note.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteNote(event, i)">
-              <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Note"></mat-icon>
-            </button>
-          </td>
-        </tr>
-      </table>
-      <div class="event-control">
-        <mat-form-field [ngClass]="!event.id || event.duplicateId ? 'red' : ''">
-          <input matInput placeholder="Event ID" [(ngModel)]="event.id" (change)="validateScript()">
-          <mat-hint *ngIf="!event.id" class="red">Cannot Be Empty</mat-hint>
-          <mat-hint *ngIf="event.duplicateId" class="red">Duplicate Event ID</mat-hint>
-        </mat-form-field>
-        <mat-form-field [ngClass]="event.nextEventIdNotExist ? 'red' : ''">
-          <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent" (change)="validateScript()">
-          <mat-hint *ngIf="event.nextEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
-        </mat-form-field>
-        <span class="spacer"></span>
-        <button mat-button color="accent" (click)="appendEvent(i)">Add Event</button>
-        <button mat-button color="primary" (click)="addAction(event.actions)">Add Action</button>
-        <button mat-button (click)="addNote(event.notes)">Add Note</button>
-        <button mat-icon-button (click)="deleteEvent(i)">
-          <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Event"></mat-icon>
-        </button>
-      </div>
+      <ng-container *ngIf="event.open">
+        <table class="full-width" cellspacing="0">
+          <tr>
+            <td colspan="4">
+              <mat-form-field class="full-width">
+                <textarea matInput placeholder="Description" [(ngModel)]="event.description" matTextareaAutosize
+                  matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr *ngFor="let action of event.actions; let i = index" class="action" (mouseenter)="action.mouseover = true"
+            (mouseleave)="action.mouseover = false">
+            <td>
+              <mat-form-field class="full-width" [ngClass]="!action.description || action.duplicateDescription ? 'red' : ''">
+                <textarea matInput placeholder="Action Description" [(ngModel)]="action.description" (change)="validateScript()"
+                  matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
+                <mat-hint *ngIf="!action.description" class="red">Cannot Be Empty</mat-hint>
+                <mat-hint *ngIf="action.duplicateDescription" class="red">Duplicate Action Description</mat-hint>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="full-width" [ngClass]="action.triggerEventIdNotExist ? 'red' : ''">
+                <input matInput placeholder="Trigger Event" [(ngModel)]="action.triggerEvent" (change)="validateScript()">
+                <mat-hint *ngIf="action.triggerEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="full-width">
+                <textarea matInput placeholder="Think" [(ngModel)]="action.think" matTextareaAutosize
+                  matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
+              </mat-form-field>
+            </td>
+            <td class="icon-cell">
+              <button *ngIf="action.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteAction(event, i)">
+                <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Action"></mat-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngFor="let note of event.notes; let i = index" class="note" (mouseenter)="note.mouseover = true"
+            (mouseleave)="note.mouseover = false">
+            <td>
+              <mat-form-field class="full-width" [ngClass]="!note.title || note.duplicateTitle ? 'red' : ''">
+                <input matInput placeholder="Note Title" [(ngModel)]="note.title" (change)="validateScript()">
+                <mat-hint *ngIf="!note.title" class="red">Cannot Be Empty</mat-hint>
+                <mat-hint *ngIf="note.duplicateTitle" class="red">Duplicate Note Title</mat-hint>
+              </mat-form-field>
+            </td>
+            <td colspan="2">
+              <mat-form-field class="full-width">
+                <textarea matInput placeholder="Note Content" [(ngModel)]="note.content" matTextareaAutosize
+                  matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
+              </mat-form-field>
+            </td>
+            <td class="icon-cell">
+              <button *ngIf="note.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteNote(event, i)">
+                <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Note"></mat-icon>
+              </button>
+            </td>
+          </tr>
+        </table>
+        <div class="event-control">
+          <mat-form-field [ngClass]="!event.id || event.duplicateId ? 'red' : ''">
+            <input matInput placeholder="Event ID" [(ngModel)]="event.id" (change)="validateScript()">
+            <mat-hint *ngIf="!event.id" class="red">Cannot Be Empty</mat-hint>
+            <mat-hint *ngIf="event.duplicateId" class="red">Duplicate Event ID</mat-hint>
+          </mat-form-field>
+          <mat-form-field [ngClass]="event.nextEventIdNotExist ? 'red' : ''">
+            <input matInput placeholder="Next Event" [(ngModel)]="event.nextEvent" (change)="validateScript()">
+            <mat-hint *ngIf="event.nextEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
+          </mat-form-field>
+          <span class="spacer"></span>
+          <button mat-button color="accent" (click)="appendEvent(i)">Add Event</button>
+          <button mat-button color="primary" (click)="addAction(event.actions)">Add Action</button>
+          <button mat-button (click)="addNote(event.notes)">Add Note</button>
+          <button mat-icon-button (click)="deleteEvent(i)">
+            <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Event"></mat-icon>
+          </button>
+        </div>
+      </ng-container> 
     </mat-expansion-panel>
   </mat-accordion>
   <div color="primary" class="toolbar">
