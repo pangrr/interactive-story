@@ -19,7 +19,7 @@ export class Game {
       this.history = [];
       this.oldNotes = {};
       this.newNotes = {};
-      this.loadCurrentEvent(this.script.firstEvent);
+      this.loadFirstEvent();
     }
   }
 
@@ -61,6 +61,15 @@ export class Game {
     }
   }
 
+  antiquateNewNotes(): void {
+    this.oldNotes = { ...this.oldNotes, ...this.newNotes };
+    this.newNotes = {};
+  }
+
+  private loadFirstEvent(): void {
+    this.loadCurrentEvent(Object.keys(this.script.events)[0]);
+  }
+
   private triggerEvent(eventId: string): void {
     this.antiquateNewNotes();
 
@@ -73,11 +82,6 @@ export class Game {
       delete this.oldNotes[key];
       this.newNotes[key] = newNotes[key];
     });
-  }
-
-  private antiquateNewNotes(): void {
-    this.oldNotes = { ...this.oldNotes, ...this.newNotes };
-    this.newNotes = {};
   }
 
   private pushCurrentEventToHistory(): void {

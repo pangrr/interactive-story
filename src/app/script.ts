@@ -145,7 +145,7 @@ export function collectPossibleNextEvents(event: Event4Edit): string[] {
   }
   if (event.actions) {
     event.actions.forEach(action => {
-      if (action.triggerEvent) {
+      if (action.triggerEvent && !possibleNextEvents.includes(action.triggerEvent)) {
         possibleNextEvents.push(action.triggerEvent);
       }
     });

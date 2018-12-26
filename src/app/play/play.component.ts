@@ -61,6 +61,7 @@ export class PlayComponent {
         newNotes: this.game.newNotes
       }
     });
+    this.game.antiquateNewNotes();
   }
 
   openDialog(content: string): void {
