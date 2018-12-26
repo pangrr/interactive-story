@@ -29,6 +29,7 @@ export class EditComponent implements AfterViewInit {
     private clipboardService: ClipboardService
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
+    iconRegistry.addSvgIcon('play', sanitizer.bypassSecurityTrustResourceUrl('assets/play.svg'));
   }
 
   ngAfterViewInit() {

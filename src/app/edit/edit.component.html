@@ -43,13 +43,13 @@
           </td>
           <td>
             <mat-form-field class="full-width">
-              <textarea matInput placeholder="Open Mind" [(ngModel)]="action.think" matTextareaAutosize
+              <textarea matInput placeholder="Think" [(ngModel)]="action.think" matTextareaAutosize
                 matAutosizeMinRows="1" matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
           </td>
           <td class="icon-cell">
             <button *ngIf="action.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteAction(event, i)">
-              <mat-icon svgIcon="delete" matTooltip="Delete Action"></mat-icon>
+              <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Action"></mat-icon>
             </button>
           </td>
         </tr>
@@ -70,7 +70,7 @@
           </td>
           <td class="icon-cell">
             <button *ngIf="note.mouseover" mat-icon-button class="narrow-icon-button" (click)="deleteNote(event, i)">
-              <mat-icon svgIcon="delete" matTooltip="Delete Note"></mat-icon>
+              <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Note"></mat-icon>
             </button>
           </td>
         </tr>
@@ -90,7 +90,7 @@
         <button mat-button color="primary" (click)="addAction(event.actions)">Add Action</button>
         <button mat-button (click)="addNote(event.notes)">Add Note</button>
         <button mat-icon-button (click)="deleteEvent(i)">
-          <mat-icon svgIcon="delete" matTooltip="Delete Event"></mat-icon>
+          <mat-icon class="grey" svgIcon="delete" matTooltip="Delete Event"></mat-icon>
         </button>
       </div>
     </mat-expansion-panel>
@@ -108,6 +108,8 @@
     <button mat-button color="primary" (click)="openScriptJsonEditor()" [disabled]="script.invalid">Script JSON</button>
     <button mat-button color="primary" (click)="copyScriptToClipboard()" [disabled]="script.invalid">Copy Script</button>
     <button mat-button color="warn" (click)="validateScript(true)">Validate Script</button>
-    <button mat-button (click)="playScript()" [disabled]="script.invalid">Play</button>
+    <button mat-button mat-icon-button (click)="playScript()" [disabled]="script.invalid">
+      <mat-icon svgIcon="play" matTooltip="Play Script"></mat-icon>
+    </button>
   </div>
 </div>
