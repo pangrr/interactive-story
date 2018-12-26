@@ -31,11 +31,7 @@ export class EditComponent implements OnInit, AfterViewInit {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
   }
 
-  ngOnInit() {
-    if (this.service.getScript()) {
-      this.script = buildScript4Edit(this.service.getScript());
-    }
-  }
+  ngOnInit() { }
 
   ngAfterViewInit() {
     if (!this.script) {
@@ -63,7 +59,21 @@ export class EditComponent implements OnInit, AfterViewInit {
 
     jsonRef.afterClosed().subscribe((script: Script) => {
       if (script) {
-        this.script = buildScript4Edit(script);
+        const script4Edit = buildScript4Edit(script);
+        this.script = {
+          firstEvent: script4Edit.firstEvent,
+          events: []
+        };
+        const step = 10;
+        for (let i = 0; i < script4Edit.events.length; i = i + step) {
+          setTimeout(() => {
+            const events = [];
+            for (let j = i; j < i + step && j < script4Edit.events.length; j++) {
+              events.push(script4Edit.events[j]);
+            }
+            this.script.events.push(...events);
+          });
+        }
       }
     });
   }
