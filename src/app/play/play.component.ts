@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { NotesComponent } from '../notes/notes.component';
 import { ScriptService } from '../script.service';
@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   templateUrl: './play.component.html',
   styleUrls: ['./play.component.css']
 })
-export class PlayComponent implements OnInit {
+export class PlayComponent {
   game: Game;
   objectKeys = Object.keys;
 
@@ -28,13 +28,16 @@ export class PlayComponent implements OnInit {
   ) {
     iconRegistry.addSvgIcon('notes', sanitizer.bypassSecurityTrustResourceUrl('assets/notes.svg'));
     iconRegistry.addSvgIcon('edit', sanitizer.bypassSecurityTrustResourceUrl('assets/edit.svg'));
-  }
 
-  ngOnInit() {
-    this.game = new Game(this.service.getScript());
-    const savedEventId = this.service.getSavedEventId();
-    if (savedEventId) {
-      this.game.loadCurrentEvent(savedEventId);
+    const script = this.service.getScript();
+    if (!script) {
+      this.router.navigate(['/edit']);
+    } else {
+      this.game = new Game(this.service.getScript());
+      const savedEventId = this.service.getSavedEventId();
+      if (savedEventId) {
+        this.game.loadCurrentEvent(savedEventId);
+      }
     }
   }
 
