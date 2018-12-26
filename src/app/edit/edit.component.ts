@@ -59,21 +59,7 @@ export class EditComponent implements OnInit, AfterViewInit {
 
     jsonRef.afterClosed().subscribe((script: Script) => {
       if (script) {
-        const script4Edit = buildScript4Edit(script);
-        this.script = {
-          firstEvent: script4Edit.firstEvent,
-          events: []
-        };
-        const step = 10;
-        for (let i = 0; i < script4Edit.events.length; i = i + step) {
-          setTimeout(() => {
-            const events = [];
-            for (let j = i; j < i + step && j < script4Edit.events.length; j++) {
-              events.push(script4Edit.events[j]);
-            }
-            this.script.events.push(...events);
-          });
-        }
+        this.script = buildScript4Edit(script);
       }
     });
   }
