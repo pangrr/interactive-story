@@ -93,7 +93,6 @@ interface InvalidScript {
 
 export function buildScript4Edit(script: Script): Script4Edit {
   return {
-    // data
     firstEvent: script.firstEvent,
     events: Object.keys(script.events).map(key => {
       return buildEvent4Edit(key, script.events[key]);
