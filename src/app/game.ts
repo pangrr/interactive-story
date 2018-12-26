@@ -20,9 +20,6 @@ export class Game {
       this.oldNotes = {};
       this.newNotes = {};
       this.loadCurrentEvent(this.script.firstEvent);
-      if (this.currentEvent.notes) {
-        this.updateNotes(this.currentEvent.notes);
-      }
     }
   }
 
@@ -51,14 +48,24 @@ export class Game {
     }
   }
 
+  loadCurrentEvent(eventId: string): void {
+    const eventFromScript = this.script.events[eventId];
+    this.currentEvent = {
+      id: eventId,
+      ...eventFromScript,
+      actionsAvailable: { ...(eventFromScript.actions || {}) },
+      actionsTaken: []
+    };
+    if (this.currentEvent.notes) {
+      this.updateNotes(this.currentEvent.notes);
+    }
+  }
+
   private triggerEvent(eventId: string): void {
     this.antiquateNewNotes();
 
     this.pushCurrentEventToHistory();
     this.loadCurrentEvent(eventId);
-    if (this.currentEvent.notes) {
-      this.updateNotes(this.currentEvent.notes);
-    }
   }
 
   private updateNotes(newNotes: Notes): void {
@@ -75,16 +82,6 @@ export class Game {
 
   private pushCurrentEventToHistory(): void {
     this.history.push(this.currentEvent);
-  }
-
-  private loadCurrentEvent(eventId: string): void {
-    const eventFromScript = this.script.events[eventId];
-    this.currentEvent = {
-      id: eventId,
-      ...eventFromScript,
-      actionsAvailable: { ...(eventFromScript.actions || {}) },
-      actionsTaken: []
-    };
   }
 
   private isSave(arg: any): arg is Save {

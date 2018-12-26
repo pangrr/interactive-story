@@ -6,7 +6,7 @@ import { Script } from './script';
 })
 export class ScriptService {
   script: Script;
-  firstEventId: string;
+  savedEventId: string;
 
   constructor() { }
 
@@ -18,12 +18,12 @@ export class ScriptService {
     return this.script;
   }
 
-  setFirstEventId(eventId: string): void {
-    this.firstEventId = eventId;
+  saveEventId(eventId: string): void {
+    this.savedEventId = eventId;
   }
 
-  getFirstEventId(): string {
-    return this.firstEventId;
+  getSavedEventId(): string {
+    return this.savedEventId;
   }
 }
 

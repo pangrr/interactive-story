@@ -32,6 +32,10 @@ export class PlayComponent implements OnInit {
 
   ngOnInit() {
     this.game = new Game(this.service.getScript());
+    const savedEventId = this.service.getSavedEventId();
+    if (savedEventId) {
+      this.game.loadCurrentEvent(savedEventId);
+    }
   }
 
   takeAction(actionKey: string): void {
@@ -64,7 +68,7 @@ export class PlayComponent implements OnInit {
   }
 
   editScript(): void {
-    this.service.setFirstEventId(this.getSecondFromLastEventId());
+    this.service.saveEventId(this.getSecondFromLastEventId());
     this.router.navigate(['/edit']);
   }
 

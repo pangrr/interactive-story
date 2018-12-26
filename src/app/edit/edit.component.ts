@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { JsonComponent } from '../json/json.component';
 import { MatIconRegistry } from '@angular/material';
@@ -18,7 +18,7 @@ import {
   templateUrl: 'edit.component.html',
   styleUrls: ['edit.component.css']
 })
-export class EditComponent implements AfterViewInit, AfterViewChecked {
+export class EditComponent implements AfterViewInit {
   script: Script4Edit;
 
   constructor(
@@ -44,14 +44,6 @@ export class EditComponent implements AfterViewInit, AfterViewChecked {
         };
         this.openScriptJsonEditor();
       });
-    }
-  }
-
-  ngAfterViewChecked() {
-    const firstEventId = this.service.getFirstEventId();
-    if (firstEventId) {
-      // use setTimeout to handle ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => this.script.firstEvent = firstEventId);
     }
   }
 
