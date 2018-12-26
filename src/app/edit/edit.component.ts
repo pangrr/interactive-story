@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { JsonComponent } from '../json/json.component';
 import { MatIconRegistry } from '@angular/material';
@@ -16,7 +16,7 @@ import { Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript
   templateUrl: 'edit.component.html',
   styleUrls: ['edit.component.css']
 })
-export class EditComponent implements OnInit, AfterViewInit {
+export class EditComponent implements AfterViewInit {
   script: Script4Edit;
 
   constructor(
@@ -30,8 +30,6 @@ export class EditComponent implements OnInit, AfterViewInit {
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
   }
-
-  ngOnInit() { }
 
   ngAfterViewInit() {
     if (!this.script) {
