@@ -38,6 +38,10 @@ export class MyRouteReuseStrategy implements RouteReuseStrategy {
 
   store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
     this.storedRouteHandles.set(this.getPath(route), detachedTree);
+    // https://github.com/angular/material2/issues/11478#issuecomment-420213238
+    while (document.getElementsByTagName('mat-tooltip-component').length > 0) {
+      document.getElementsByTagName('mat-tooltip-component')[0].remove();
+    }
   }
 
   private getPath(route: ActivatedRouteSnapshot): string {

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { JsonComponent } from '../json/json.component';
 import { MatIconRegistry } from '@angular/material';
@@ -18,8 +18,11 @@ import {
   templateUrl: 'edit.component.html',
   styleUrls: ['edit.component.css']
 })
-export class EditComponent implements AfterViewInit {
-  script: Script4Edit;
+export class EditComponent {
+  script: Script4Edit = {
+    firstEvent: '0',
+    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '', open: true }]
+  };
 
   constructor(
     public json: MatDialog,
@@ -32,19 +35,7 @@ export class EditComponent implements AfterViewInit {
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
     iconRegistry.addSvgIcon('play', sanitizer.bypassSecurityTrustResourceUrl('assets/play.svg'));
-  }
-
-  ngAfterViewInit() {
-    if (!this.script) {
-      // use setTimeout to handle ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => {
-        this.script = {
-          firstEvent: '0',
-          events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '', open: true }]
-        };
-        this.openScriptJsonEditor();
-      });
-    }
+    this.openScriptJsonEditor();
   }
 
   playScript(): void {
