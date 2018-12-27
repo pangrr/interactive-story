@@ -102,11 +102,7 @@ export function buildScript(script4Edit: Script4Edit): Script {
 
 export function validateScript4Edit(script: Script4Edit): boolean {
   const eventIdOccurance = countEventIdOccurance(script.events);
-
-  const anyInvalidEvent = !validateEvents4Edit(script, eventIdOccurance);
-
-  script.invalid = anyInvalidEvent;
-
+  script.invalid = !validateEvents4Edit(script, eventIdOccurance);
   return !script.invalid;
 }
 
