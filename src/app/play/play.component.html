@@ -3,7 +3,7 @@
     <button mat-icon-button (click)="editScript()">
       <mat-icon svgIcon="edit" matTooltip="Edit Script"></mat-icon>
     </button>
-    <button mat-icon-button (click)="stepBack()" [disabled]="snapshots.length === 0">
+    <button mat-icon-button (click)="stepBack()" [disabled]="history.length === 0">
       <mat-icon svgIcon="step_back" matTooltip="Step Back"></mat-icon>
     </button>
     <span class="spacer"></span>
@@ -12,11 +12,11 @@
     </button>
   </div>
   <div *ngIf="game.currentEvent; let event" class="event">
-    <div class="description" [ngClass]="event.nextEvent ? 'cursor-pointer' : 'cursor-default'" (click)="triggerNextEvent()">
+    <div class="description" [ngClass]="event.nextEvent ? 'cursor-pointer' : 'cursor-default'" (click)="triggerNextEventIfAvailable(event)">
       <p *ngFor="let paragraph of event.description.split('\n')" class="paragraph">{{paragraph}}</p>
     </div>
     <div class="actions">
-      <button mat-button class="action" *ngFor="let key of objectKeys(event.actionsAvailable)" (click)="takeAction(key)">{{key}}</button>
+      <button mat-button class="action" *ngFor="let actionDescription of objectKeys(event.actions)" (click)="takeAction(actionDescription)">{{actionDescription}}</button>
     </div>
   </div>
 </div>

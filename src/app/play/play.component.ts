@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { NotesDialogComponent } from '../notes-dialog/notes-dialog.component';
-import { ScriptService } from '../script.service';
+import { Service } from '../service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import { Game, Snapshot } from '../game';
 import { ThoughtDialogComponent } from '../thought-dialog/thought-dialog.component';
 import { Router } from '@angular/router';
+import { Event } from '../script';
 
 
 @Component({
@@ -16,11 +17,11 @@ import { Router } from '@angular/router';
 })
 export class PlayComponent {
   game: Game;
-  snapshots: Snapshot[] = [];
+  history: Snapshot[] = [];
   objectKeys = Object.keys;
 
   constructor(
-    private service: ScriptService,
+    private service: Service,
     public notesDialog: MatDialog,
     public thoughtDialog: MatDialog,
     iconRegistry: MatIconRegistry,
@@ -35,25 +36,36 @@ export class PlayComponent {
     if (!script) {
       this.router.navigate(['/edit']);
     } else {
-      this.game = new Game(this.service.getScript());
-      const savedEventId = this.service.getSavedEventId();
-      if (savedEventId) {
-        this.game.loadCurrentEvent(savedEventId);
+      this.game = new Game(script);
+      const history = this.service.getHistory();
+      if (history) {
+        this.replayThroughHistory(history);
       }
     }
   }
 
-  takeAction(actionKey: string): void {
+  private replayThroughHistory(history: Snapshot[]): void {
+    history.forEach(snapshot => {
+      if (this.game.script.events[snapshot.currentEvent.id]) {
+        this.game.triggerEvent(snapshot.currentEvent.id);
+        this.takeSnapshot();
+      }
+    });
+  }
+
+  takeAction(actionDescription: string): void {
     this.takeSnapshot();
 
-    this.game.takeAction(actionKey);
+    this.game.takeAction(actionDescription);
     this.openThoughtIfAvailable();
   }
 
-  triggerNextEvent(): void {
-    this.takeSnapshot();
+  triggerNextEventIfAvailable(event: Event): void {
+    if (event.nextEvent) {
+      this.takeSnapshot();
 
-    this.game.triggerNextEvent();
+      this.game.triggerEvent(event.nextEvent);
+    }
   }
 
   openNotes(): void {
@@ -70,12 +82,12 @@ export class PlayComponent {
   }
 
   editScript(): void {
-    this.service.saveEventId(this.getSecondFromLastEventId());
+    this.service.saveHistory(this.history);
     this.router.navigate(['/edit']);
   }
 
   stepBack(): void {
-    this.game = new Game(this.snapshots.pop());
+    this.game = new Game(this.history.pop());
     this.openThoughtIfAvailable();
   }
 
@@ -92,20 +104,8 @@ export class PlayComponent {
     }
   }
 
-  private getSecondFromLastEventId(): string {
-    const history = this.game.history;
-
-    if (history.length >= 2) {
-      return history[history.length - 2].id;
-    } else if (history.length >= 1) {
-      return history[history.length - 1].id;
-    } else {
-      return this.game.currentEvent.id;
-    }
-  }
-
   private takeSnapshot(): void {
-    this.snapshots.push(this.game.takeSnapshot());
+    this.history.push(this.game.takeSnapshot());
   }
 }
 

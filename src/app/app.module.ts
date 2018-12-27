@@ -19,7 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 // my services
-import { ScriptService } from './script.service';
+import { Service } from './service';
 import { MyRouteReuseStrategy } from './route-reuse.strategy';
 // my components
 import { AppComponent } from './app.component';
@@ -64,7 +64,7 @@ import { JsonDialogComponent } from './json-dialog/json-dialog.component';
     MatSnackBarModule
   ],
   providers: [
-    ScriptService,
+    Service,
     {
       provide: RouteReuseStrategy,
       useClass: MyRouteReuseStrategy

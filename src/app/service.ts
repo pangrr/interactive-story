@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Script } from './script';
+import { Snapshot } from './game';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ScriptService {
+export class Service {
   script: Script;
-  savedEventId: string;
+  history: Snapshot[];
 
   constructor() { }
 
-  setScript(script: Script): void {
+  saveScript(script: Script): void {
     this.script = script;
   }
 
@@ -18,12 +19,12 @@ export class ScriptService {
     return this.script;
   }
 
-  saveEventId(eventId: string): void {
-    this.savedEventId = eventId;
+  saveHistory(history: Snapshot[]): void {
+    this.history = history;
   }
 
-  getSavedEventId(): string {
-    return this.savedEventId;
+  getHistory(): Snapshot[] {
+    return this.history;
   }
 }
 

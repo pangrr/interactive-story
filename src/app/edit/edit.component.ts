@@ -4,7 +4,7 @@ import { JsonDialogComponent } from '../json-dialog/json-dialog.component';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
-import { ScriptService } from '../script.service';
+import { Service } from '../service';
 import { Router } from '@angular/router';
 import { ClipboardService } from 'ngx-clipboard';
 import {
@@ -28,7 +28,7 @@ export class EditComponent {
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     public snackBar: MatSnackBar,
-    private service: ScriptService,
+    private service: Service,
     private router: Router,
     private clipboardService: ClipboardService
   ) {
@@ -38,7 +38,7 @@ export class EditComponent {
   }
 
   playScript(): void {
-    this.service.setScript(buildScript(this.script));
+    this.service.saveScript(buildScript(this.script));
     this.router.navigate(['/play']);
   }
 

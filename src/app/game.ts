@@ -1,12 +1,11 @@
-import { Script, Event, Actions, Notes } from './script';
+import { Script, Event, Notes } from './script';
 
 export class Game {
   readonly script: Script;
-  currentEvent: EventHappened;
+  currentEvent: CurrentEvent;
   thought: string;
   oldNotes: Notes;
   newNotes: Notes;
-  history: EventHappened[];
 
   constructor(scriptOrSnapshot: Snapshot | Script) {
     if (this.isSnapshot(scriptOrSnapshot)) {
@@ -15,10 +14,8 @@ export class Game {
       this.oldNotes = scriptOrSnapshot.oldNotes;
       this.newNotes = scriptOrSnapshot.newNotes;
       this.currentEvent = scriptOrSnapshot.currentEvent;
-      this.history = scriptOrSnapshot.history;
     } else {
       this.script = scriptOrSnapshot;
-      this.history = [];
       this.oldNotes = {};
       this.newNotes = {};
       this.loadFirstEvent();
@@ -32,14 +29,12 @@ export class Game {
       thought: this.thought,
       oldNotes: { ...this.oldNotes },
       newNotes: { ...this.newNotes },
-      history: JSON.parse(JSON.stringify(this.history))
     };
   }
 
-  takeAction(actionId: string): void {
-    const action = this.currentEvent.actionsAvailable[actionId];
-    this.currentEvent.actionsTaken[actionId] = action;
-    delete this.currentEvent.actionsAvailable[actionId];
+  takeAction(actionDescription: string): void {
+    const action = this.currentEvent.actions[actionDescription];
+    delete this.currentEvent.actions[actionDescription];
 
     this.thought = action.think;
 
@@ -48,39 +43,30 @@ export class Game {
     }
   }
 
-  triggerNextEvent(): void {
-    if (this.currentEvent.nextEvent) {
-      this.triggerEvent(this.currentEvent.nextEvent);
-    }
+  antiquateNewNotes(): void {
+    this.oldNotes = { ...this.oldNotes, ...this.newNotes };
+    this.newNotes = {};
   }
 
-  loadCurrentEvent(eventId: string): void {
+  triggerEvent(eventId: string): void {
+    this.antiquateNewNotes();
+    this.loadCurrentEvent(eventId);
+  }
+
+  private loadCurrentEvent(eventId: string): void {
     const eventFromScript = this.script.events[eventId];
     this.currentEvent = {
       id: eventId,
       ...eventFromScript,
-      actionsAvailable: { ...(eventFromScript.actions || {}) },
-      actionsTaken: {}
+      actions: { ...(eventFromScript.actions || {}) },
     };
     if (this.currentEvent.notes) {
       this.updateNotes(this.currentEvent.notes);
     }
   }
 
-  antiquateNewNotes(): void {
-    this.oldNotes = { ...this.oldNotes, ...this.newNotes };
-    this.newNotes = {};
-  }
-
   private loadFirstEvent(): void {
     this.loadCurrentEvent(Object.keys(this.script.events)[0]);
-  }
-
-  private triggerEvent(eventId: string): void {
-    this.antiquateNewNotes();
-
-    this.pushCurrentEventToHistory();
-    this.loadCurrentEvent(eventId);
   }
 
   private updateNotes(newNotes: Notes): void {
@@ -88,10 +74,6 @@ export class Game {
       delete this.oldNotes[key];
       this.newNotes[key] = newNotes[key];
     });
-  }
-
-  private pushCurrentEventToHistory(): void {
-    this.history.push(this.currentEvent);
   }
 
   private isSnapshot(arg: any): arg is Snapshot {
@@ -102,15 +84,12 @@ export class Game {
 
 export interface Snapshot {
   readonly script: Script;
-  readonly currentEvent: EventHappened;
+  readonly currentEvent: CurrentEvent;
   readonly thought: string;
   readonly oldNotes: Notes;
   readonly newNotes: Notes;
-  readonly history: EventHappened[];
 }
 
-export interface EventHappened extends Event {
+export interface CurrentEvent extends Event {
   id: string;
-  actionsAvailable: Actions;
-  actionsTaken: Actions;
 }
