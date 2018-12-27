@@ -26,17 +26,17 @@ function Validator(control: AbstractControl): { [key: string]: any } | null {
 
 
 @Component({
-  selector: 'app-json',
-  templateUrl: './json.component.html',
-  styleUrls: ['./json.component.css']
+  selector: 'app-json-dialog',
+  templateUrl: './json-dialog.component.html',
+  styleUrls: ['./json-dialog.component.css']
 })
-export class JsonComponent {
+export class JsonDialogComponent {
   script: FormControl;
   matcher = new MyErrorStateMatcher();
   objectKeys = Object.keys;
 
   constructor(
-    public dialogRef: MatDialogRef<JsonComponent>,
+    public dialogRef: MatDialogRef<JsonDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
   ) {
     this.script = new FormControl(JSON.stringify(data, null, 2), [Validator]);

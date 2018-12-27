@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JsonComponent } from './json.component';
+import { NotesDialogComponent } from './notes-dialog.component';
 
-describe('JsonComponent', () => {
-  let component: JsonComponent;
-  let fixture: ComponentFixture<JsonComponent>;
+describe('NotesDialogComponent', () => {
+  let component: NotesDialogComponent;
+  let fixture: ComponentFixture<NotesDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JsonComponent ]
+      declarations: [ NotesDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(JsonComponent);
+    fixture = TestBed.createComponent(NotesDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

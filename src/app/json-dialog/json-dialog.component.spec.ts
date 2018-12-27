@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogComponent } from './dialog.component';
+import { JsonDialogComponent } from './json-dialog.component';
 
-describe('MindComponent', () => {
-  let component: DialogComponent;
-  let fixture: ComponentFixture<DialogComponent>;
+describe('JsonComponent', () => {
+  let component: JsonDialogComponent;
+  let fixture: ComponentFixture<JsonDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialogComponent ]
+      declarations: [ JsonDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DialogComponent);
+    fixture = TestBed.createComponent(JsonDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -24,25 +24,25 @@ import { MyRouteReuseStrategy } from './route-reuse.strategy';
 // my components
 import { AppComponent } from './app.component';
 import { PlayComponent } from './play/play.component';
-import { NotesComponent } from './notes/notes.component';
-import { DialogComponent } from './dialog/dialog.component';
+import { NotesDialogComponent } from './notes-dialog/notes-dialog.component';
+import { ThoughtDialogComponent } from './thought-dialog/thought-dialog.component';
 import { EditComponent } from './edit/edit.component';
-import { JsonComponent } from './json/json.component';
+import { JsonDialogComponent } from './json-dialog/json-dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayComponent,
-    NotesComponent,
-    DialogComponent,
+    NotesDialogComponent,
+    ThoughtDialogComponent,
     EditComponent,
-    JsonComponent,
+    JsonDialogComponent,
   ],
   entryComponents: [
-    NotesComponent,
-    DialogComponent,
-    JsonComponent,
+    NotesDialogComponent,
+    ThoughtDialogComponent,
+    JsonDialogComponent,
   ],
   imports: [
     BrowserModule,

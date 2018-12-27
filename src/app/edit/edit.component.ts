@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { JsonComponent } from '../json/json.component';
+import { JsonDialogComponent } from '../json-dialog/json-dialog.component';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
@@ -24,7 +24,7 @@ export class EditComponent {
   };
 
   constructor(
-    public json: MatDialog,
+    public jsonDialog: MatDialog,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     public snackBar: MatSnackBar,
@@ -34,7 +34,7 @@ export class EditComponent {
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
     iconRegistry.addSvgIcon('play', sanitizer.bypassSecurityTrustResourceUrl('assets/play.svg'));
-    this.openScriptJsonEditor();
+    this.openJsonDialog();
   }
 
   playScript(): void {
@@ -42,13 +42,13 @@ export class EditComponent {
     this.router.navigate(['/play']);
   }
 
-  openScriptJsonEditor(): void {
-    const jsonRef = this.json.open(JsonComponent, {
+  openJsonDialog(): void {
+    const dialogRef = this.jsonDialog.open(JsonDialogComponent, {
       width: '1000px',
       data: buildScript(this.script)
     });
 
-    jsonRef.afterClosed().subscribe((script: Script) => {
+    dialogRef.afterClosed().subscribe((script: Script) => {
       if (script) {
         this.script = buildScript4Edit(script);
       }

@@ -2,20 +2,22 @@ import { Script, Event, Actions, Notes } from './script';
 
 export class Game {
   readonly script: Script;
-  history: EventHappened[];
   currentEvent: EventHappened;
+  thought: string;
   oldNotes: Notes;
   newNotes: Notes;
+  history: EventHappened[];
 
-  constructor(scriptOrSave: Save | Script) {
-    if (this.isSave(scriptOrSave)) {
-      this.script = scriptOrSave.script;
-      this.history = scriptOrSave.history;
-      this.oldNotes = scriptOrSave.oldNotes;
-      this.newNotes = scriptOrSave.newNotes;
-      this.currentEvent = scriptOrSave.currentEvent;
+  constructor(scriptOrSnapshot: Snapshot | Script) {
+    if (this.isSnapshot(scriptOrSnapshot)) {
+      this.script = scriptOrSnapshot.script;
+      this.thought = scriptOrSnapshot.thought;
+      this.oldNotes = scriptOrSnapshot.oldNotes;
+      this.newNotes = scriptOrSnapshot.newNotes;
+      this.currentEvent = scriptOrSnapshot.currentEvent;
+      this.history = scriptOrSnapshot.history;
     } else {
-      this.script = scriptOrSave;
+      this.script = scriptOrSnapshot;
       this.history = [];
       this.oldNotes = {};
       this.newNotes = {};
@@ -23,22 +25,26 @@ export class Game {
     }
   }
 
-  save(): Save {
+  takeSnapshot(): Snapshot {
     return {
       script: this.script,
-      history: this.history,
       currentEvent: this.currentEvent,
+      thought: this.thought,
       oldNotes: this.oldNotes,
-      newNotes: this.newNotes
+      newNotes: this.newNotes,
+      history: this.history
     };
   }
 
-  takeAction(actionKey: string): void {
-    delete this.currentEvent.actionsAvailable[actionKey];
-    this.currentEvent.actionsTaken.push(actionKey);
+  takeAction(actionId: string): void {
+    const action = this.currentEvent.actionsAvailable[actionId];
+    this.currentEvent.actionsTaken[actionId] = action;
+    delete this.currentEvent.actionsAvailable[actionId];
 
-    if (this.currentEvent.actions[actionKey].triggerEvent) {
-      this.triggerEvent(this.currentEvent.actions[actionKey].triggerEvent);
+    this.thought = action.think;
+
+    if (action.triggerEvent) {
+      this.triggerEvent(action.triggerEvent);
     }
   }
 
@@ -54,7 +60,7 @@ export class Game {
       id: eventId,
       ...eventFromScript,
       actionsAvailable: { ...(eventFromScript.actions || {}) },
-      actionsTaken: []
+      actionsTaken: {}
     };
     if (this.currentEvent.notes) {
       this.updateNotes(this.currentEvent.notes);
@@ -88,22 +94,23 @@ export class Game {
     this.history.push(this.currentEvent);
   }
 
-  private isSave(arg: any): arg is Save {
+  private isSnapshot(arg: any): arg is Snapshot {
     return arg.script !== undefined;
   }
 }
 
 
-export interface Save {
+export interface Snapshot {
   readonly script: Script;
-  readonly history: EventHappened[];
   readonly currentEvent: EventHappened;
+  readonly thought: string;
   readonly oldNotes: Notes;
   readonly newNotes: Notes;
+  readonly history: EventHappened[];
 }
 
 export interface EventHappened extends Event {
   id: string;
   actionsAvailable: Actions;
-  actionsTaken: string[];
+  actionsTaken: Actions;
 }

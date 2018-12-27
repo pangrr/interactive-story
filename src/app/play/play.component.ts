@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { NotesComponent } from '../notes/notes.component';
+import { NotesDialogComponent } from '../notes-dialog/notes-dialog.component';
 import { ScriptService } from '../script.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import { Game } from '../game';
-import { DialogComponent } from '../dialog/dialog.component';
+import { ThoughtDialogComponent } from '../thought-dialog/thought-dialog.component';
 import { Router } from '@angular/router';
 
 
@@ -20,8 +20,8 @@ export class PlayComponent {
 
   constructor(
     private service: ScriptService,
-    public notes: MatDialog,
-    public dialog: MatDialog,
+    public notesDialog: MatDialog,
+    public thoughtDialog: MatDialog,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     private router: Router
@@ -42,11 +42,10 @@ export class PlayComponent {
   }
 
   takeAction(actionKey: string): void {
-    const thought = this.game.currentEvent.actionsAvailable[actionKey].think;
-    if (thought) {
-      this.openDialog(thought);
-    }
     this.game.takeAction(actionKey);
+    if (this.game.thought) {
+      this.openThought(this.game.thought);
+    }
   }
 
   triggerNextEvent(): void {
@@ -54,7 +53,7 @@ export class PlayComponent {
   }
 
   openNotes(): void {
-    this.notes.open(NotesComponent, {
+    this.notesDialog.open(NotesDialogComponent, {
       width: '800px',
       data: {
         oldNotes: this.game.oldNotes,
@@ -64,11 +63,13 @@ export class PlayComponent {
     this.game.antiquateNewNotes();
   }
 
-  openDialog(content: string): void {
-    this.dialog.open(DialogComponent, {
+  private openThought(thought: string): void {
+    const dialogRef = this.thoughtDialog.open(ThoughtDialogComponent, {
       width: '800px',
-      data: content
+      data: thought
     });
+
+    dialogRef.afterClosed().subscribe(() => this.game.thought = undefined);
   }
 
   editScript(): void {
