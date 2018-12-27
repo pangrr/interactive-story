@@ -20,8 +20,7 @@ import {
 })
 export class EditComponent {
   script: Script4Edit = {
-    firstEvent: '0',
-    events: [{ id: '0', description: '', actions: [], notes: [], nextEvent: '', open: true }]
+    events: [{ id: 'first event', description: '', actions: [], notes: [], nextEvent: '', open: true }]
   };
 
   constructor(
@@ -75,7 +74,7 @@ export class EditComponent {
   }
 
   sortEvents(): void {
-    this.script.events = sortEvents(this.script.events, this.script.firstEvent);
+    this.script.events = sortEvents(this.script.events);
   }
 
   addAction(actions: Action4Edit[]): void {

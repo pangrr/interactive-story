@@ -98,18 +98,13 @@
     </mat-expansion-panel>
   </mat-accordion>
   <div color="primary" class="toolbar">
-    <mat-form-field [ngClass]="!script.firstEvent || script.firstEventIdNotExist ? 'red' : ''">
-      <input matInput placeholder="First Event" [(ngModel)]="script.firstEvent" (change)="validateScript()">
-      <mat-hint *ngIf="!script.firstEvent" class="red">Cannot Be Empty</mat-hint>
-      <mat-hint *ngIf="script.firstEventIdNotExist" class="red"> Event ID Not Exist</mat-hint>
-    </mat-form-field>
-    <span class="spacer"></span>
     <button mat-button (click)="addEvent()">Add Event</button>
     <button mat-button (click)="sortEvents()" [disabled]="script.invalid">Sort Events</button>
     <button mat-button (click)="closeEvents()">Close Events</button>
     <button mat-button color="primary" (click)="openScriptJsonEditor()" [disabled]="script.invalid">Script JSON</button>
     <button mat-button color="primary" (click)="copyScriptToClipboard()" [disabled]="script.invalid">Copy Script</button>
     <button mat-button color="warn" (click)="validateScript(true)">Validate Script</button>
+    <span class="spacer"></span>
     <button mat-button mat-icon-button (click)="playScript()" [disabled]="script.invalid">
       <mat-icon svgIcon="play" matTooltip="Play Script"></mat-icon>
     </button>

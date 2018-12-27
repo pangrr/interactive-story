@@ -1,6 +1,5 @@
 export interface Script {
   readonly events: Events;
-  readonly firstEvent: string;
 }
 
 export interface Event {
@@ -29,11 +28,9 @@ export interface Notes {
 
 export interface Script4Edit {
   // data
-  firstEvent: string;
   events: Event4Edit[];
   // helper
   invalid?: boolean;
-  firstEventIdNotExist?: boolean;
 }
 
 export interface Event4Edit {
@@ -76,8 +73,6 @@ interface Occurance {
 
 interface InvalidScript {
   invalidJson: boolean;
-  firstEventInvalidType: boolean;
-  firstEventNotExist: boolean;
   eventsInvalidType: boolean;
   eventsOfInvalidType: string[];
   eventsWithDescriptionOfInvalidType: string[];
@@ -93,7 +88,6 @@ interface InvalidScript {
 
 export function buildScript4Edit(script: Script): Script4Edit {
   return {
-    firstEvent: script.firstEvent,
     events: Object.keys(script.events).map(key => {
       return buildEvent4Edit(key, script.events[key]);
     })
@@ -102,7 +96,6 @@ export function buildScript4Edit(script: Script): Script4Edit {
 
 export function buildScript(script4Edit: Script4Edit): Script {
   return {
-    firstEvent: script4Edit.firstEvent,
     events: buildEvents(script4Edit.events)
   };
 }
@@ -110,28 +103,21 @@ export function buildScript(script4Edit: Script4Edit): Script {
 export function validateScript4Edit(script: Script4Edit): boolean {
   const eventIdOccurance = countEventIdOccurance(script.events);
 
-  script.firstEventIdNotExist = script.firstEvent && !eventIdOccurance[script.firstEvent];
   const anyInvalidEvent = !validateEvents4Edit(script, eventIdOccurance);
 
-  script.invalid = !script.firstEvent || script.firstEventIdNotExist || anyInvalidEvent;
+  script.invalid = anyInvalidEvent;
 
   return !script.invalid;
 }
 
-export function sortEvents(events: Event4Edit[], firstEventId: string): Event4Edit[] {
+export function sortEvents(events: Event4Edit[]): Event4Edit[] {
   const sortedEvents: Event4Edit[] = [];
-  const eventsMap: { [key: string]: Event4Edit } = {};
-  const visited: { [key: string]: boolean } = {};
+  const eventsMap: { [key: string]: { event: Event4Edit, visited: boolean } } = {};
+  events.forEach(event => eventsMap[event.id] = { event, visited: false });
+
   events.forEach(event => {
-    eventsMap[event.id] = event;
-    visited[event.id] = false;
-  });
-
-  topoSortEventsHelper(firstEventId, eventsMap, visited, sortedEvents);
-
-  Object.keys(eventsMap).forEach(key => {
-    if (!visited[key]) {
-      topoSortEventsHelper(key, eventsMap, visited, sortedEvents);
+    if (!eventsMap[event.id].visited) {
+      topoSortEventsHelper(event.id, eventsMap, sortedEvents);
     }
   });
 
@@ -157,8 +143,6 @@ export function validateScript(scriptString: string): InvalidScript {
   let script: Script;
   const invalid: InvalidScript = {
     invalidJson: false,
-    firstEventInvalidType: false,
-    firstEventNotExist: false,
     eventsInvalidType: false,
     eventsOfInvalidType: [],
     eventsWithDescriptionOfInvalidType: [],
@@ -179,21 +163,10 @@ export function validateScript(scriptString: string): InvalidScript {
     return invalid;
   }
 
-  const firstEvent = script.firstEvent;
   const events = script.events;
-
-  if (typeof firstEvent !== 'string') {
-    invalid.firstEventInvalidType = true;
-  }
 
   if (!isObject(events)) {
     invalid.eventsInvalidType = true;
-  }
-
-  if (!invalid.firstEventInvalidType && !invalid.eventsInvalidType) {
-    if (events[firstEvent] === undefined) {
-      invalid.firstEventNotExist = true;
-    }
   }
 
   if (!invalid.eventsInvalidType) {
@@ -382,17 +355,16 @@ function validateNotes4Edit(notes: Note4Edit[]): boolean {
 
 function topoSortEventsHelper(
   eventId: string,
-  events: { [key: string]: Event4Edit },
-  visited: { [key: string]: boolean },
+  eventsMap: { [key: string]: { event: Event4Edit, visited: boolean } },
   stack: Event4Edit[]
 ): void {
-  visited[eventId] = true;
-  collectPossibleNextEvents(events[eventId]).forEach(nextEventId => {
-    if (!visited[nextEventId]) {
-      topoSortEventsHelper(nextEventId, events, visited, stack);
+  eventsMap[eventId].visited = true;
+  collectPossibleNextEvents(eventsMap[eventId].event).forEach(nextEventId => {
+    if (!eventsMap[nextEventId].visited) {
+      topoSortEventsHelper(nextEventId, eventsMap, stack);
     }
   });
-  stack.unshift(events[eventId]);
+  stack.unshift(eventsMap[eventId].event);
 }
 
 function countEventIdOccurance(events: Event4Edit[]): Occurance {

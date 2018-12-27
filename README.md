@@ -8,7 +8,6 @@ Let's play stories.
 
 
 ## todo
-- remove script.firstEvent
 - time machine events
 - save and reload game
 - replay game
