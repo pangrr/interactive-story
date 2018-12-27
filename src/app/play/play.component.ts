@@ -57,7 +57,11 @@ export class PlayComponent {
     this.takeSnapshot();
 
     this.game.takeAction(actionDescription);
-    this.openThoughtIfAvailable();
+
+    if (this.game.thought) {
+      this.takeSnapshot();
+      this.openThought(this.game.thought);
+    }
   }
 
   triggerNextEventIfAvailable(event: Event): void {
@@ -88,20 +92,20 @@ export class PlayComponent {
 
   stepBack(): void {
     this.game = new Game(this.history.pop());
-    this.openThoughtIfAvailable();
+    if (this.game.thought) {
+      this.openThought(this.game.thought);
+    }
   }
 
-  private openThoughtIfAvailable(): void {
-    if (this.game.thought) {
-      const dialogRef = this.thoughtDialog.open(ThoughtDialogComponent, {
-        width: '800px',
-        data: this.game.thought
-      });
+  private openThought(thought): void {
+    const dialogRef = this.thoughtDialog.open(ThoughtDialogComponent, {
+      width: '800px',
+      data: thought
+    });
 
-      dialogRef.afterClosed().subscribe(() => {
-        this.game.thought = undefined;
-      });
-    }
+    dialogRef.afterClosed().subscribe(() => {
+      this.game.thought = undefined;
+    });
   }
 
   private takeSnapshot(): void {
