@@ -28,11 +28,11 @@ export class Game {
   takeSnapshot(): Snapshot {
     return {
       script: this.script,
-      currentEvent: this.currentEvent,
+      currentEvent: JSON.parse(JSON.stringify(this.currentEvent)),
       thought: this.thought,
-      oldNotes: this.oldNotes,
-      newNotes: this.newNotes,
-      history: this.history
+      oldNotes: { ...this.oldNotes },
+      newNotes: { ...this.newNotes },
+      history: JSON.parse(JSON.stringify(this.history))
     };
   }
 

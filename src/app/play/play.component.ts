@@ -4,7 +4,7 @@ import { NotesDialogComponent } from '../notes-dialog/notes-dialog.component';
 import { ScriptService } from '../script.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
-import { Game } from '../game';
+import { Game, Snapshot } from '../game';
 import { ThoughtDialogComponent } from '../thought-dialog/thought-dialog.component';
 import { Router } from '@angular/router';
 
@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 })
 export class PlayComponent {
   game: Game;
+  snapshots: Snapshot[] = [];
   objectKeys = Object.keys;
 
   constructor(
@@ -28,6 +29,7 @@ export class PlayComponent {
   ) {
     iconRegistry.addSvgIcon('notes', sanitizer.bypassSecurityTrustResourceUrl('assets/notes.svg'));
     iconRegistry.addSvgIcon('edit', sanitizer.bypassSecurityTrustResourceUrl('assets/edit.svg'));
+    iconRegistry.addSvgIcon('step_back', sanitizer.bypassSecurityTrustResourceUrl('assets/step_back.svg'));
 
     const script = this.service.getScript();
     if (!script) {
@@ -42,17 +44,21 @@ export class PlayComponent {
   }
 
   takeAction(actionKey: string): void {
+    this.takeSnapshot();
+
     this.game.takeAction(actionKey);
-    if (this.game.thought) {
-      this.openThought(this.game.thought);
-    }
+    this.openThoughtIfAvailable();
   }
 
   triggerNextEvent(): void {
+    this.takeSnapshot();
+
     this.game.triggerNextEvent();
   }
 
   openNotes(): void {
+    this.takeSnapshot();
+
     this.notesDialog.open(NotesDialogComponent, {
       width: '800px',
       data: {
@@ -68,13 +74,22 @@ export class PlayComponent {
     this.router.navigate(['/edit']);
   }
 
-  private openThought(thought: string): void {
-    const dialogRef = this.thoughtDialog.open(ThoughtDialogComponent, {
-      width: '800px',
-      data: thought
-    });
+  stepBack(): void {
+    this.game = new Game(this.snapshots.pop());
+    this.openThoughtIfAvailable();
+  }
 
-    dialogRef.afterClosed().subscribe(() => this.game.thought = undefined);
+  private openThoughtIfAvailable(): void {
+    if (this.game.thought) {
+      const dialogRef = this.thoughtDialog.open(ThoughtDialogComponent, {
+        width: '800px',
+        data: this.game.thought
+      });
+
+      dialogRef.afterClosed().subscribe(() => {
+        this.game.thought = undefined;
+      });
+    }
   }
 
   private getSecondFromLastEventId(): string {
@@ -87,6 +102,10 @@ export class PlayComponent {
     } else {
       return this.game.currentEvent.id;
     }
+  }
+
+  private takeSnapshot(): void {
+    this.snapshots.push(this.game.takeSnapshot());
   }
 }
 

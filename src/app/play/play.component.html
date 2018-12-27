@@ -3,6 +3,9 @@
     <button mat-icon-button (click)="editScript()">
       <mat-icon svgIcon="edit" matTooltip="Edit Script"></mat-icon>
     </button>
+    <button mat-icon-button (click)="stepBack()" [disabled]="snapshots.length === 0">
+      <mat-icon svgIcon="step_back" matTooltip="Step Back"></mat-icon>
+    </button>
     <span class="spacer"></span>
     <button mat-icon-button (click)="openNotes()" [color]="objectKeys(game.newNotes).length > 0 ? 'warn' : ''">
       <mat-icon svgIcon="notes" matTooltip="Notes"></mat-icon>
