@@ -63,6 +63,11 @@ export class PlayComponent {
     this.game.antiquateNewNotes();
   }
 
+  editScript(): void {
+    this.service.saveEventId(this.getSecondFromLastEventId());
+    this.router.navigate(['/edit']);
+  }
+
   private openThought(thought: string): void {
     const dialogRef = this.thoughtDialog.open(ThoughtDialogComponent, {
       width: '800px',
@@ -70,11 +75,6 @@ export class PlayComponent {
     });
 
     dialogRef.afterClosed().subscribe(() => this.game.thought = undefined);
-  }
-
-  editScript(): void {
-    this.service.saveEventId(this.getSecondFromLastEventId());
-    this.router.navigate(['/edit']);
   }
 
   private getSecondFromLastEventId(): string {
