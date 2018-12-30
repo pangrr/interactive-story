@@ -59,7 +59,6 @@ export class PlayComponent {
     this.game.takeAction(actionDescription);
 
     if (this.game.thought) {
-      this.takeSnapshot();
       this.openThought(this.game.thought);
     }
   }
@@ -73,8 +72,6 @@ export class PlayComponent {
   }
 
   openNotes(): void {
-    this.takeSnapshot();
-
     this.notesDialog.open(NotesDialogComponent, {
       width: '800px',
       data: {
