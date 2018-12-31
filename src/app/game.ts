@@ -2,71 +2,85 @@ import { Script, Event, Notes } from './script';
 
 export class Game {
   readonly script: Script;
-  currentEvent: CurrentEvent;
+  currentEvent: Event;
   thought: string;
   oldNotes: Notes;
   newNotes: Notes;
+  history: string[]; // list of event ids as they occured
 
-  constructor(scriptOrSnapshot: Snapshot | Script) {
-    if (this.isSnapshot(scriptOrSnapshot)) {
-      this.script = scriptOrSnapshot.script;
-      this.thought = scriptOrSnapshot.thought;
-      this.oldNotes = scriptOrSnapshot.oldNotes;
-      this.newNotes = scriptOrSnapshot.newNotes;
-      this.currentEvent = scriptOrSnapshot.currentEvent;
+  constructor(scriptOrSave: Save | Script) {
+    this.oldNotes = {};
+    this.newNotes = {};
+    this.history = [];
+    if (this.isSave(scriptOrSave)) {
+      this.script = scriptOrSave.script;
+      this.replayHistory(scriptOrSave.history);
     } else {
-      this.script = scriptOrSnapshot;
-      this.oldNotes = {};
-      this.newNotes = {};
+      this.script = scriptOrSave;
       this.loadFirstEvent();
     }
   }
 
-  takeSnapshot(): Snapshot {
-    return {
-      script: this.script,
-      currentEvent: JSON.parse(JSON.stringify(this.currentEvent)),
-      thought: this.thought,
-      oldNotes: { ...this.oldNotes },
-      newNotes: { ...this.newNotes },
-    };
-  }
-
   takeAction(actionDescription: string): void {
     const action = this.currentEvent.actions[actionDescription];
-    delete this.currentEvent.actions[actionDescription];
+    if (action) {
+      delete this.currentEvent.actions[actionDescription];
 
-    this.thought = action.think;
+      this.thought = action.think;
 
-    if (action.triggerEvent) {
-      this.triggerEvent(action.triggerEvent);
+      if (action.triggerEvent) {
+        this.triggerEvent(action.triggerEvent);
+      }
+    } else {
+      console.error('action not exist', actionDescription, this.currentEvent);
     }
   }
 
-  antiquateNewNotes(): void {
+  triggerEvent(eventId: string): void {
+    const eventFromScript = this.script.events[eventId];
+
+    if (eventFromScript) {
+      this.currentEvent = {
+        ...eventFromScript,
+        actions: { ...(eventFromScript.actions || {}) },
+      };
+
+      this.antiquateNewNotes();
+      if (this.currentEvent.notes) {
+        this.updateNotes(this.currentEvent.notes);
+      }
+
+      this.history.push(eventId);
+    } else {
+      console.error('event not exist', eventId, this.script);
+    }
+  }
+
+  previousEvent(): void {
+    const history = [...this.history];
+    history.pop();
+    this.history = [];
+    this.replayHistory(history);
+  }
+
+  save(): Save {
+    return {
+      script: this.script,
+      history: this.history
+    };
+  }
+
+  private antiquateNewNotes(): void {
     this.oldNotes = { ...this.oldNotes, ...this.newNotes };
     this.newNotes = {};
   }
 
-  triggerEvent(eventId: string): void {
-    this.antiquateNewNotes();
-    this.loadCurrentEvent(eventId);
-  }
-
-  private loadCurrentEvent(eventId: string): void {
-    const eventFromScript = this.script.events[eventId];
-    this.currentEvent = {
-      id: eventId,
-      ...eventFromScript,
-      actions: { ...(eventFromScript.actions || {}) },
-    };
-    if (this.currentEvent.notes) {
-      this.updateNotes(this.currentEvent.notes);
-    }
+  private replayHistory(history: string[]): void {
+    history.forEach(eventId => this.triggerEvent(eventId));
   }
 
   private loadFirstEvent(): void {
-    this.loadCurrentEvent(Object.keys(this.script.events)[0]);
+    this.triggerEvent(Object.keys(this.script.events)[0]);
   }
 
   private updateNotes(newNotes: Notes): void {
@@ -76,20 +90,13 @@ export class Game {
     });
   }
 
-  private isSnapshot(arg: any): arg is Snapshot {
-    return arg.script !== undefined;
+  private isSave(arg: any): arg is Save {
+    return arg.script !== undefined && arg.history !== undefined;
   }
 }
 
 
-export interface Snapshot {
+export interface Save {
   readonly script: Script;
-  readonly currentEvent: CurrentEvent;
-  readonly thought: string;
-  readonly oldNotes: Notes;
-  readonly newNotes: Notes;
-}
-
-export interface CurrentEvent extends Event {
-  id: string;
+  readonly history: string[]; // list of event ids as they occured
 }

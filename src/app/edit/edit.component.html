@@ -87,7 +87,7 @@
             <mat-hint *ngIf="event.nextEventIdNotExist" class="red">Event ID Not Exist</mat-hint>
           </mat-form-field>
           <span class="spacer"></span>
-          <button mat-button color="accent" (click)="appendEvent(i)">Add Event</button>
+          <button mat-button color="accent" (click)="appendEvent(i)" [disabled]="!triggerEventIdsNotExist(event)">Add Event</button>
           <button mat-button color="primary" (click)="addAction(event.actions)">Add Action</button>
           <button mat-button (click)="addNote(event.notes)">Add Note</button>
           <button mat-icon-button (click)="deleteEvent(i)">

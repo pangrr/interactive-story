@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Script } from './script';
-import { Snapshot } from './game';
+import { Save } from './game';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Service {
   script: Script;
-  history: Snapshot[];
+  save: Save;
 
   constructor() { }
 
@@ -19,12 +19,12 @@ export class Service {
     return this.script;
   }
 
-  saveHistory(history: Snapshot[]): void {
-    this.history = history;
+  saveGame(save: Save): void {
+    this.save = save;
   }
 
-  getHistory(): Snapshot[] {
-    return this.history;
+  getSave(): Save {
+    return this.save;
   }
 }
 

@@ -4,7 +4,7 @@ import { NotesDialogComponent } from '../notes-dialog/notes-dialog.component';
 import { Service } from '../service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
-import { Game, Snapshot } from '../game';
+import { Game, Save } from '../game';
 import { ThoughtDialogComponent } from '../thought-dialog/thought-dialog.component';
 import { Router } from '@angular/router';
 import { Event } from '../script';
@@ -17,7 +17,6 @@ import { Event } from '../script';
 })
 export class PlayComponent {
   game: Game;
-  history: Snapshot[] = [];
   objectKeys = Object.keys;
 
   constructor(
@@ -36,26 +35,17 @@ export class PlayComponent {
     if (!script) {
       this.router.navigate(['/edit']);
     } else {
-      this.game = new Game(script);
-      const history = this.service.getHistory();
-      if (history) {
-        this.replayThroughHistory(history);
+      const save = this.service.getSave();
+      if (save) {
+        const newSave = { ...save, script };
+        this.game = new Game(newSave);
+      } else {
+        this.game = new Game(script);
       }
     }
   }
 
-  private replayThroughHistory(history: Snapshot[]): void {
-    history.forEach(snapshot => {
-      if (this.game.script.events[snapshot.currentEvent.id]) {
-        this.game.triggerEvent(snapshot.currentEvent.id);
-        this.takeSnapshot();
-      }
-    });
-  }
-
   takeAction(actionDescription: string): void {
-    this.takeSnapshot();
-
     this.game.takeAction(actionDescription);
 
     if (this.game.thought) {
@@ -65,8 +55,6 @@ export class PlayComponent {
 
   triggerNextEventIfAvailable(event: Event): void {
     if (event.nextEvent) {
-      this.takeSnapshot();
-
       this.game.triggerEvent(event.nextEvent);
     }
   }
@@ -79,19 +67,15 @@ export class PlayComponent {
         newNotes: this.game.newNotes
       }
     });
-    this.game.antiquateNewNotes();
   }
 
   editScript(): void {
-    this.service.saveHistory(this.history);
+    this.service.saveGame(this.game.save());
     this.router.navigate(['/edit']);
   }
 
-  stepBack(): void {
-    this.game = new Game(this.history.pop());
-    if (this.game.thought) {
-      this.openThought(this.game.thought);
-    }
+  previousEvent(): void {
+    this.game.previousEvent();
   }
 
   private openThought(thought): void {
@@ -103,10 +87,6 @@ export class PlayComponent {
     dialogRef.afterClosed().subscribe(() => {
       this.game.thought = undefined;
     });
-  }
-
-  private takeSnapshot(): void {
-    this.history.push(this.game.takeSnapshot());
   }
 }
 

@@ -67,6 +67,14 @@ export class EditComponent {
     this.validateScript();
   }
 
+  triggerEventIdsNotExist(event: Event4Edit): boolean {
+    let triggerEventIdsNotExist = false;
+    event.actions.forEach(action => {
+      triggerEventIdsNotExist = triggerEventIdsNotExist || action.triggerEventIdNotExist;
+    });
+    return event.nextEventIdNotExist || triggerEventIdsNotExist;
+  }
+
   deleteEvent(eventIndex: number): void {
     this.script.events.splice(eventIndex, 1);
 
