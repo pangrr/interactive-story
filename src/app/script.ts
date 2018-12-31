@@ -45,6 +45,7 @@ export interface Event4Edit {
   invalid?: boolean;
   duplicateId?: boolean;
   nextEventIdNotExist?: boolean;
+  triggeredEventIdsNotExist?: string[];
 }
 
 export interface Action4Edit {
@@ -299,9 +300,13 @@ function validateEvents4Edit(script: Script4Edit, eventIdOccurance: Occurance): 
   let anyInvalidEvent = false;
 
   script.events.forEach(event => {
+    event.triggeredEventIdsNotExist = [];
     event.duplicateId = (event.id && eventIdOccurance[event.id] > 1);
     event.nextEventIdNotExist = event.nextEvent && !eventIdOccurance[event.nextEvent];
-    const anyInvalidAction = !validateActions4Edit(event.actions, eventIdOccurance);
+    if (event.nextEventIdNotExist) {
+      event.triggeredEventIdsNotExist.push(event.nextEvent);
+    }
+    const anyInvalidAction = !validateActions4Edit(event.actions, eventIdOccurance, event.triggeredEventIdsNotExist);
     const anyInvalidNote = !validateNotes4Edit(event.notes);
 
     event.invalid = !event.id || event.duplicateId || event.nextEventIdNotExist || anyInvalidAction || anyInvalidNote;
@@ -312,7 +317,7 @@ function validateEvents4Edit(script: Script4Edit, eventIdOccurance: Occurance): 
   return !anyInvalidEvent;
 }
 
-function validateActions4Edit(actions: Action4Edit[], eventIdOccurance: Occurance): boolean {
+function validateActions4Edit(actions: Action4Edit[], eventIdOccurance: Occurance, triggeredEventIdsNotExist: string[]): boolean {
   let anyActionInvalid = false;
   const actionDescriptionOccurance: Occurance = actions.reduce(
     (occurance, action) => {
@@ -325,6 +330,9 @@ function validateActions4Edit(actions: Action4Edit[], eventIdOccurance: Occuranc
   actions.forEach(action => {
     action.duplicateDescription = actionDescriptionOccurance[action.description] > 1;
     action.triggerEventIdNotExist = action.triggerEvent && !eventIdOccurance[action.triggerEvent];
+    if (action.triggerEventIdNotExist) {
+      triggeredEventIdsNotExist.push(action.triggerEvent);
+    }
     anyActionInvalid = anyActionInvalid || !action.description || action.duplicateDescription || action.triggerEventIdNotExist;
   });
 

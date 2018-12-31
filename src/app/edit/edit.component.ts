@@ -20,7 +20,7 @@ import {
 })
 export class EditComponent {
   script: Script4Edit = {
-    events: [{ id: 'first event', description: '', actions: [], notes: [], nextEvent: '', open: true }]
+    events: [this.buildNewEvent4Edit('first event')]
   };
 
   constructor(
@@ -34,6 +34,7 @@ export class EditComponent {
   ) {
     iconRegistry.addSvgIcon('delete', sanitizer.bypassSecurityTrustResourceUrl('assets/delete.svg'));
     iconRegistry.addSvgIcon('play', sanitizer.bypassSecurityTrustResourceUrl('assets/play.svg'));
+    this.validateScript();
     this.openJsonDialog();
   }
 
@@ -51,6 +52,7 @@ export class EditComponent {
     dialogRef.afterClosed().subscribe((script: Script) => {
       if (script) {
         this.script = buildScript4Edit(script);
+        this.validateScript();
       }
     });
   }
@@ -60,19 +62,11 @@ export class EditComponent {
   }
 
   appendEvent(toEventIndex: number): void {
-    const newEvents: Event4Edit[] = collectPossibleNextEvents(this.script.events[toEventIndex]).map(id => this.buildNewEvent4Edit(id));
+    const newEvents: Event4Edit[] = this.script.events[toEventIndex].triggeredEventIdsNotExist.map(id => this.buildNewEvent4Edit(id));
 
     this.script.events.splice(toEventIndex + 1, 0, ...newEvents);
 
     this.validateScript();
-  }
-
-  triggerEventIdsNotExist(event: Event4Edit): boolean {
-    let triggerEventIdsNotExist = false;
-    event.actions.forEach(action => {
-      triggerEventIdsNotExist = triggerEventIdsNotExist || action.triggerEventIdNotExist;
-    });
-    return event.nextEventIdNotExist || triggerEventIdsNotExist;
   }
 
   deleteEvent(eventIndex: number): void {
@@ -140,11 +134,7 @@ export class EditComponent {
     return {
       id,
       description: '',
-      actions: [{
-        description: '',
-        triggerEvent: '',
-        think: ''
-      }],
+      actions: [],
       nextEvent: '',
       notes: [],
       open: true
