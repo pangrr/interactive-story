@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { ClipboardService } from 'ngx-clipboard';
 import {
   Script, Script4Edit, buildScript4Edit, validateScript4Edit, buildScript, Event4Edit,
-  sortEvents, Note4Edit, Action4Edit, collectPossibleNextEvents
+  sortEvents, Note4Edit, Action4Edit
 } from '../script';
 
 
