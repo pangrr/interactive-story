@@ -1,4 +1,4 @@
 {
-  "appService.defaultWebAppToDeploy": "/subscriptions/bb0183a0-6673-4ff1-87a2-775b31a3406d/resourceGroups/play-story/providers/Microsoft.Web/sites/play-story",
-  "appService.deploySubpath": "dist/play-story"
+  "appService.defaultWebAppToDeploy": "/subscriptions/bb0183a0-6673-4ff1-87a2-775b31a3406d/resourceGroups/playstory/providers/Microsoft.Web/sites/playstory",
+  "appService.deploySubpath": "dist/playstory"
 }
